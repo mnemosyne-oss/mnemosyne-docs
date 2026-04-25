@@ -1,0 +1,82 @@
+# Working Memory
+
+The agent's immediate context — recent observations, active conversations, and current tool results. Fastest access, limited capacity, and subject to eviction.
+
+## Schema
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `id` | TEXT | UUIDv4 primary key |
+| `content` | TEXT | Raw memory content |
+| `embedding` | BLOB | Vector embedding (1536 dims) |
+| `tags` | TEXT | JSON array of tags |
+| `importance` | REAL | 0.0–1.0 importance score |
+| `source` | TEXT | Origin (user, tool, observation) |
+| `created_at` | INTEGER | Unix timestamp |
+| `accessed_at` | INTEGER | Last access timestamp |
+| `access_count` | INTEGER | Read frequency |
+
+## FTS5 Triggers
+
+SQLite FTS5 indices are maintained automatically via triggers:
+
+<CodeBlock code={`CREATE TRIGGER working_fts_insert
+AFTER INSERT ON working_memory
+BEGIN
+    INSERT INTO working_fts(rowid, content, tags)
+    VALUES (NEW.rowid, NEW.content, json_extract(NEW.tags, '$'));
+END;
+`} language="sql" />
+
+## Eviction Policy
+
+When Working Memory reaches capacity, entries are evicted by:
+
+1. **Importance weighting**: Higher importance = lower eviction priority
+2. **Recency**: Recently accessed entries are protected
+3. **Access frequency**: Frequently read entries are protected
+4. **Composite score**: `score = importance * recency * frequency`
+
+## Consolidation Path
+
+<MermaidDiagram chart={`
+flowchart LR
+    A[New Entry] -->|insert| WM[Working Memory]
+    WM -->|sleep cycle| C{Consolidation}
+    C -->|importance &gt; 0.7| EM[Episodic Memory]
+    C -->|extractable facts| SM[Semantic Memory]
+    C -->|low score| DEL[Evicted]
+`} />
+
+## API Reference
+
+<CodeBlock code={`# Store
+mem.remember(content, tags=[], importance=0.5, source="user")
+
+# Recall
+results = mem.recall(query, top_k=10, tags=None, since=None)
+
+# Get by ID
+entry = mem.get(id)
+
+# Update
+mem.update(id, content=None, importance=None, tags=None)
+
+# Delete
+mem.forget(id)
+mem.forget_all(tags=None, since=None)
+`} language="python" />
+
+## Performance
+
+| Metric | Value |
+|--------|-------|
+| Median write | 15ms |
+| Median read | 8ms |
+| Median recall | 45ms |
+| Max capacity | 1,000 entries (default) |
+| Memory footprint | ~50MB per 1K entries |
+
+<Callout type="info" title="Tip">
+Use high importance (0.8+) for critical facts you want promoted to Episodic Memory. Use low importance (0.2-) for transient observations that should be evicted quickly.
+</Callout>

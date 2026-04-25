@@ -1,0 +1,51 @@
+# Scratchpad
+
+A temporary workspace for reasoning, planning, and intermediate computations. Session-bound and cleared on agent restart.
+
+## Use Cases
+
+- **Chain-of-thought reasoning**: Step-by-step problem solving
+- **Planning**: Task decomposition and sequencing
+- **Scratch calculations**: Temporary math or data transformation
+- **Draft responses**: Iterative response refinement
+
+## API
+
+<CodeBlock code={`# Write to scratchpad
+mem.scratchpad.write(
+    content="Step 1: Parse the user's request...",
+    category="reasoning",
+)
+
+# Read current scratchpad
+entries = mem.scratchpad.read()
+
+# Clear scratchpad
+mem.scratchpad.clear()
+
+# Flush insights to Working Memory
+mem.scratchpad.flush_to_working(tags=["insight"])
+`} language="python" />
+
+## Lifecycle
+
+<MermaidDiagram chart={`
+flowchart LR
+    A[Agent Start] -->|create| SP[Scratchpad]
+    SP -->|write/read| SP
+    SP -->|flush| WM[Working Memory]
+    WM -->|agent uses| A
+    A -->|shutdown| DEL[Discard Scratchpad]
+`} />
+
+## Configuration
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `scratchpad_max` | `100` | Maximum entries |
+| `scratchpad_auto_flush` | `True` | Auto-flush on shutdown |
+| `scratchpad_flush_threshold` | `0.7` | Importance threshold for flush |
+
+<Callout type="warning" title="Not Persistent">
+Scratchpad contents are lost on agent restart. Only explicitly flushed insights survive. Do not store critical information solely in the scratchpad.
+</Callout>

@@ -1,0 +1,69 @@
+# Encryption
+
+Protect memory data at rest with AES-256-GCM encryption.
+
+## Enabling Encryption
+
+<CodeBlock code={`from mnemosyne import Memory
+
+# Generate a key (store this securely!)
+import secrets
+key = secrets.token_hex(32)  # 256-bit key
+
+# Initialize with encryption
+mem = Memory(encryption_key=key)
+`} language="python" />
+
+## Key Management
+
+### Environment Variable
+
+<CodeBlock code={`export MNEMOSYNE_ENCRYPTION_KEY=your-256-bit-hex-key
+`} language="bash" />
+
+### Key File
+
+<CodeBlock code={`# Store key in file with restricted permissions
+echo "your-key" > /etc/mnemosyne/key
+chmod 600 /etc/mnemosyne/key
+
+# Reference in config
+export MNEMOSYNE_ENCRYPTION_KEY_FILE=/etc/mnemosyne/key
+`} language="bash" />
+
+## Encryption Scope
+
+| Data | Encrypted | Notes |
+|------|-----------|-------|
+| Memory content | Yes | All text content |
+| Embeddings | No | Vectors are not encrypted (performance) |
+| Metadata | Partial | Tags, source encrypted; timestamps not |
+| Facts | Yes | Subject, predicate, object |
+
+## Performance Impact
+
+| Operation | Unencrypted | Encrypted | Overhead |
+|-----------|-------------|-----------|----------|
+| Write | 12ms | 18ms | +50% |
+| Read | 8ms | 12ms | +50% |
+| Query | 65ms | 75ms | +15% |
+
+## Rotation
+
+To rotate encryption keys:
+
+<CodeBlock code={`# 1. Export with old key
+mem = Memory(encryption_key=old_key)
+mem.export("export.json")
+
+# 2. Import with new key
+mem2 = Memory(encryption_key=new_key)
+mem2.import_("export.json")
+
+# 3. Verify
+assert mem2.stats().working_count == mem.stats().working_count
+`} language="python" />
+
+<Callout type="danger" title="Key Loss">
+If you lose your encryption key, your data is unrecoverable. Store keys in a password manager, HSM, or secure key management service. There is no backdoor.
+</Callout>

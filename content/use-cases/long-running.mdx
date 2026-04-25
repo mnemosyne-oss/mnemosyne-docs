@@ -1,0 +1,104 @@
+# Long-Running Tasks
+
+Maintain context across sessions for projects that span hours, days, or weeks.
+
+## Challenge
+
+Agent sessions restart on:
+- Deployment updates
+- Infrastructure failures
+- Scheduled maintenance
+- Scale-down events
+
+Without persistent memory, context is lost.
+
+## Solution
+
+<MermaidDiagram chart={`
+flowchart LR
+    S1[Session 1
+    Day 1] -->|store| DB[(Mnemosyne)]
+    S2[Session 2
+    Day 3] -->|recall| DB
+    S3[Session 3
+    Day 7] -->|recall| DB
+    
+    style DB fill:#f0fdf4,stroke:#16a34a
+`} />
+
+## Session Management
+
+<CodeBlock code={`from mnemosyne import Memory
+
+mem = Memory()
+
+# Start a task
+session_id = mem.start_session(
+    name="website-redesign",
+    description="Redesign company website",
+)
+
+# Store progress
+mem.remember(
+    content="Completed hero section design. User approved color palette.",
+    session_id=session_id,
+    tags=["website-redesign", "design"],
+)
+
+# Later session — resume context
+mem.resume_session(session_id)
+context = mem.recall_session(session_id)
+`} language="python" />
+
+## Checkpointing
+
+Save intermediate states:
+
+<CodeBlock code={`# Create checkpoint
+checkpoint = mem.checkpoint()
+mem.remember(
+    content=f"Checkpoint: {checkpoint.id}",
+    tags=["checkpoint"],
+)
+
+# Restore if needed
+mem.restore_checkpoint(checkpoint.id)
+`} language="python" />
+
+## Deployment Considerations
+
+| Concern | Solution |
+|---------|----------|
+| Database persistence | Persistent volume |
+| Backup before deploy | Pre-deploy backup job |
+| Migration on upgrade | Automatic schema migration |
+| Monitoring | Alert if last session > 24h old |
+
+## Example: Weekly Report Agent
+
+<CodeBlock code={`# Runs every Monday at 9 AM
+def generate_weekly_report():
+    mem = Memory()
+    
+    # Recall last week's activities
+    last_week = mem.recall(
+        "project updates decisions",
+        since=(datetime.now() - timedelta(days=7)).isoformat(),
+    )
+    
+    # Generate report
+    report = compile_report(last_week)
+    
+    # Store report for future reference
+    mem.remember(
+        content=report.summary,
+        tags=["weekly-report", f"week-{get_week_number()}"],
+        importance=0.7,
+    )
+    
+    return report
+`} language="python" />
+
+<Callout type="success" title="Session IDs">
+Use descriptive session IDs with timestamps: `website-redesign-2026-04`. This makes manual inspection and debugging much easier.
+</Callout>

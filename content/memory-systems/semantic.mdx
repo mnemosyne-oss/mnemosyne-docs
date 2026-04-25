@@ -1,0 +1,85 @@
+# Semantic Memory
+
+Structured knowledge storage using a temporal knowledge graph. Stores facts, relationships, and concepts as subject-predicate-object triples with temporal metadata.
+
+## Triple Schema
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `id` | TEXT | UUIDv4 |
+| `subject` | TEXT | Entity (e.g., "Alice") |
+| `predicate` | TEXT | Relationship (e.g., "knows") |
+| `object` | TEXT | Target entity or value |
+| `confidence` | REAL | 0.0–1.0 fact confidence |
+| `source_mem_id` | TEXT | Originating Working Memory entry |
+| `valid_from` | INTEGER | When fact became true |
+| `valid_until` | INTEGER | When fact expired (NULL = current) |
+| `created_at` | INTEGER | Record timestamp |
+
+## Example Triples
+
+| Subject | Predicate | Object | Confidence |
+|---------|-----------|--------|------------|
+| Alice | `prefers_language` | Go | 0.95 |
+| Project Alpha | `has_deadline` | 2026-05-01 | 0.90 |
+| Bob | `reports_to` | Carol | 0.85 |
+| API v2 | `depends_on` | Auth Service | 0.80 |
+
+## Temporal Validity
+
+Facts can expire or be superseded:
+
+<CodeBlock code={`# Add a fact
+mem.add_fact(
+    subject="Project Alpha",
+    predicate="has_deadline",
+    object="2026-05-01",
+    confidence=0.90,
+)
+
+# Update with new information (old fact auto-expires)
+mem.add_fact(
+    subject="Project Alpha",
+    predicate="has_deadline",
+    object="2026-05-15",
+    confidence=0.95,
+)
+
+# Query current facts only
+facts = mem.query_facts(
+    subject="Project Alpha",
+    current_only=True,
+)
+`} language="python" />
+
+## Graph Queries
+
+<CodeBlock code={`# Direct lookup
+facts = mem.query_facts(subject="Alice")
+
+# Relationship traversal
+related = mem.traverse(subject="Alice", depth=2)
+
+# Pattern matching
+matches = mem.query_facts(
+    predicate="reports_to",
+    object="Carol",
+)
+`} language="python" />
+
+## Extraction from Working Memory
+
+Mnemosyne automatically extracts triples during consolidation:
+
+<MermaidDiagram chart={`
+flowchart LR
+    WM[Working Memory Entry] -->|NLP extraction| T[Candidate Triples]
+    T -->|confidence &gt; 0.7| SM[Semantic Memory]
+    T -->|confidence &lt; 0.7| DISCARD[Discard]
+`} />
+
+Extraction uses a lightweight local model (no API calls) and runs during sleep cycles.
+
+<Callout type="info" title="Schema Flexibility">
+Semantic Memory has no predefined ontology. Predicates are free-form strings. This allows dynamic knowledge domains without schema migrations.
+</Callout>

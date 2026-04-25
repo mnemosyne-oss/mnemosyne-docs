@@ -1,0 +1,73 @@
+# Vector Search
+
+Dense embedding-based similarity search using `sqlite-vec` for efficient nearest-neighbor queries.
+
+## How It Works
+
+1. **Embed**: Query text is converted to a vector via OpenAI embeddings
+2. **Search**: `sqlite-vec` performs approximate nearest neighbor search
+3. **Score**: Cosine similarity between query and stored vectors
+4. **Rank**: Results ordered by similarity (highest first)
+
+## Configuration
+
+<CodeBlock code={`from mnemosyne import Memory
+
+# OpenAI embeddings (default)
+mem = Memory(embedding_model="text-embedding-3-small")
+
+# Or use local embeddings (no API calls)
+mem = Memory(
+    embedding_model="sentence-transformers/all-MiniLM-L6-v2",
+    local_embeddings=True,
+)
+`} language="python" />
+
+## Supported Models
+
+| Model | Dimensions | Speed | Quality | Cost |
+|-------|-----------|-------|---------|------|
+| `text-embedding-3-small` | 1536 | Fast | Good | $0.02/1M |
+| `text-embedding-3-large` | 3072 | Medium | Excellent | $0.13/1M |
+| `all-MiniLM-L6-v2` | 384 | Very Fast | Moderate | Free (local) |
+
+## Direct Vector Queries
+
+<CodeBlock code={`# Search by text (auto-embeds)
+results = mem.vector_search("deployment strategy")
+
+# Search with custom vector
+results = mem.vector_search(vector=my_custom_vector)
+
+# Filtered vector search
+results = mem.vector_search(
+    "deployment strategy",
+    tags=["infrastructure"],
+    threshold=0.7,  # Minimum similarity
+)
+`} language="python" />
+
+## Index Management
+
+<CodeBlock code={`# Rebuild vector index (after bulk imports)
+mem.rebuild_vector_index()
+
+# Check index status
+status = mem.vector_index_status()
+print(f"Indexed: {status.entry_count}")
+print(f"Dimensions: {status.dimensions}")
+print(f"Last build: {status.last_build}")
+`} language="python" />
+
+## Performance Characteristics
+
+| Dataset Size | Query Time | Index Size |
+|--------------|-----------|------------|
+| 1K entries | 15ms | 6MB |
+| 10K entries | 35ms | 60MB |
+| 100K entries | 85ms | 600MB |
+| 1M entries | 250ms | 6GB |
+
+<Callout type="warning" title="Approximate Search">
+`sqlite-vec` uses approximate nearest neighbor (ANN) search. Results are highly accurate but not guaranteed to be exact. For exact search, combine with FTS5 filtering.
+</Callout>

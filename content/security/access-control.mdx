@@ -1,0 +1,55 @@
+# Access Control
+
+Control who can read, write, and administer Mnemosyne.
+
+## REST API Authentication
+
+<CodeBlock code={`# Require API key
+export MNEMOSYNE_API_KEYS=key1,key2,key3
+
+# Or from file
+export MNEMOSYNE_API_KEYS_FILE=/etc/mnemosyne/keys
+`} language="bash" />
+
+## Role-Based Access (Future)
+
+Planned for v2.1:
+
+| Role | Read | Write | Admin |
+|------|------|-------|-------|
+| `reader` | All | No | No |
+| `writer` | All | Yes | No |
+| `admin` | All | Yes | Yes |
+
+## IP Restrictions
+
+<CodeBlock code={`# Bind to localhost only
+export MNEMOSYNE_HOST=127.0.0.1
+
+# Or use firewall
+ufw allow from 10.0.0.0/8 to any port 8080
+`} language="bash" />
+
+## Audit Logging
+
+<CodeBlock code={`# Enable access logging
+export MNEMOSYNE_AUDIT_LOG=/var/log/mnemosyne/audit.log
+
+# Log format
+{
+  "timestamp": "2026-04-25T14:30:00Z",
+  "action": "remember",
+  "user": "api_key_1234",
+  "memory_id": "mem_abc123",
+  "ip": "10.0.0.5",
+}
+`} language="json" />
+
+<Callout type="info" title="Unix Sockets">
+For local-only deployments, bind to a Unix socket instead of TCP:
+
+<CodeBlock code={`export MNEMOSYNE_SOCKET=/run/mnemosyne.sock
+`} language="bash" />
+
+This eliminates network exposure entirely.
+</Callout>

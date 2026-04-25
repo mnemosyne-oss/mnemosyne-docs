@@ -1,0 +1,81 @@
+# FTS5 Search
+
+SQLite's built-in full-text search engine for exact term matching, boolean queries, and prefix search.
+
+## Capabilities
+
+- **Term matching**: Exact word and phrase search
+- **Boolean logic**: `AND`, `OR`, `NOT` operators
+- **Prefix search**: `data*` matches "database", "datastore"
+- **Column filtering**: Search specific fields
+- **Ranking**: BM25-based relevance scoring
+
+## Query Syntax
+
+<CodeBlock code={`# Simple term
+results = mem.text_search("database")
+
+# Phrase (exact sequence)
+results = mem.text_search('"machine learning"')
+
+# Boolean
+results = mem.text_search("deployment AND kubernetes")
+results = mem.text_search("python OR golang")
+results = mem.text_search("database NOT mongodb")
+
+# Prefix
+results = mem.text_search("auth*")
+
+# Column filter
+results = mem.text_search("tags:production database")
+`} language="python" />
+
+## BM25 Ranking
+
+FTS5 uses BM25 for relevance scoring:
+
+<CodeBlock code={`score = log(N / df) * (f * (k1 + 1)) / (f + k1 * (1 - b + b * dl / avgdl))
+`} language="python" />
+
+Where:
+- `N`: Total documents
+- `df`: Documents containing term
+- `f`: Term frequency in document
+- `dl`: Document length
+- `avgdl`: Average document length
+
+## Integration with Hybrid Search
+
+FTS5 scores are normalized and fused with vector scores:
+
+<CodeBlock code={`# FTS5 contributes 30% to final score by default
+results = mem.recall(
+    "database migration strategy",
+    text_weight=0.3,
+)
+`} language="python" />
+
+## Performance
+
+| Query Type | Latency | Use Case |
+|------------|---------|----------|
+| Single term | 5ms | Quick lookup |
+| Phrase | 8ms | Exact match |
+| Boolean | 12ms | Complex filter |
+| Prefix | 15ms | Autocomplete |
+
+## Index Schema
+
+<CodeBlock code={`CREATE VIRTUAL TABLE working_fts USING fts5(
+    content,
+    tags,
+    source,
+    content_rowid=rowid
+);
+`} language="sql" />
+
+FTS5 indices are maintained automatically via triggers on the main tables.
+
+<Callout type="info" title="SQLite Version">
+FTS5 requires SQLite 3.45 or higher. Mnemosyne checks this at initialization and raises a clear error if your SQLite version is too old.
+</Callout>

@@ -1,0 +1,195 @@
+# REST API
+
+HTTP interface for remote access and service integration.
+
+## Starting the Server
+
+<CodeBlock code={`python -m mnemosyne.server \
+    --host 0.0.0.0 \
+    --port 8080 \
+    --db-path ./memory.db
+`} language="bash" />
+
+Or via Docker:
+
+<CodeBlock code={`docker run -p 8080:8080 \
+    -v $(pwd)/memory.db:/data/memory.db \
+    mnemosyne/server:latest
+`} language="bash" />
+
+## Authentication
+
+All endpoints require an API key via the `X-API-Key` header:
+
+<CodeBlock code={`curl -H "X-API-Key: your-key" http://localhost:8080/health
+`} language="bash" />
+
+Configure keys via environment variable:
+
+<CodeBlock code={`export MNEMOSYNE_API_KEYS=key1,key2,key3
+`} language="bash" />
+
+## Endpoints
+
+### Health Check
+
+<CodeBlock code={`GET /health
+
+# Response:
+{
+  "status": "healthy",
+  "version": "2.0.0",
+  "db_connected": true,
+  "working_count": 42,
+  "episodic_count": 128,
+}
+`} language="bash" />
+
+### Remember
+
+<CodeBlock code={`POST /remember
+Content-Type: application/json
+
+{
+  "content": "User prefers dark mode.",
+  "tags": ["preferences", "ui"],
+  "importance": 0.8,
+  "source": "conversation"
+}
+
+# Response:
+{
+  "id": "mem_abc123",
+  "status": "stored"
+}
+`} language="bash" />
+
+### Recall
+
+<CodeBlock code={`POST /recall
+Content-Type: application/json
+
+{
+  "query": "user preferences",
+  "top_k": 5,
+  "tags": ["preferences"]
+}
+
+# Response:
+{
+  "results": [
+    {
+      "id": "mem_abc123",
+      "content": "User prefers dark mode.",
+      "score": 0.95,
+      "tags": ["preferences", "ui"]
+    }
+  ],
+  "total": 1
+}
+`} language="bash" />
+
+### Get Memory
+
+<CodeBlock code={`GET /memory/{id}
+
+# Response:
+{
+  "id": "mem_abc123",
+  "content": "User prefers dark mode.",
+  "tags": ["preferences", "ui"],
+  "importance": 0.8,
+  "created_at": "2026-04-25T14:30:00Z"
+}
+`} language="bash" />
+
+### Update Memory
+
+<CodeBlock code={`PUT /memory/{id}
+Content-Type: application/json
+
+{
+  "content": "User prefers dark mode and large fonts.",
+  "importance": 0.9
+}
+`} language="bash" />
+
+### Delete Memory
+
+<CodeBlock code={`DELETE /memory/{id}
+
+# Response: 204 No Content
+`} language="bash" />
+
+### Add Fact
+
+<CodeBlock code={`POST /facts
+Content-Type: application/json
+
+{
+  "subject": "Alice",
+  "predicate": "prefers_language",
+  "object": "Go",
+  "confidence": 0.95
+}
+
+# Response:
+{
+  "id": "fact_xyz789",
+  "status": "stored"
+}
+`} language="bash" />
+
+### Query Facts
+
+<CodeBlock code={`GET /facts?subject=Alice&current_only=true
+
+# Response:
+{
+  "facts": [
+    {
+      "id": "fact_xyz789",
+      "subject": "Alice",
+      "predicate": "prefers_language",
+      "object": "Go",
+      "confidence": 0.95
+    }
+  ]
+}
+`} language="bash" />
+
+### Statistics
+
+<CodeBlock code={`GET /stats
+
+# Response:
+{
+  "working_count": 42,
+  "episodic_count": 128,
+  "semantic_count": 64,
+  "db_size_mb": 12.5,
+  "last_sleep_at": "2026-04-25T13:00:00Z"
+}
+`} language="bash" />
+
+## Error Responses
+
+| Status | Code | Description |
+|--------|------|-------------|
+| 400 | `INVALID_REQUEST` | Malformed request body |
+| 401 | `UNAUTHORIZED` | Missing or invalid API key |
+| 404 | `NOT_FOUND` | Memory or fact not found |
+| 429 | `RATE_LIMITED` | Too many requests |
+| 500 | `INTERNAL_ERROR` | Server error |
+
+## OpenAPI Spec
+
+The server exposes OpenAPI documentation at:
+
+- Swagger UI: `http://localhost:8080/docs`
+- ReDoc: `http://localhost:8080/redoc`
+- OpenAPI JSON: `http://localhost:8080/openapi.json`
+
+<Callout type="info" title="CORS">
+The REST server enables CORS by default for all origins in development. In production, configure allowed origins via `MNEMOSYNE_CORS_ORIGINS`.
+</Callout>

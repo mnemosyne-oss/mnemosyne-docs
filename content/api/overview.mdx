@@ -1,0 +1,81 @@
+# API Overview
+
+Mnemosyne exposes multiple interfaces: Python SDK, Hermes plugin tools, and REST API.
+
+## Interface Comparison
+
+| Interface | Best For | Latency | Setup |
+|-----------|----------|---------|-------|
+| Python SDK | Direct integration, scripts | Lowest | `pip install` |
+| Hermes Plugin | Agent frameworks | Low | Plugin config |
+| REST API | Remote services, microservices | Medium | Server start |
+
+## Python SDK
+
+The primary interface for Python applications:
+
+<CodeBlock code={`from mnemosyne import Memory
+
+mem = Memory()
+mem.remember("User prefers dark mode.")
+results = mem.recall("user preferences")
+`} language="python" />
+
+## Hermes Plugin
+
+First-class integration with the Hermes agent framework:
+
+<CodeBlock code={`# hermes.yaml
+plugins:
+  - name: mnemosyne
+    config:
+      db_path: ./memory.db
+      auto_context: true
+`} language="yaml" />
+
+## REST API
+
+Start the server:
+
+<CodeBlock code={`python -m mnemosyne.server --port 8080
+`} language="bash" />
+
+Example request:
+
+<CodeBlock code={`curl -X POST http://localhost:8080/remember \
+  -H "Content-Type: application/json" \
+  -d '{"content": "User prefers dark mode.", "tags": ["preferences"]}'
+`} language="bash" />
+
+## Authentication
+
+| Interface | Auth Method |
+|-----------|-------------|
+| Python SDK | None (local) |
+| Hermes Plugin | Via Hermes auth |
+| REST API | API key header (`X-API-Key`) |
+
+## Rate Limits
+
+| Interface | Default Limit |
+|-----------|---------------|
+| Python SDK | Unlimited (local) |
+| Hermes Plugin | Unlimited |
+| REST API | 1000 req/min |
+
+## Error Handling
+
+All interfaces return consistent error structures:
+
+<CodeBlock code={`{
+    "error": {
+        "code": "MEMORY_NOT_FOUND",
+        "message": "Memory ID mem_abc123 does not exist.",
+        "status": 404,
+    }
+}
+`} language="json" />
+
+<Callout type="info" title="SDK Version Compatibility">
+Python SDK, Hermes plugin, and REST API share the same core version. Ensure all components use matching versions for full compatibility.
+</Callout>

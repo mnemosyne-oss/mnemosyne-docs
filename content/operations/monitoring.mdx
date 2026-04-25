@@ -1,0 +1,86 @@
+# Monitoring
+
+Keep your Mnemosyne deployment healthy with built-in metrics and health checks.
+
+## Health Endpoint
+
+<CodeBlock code={`GET /health
+
+{
+  "status": "healthy",
+  "version": "2.0.0",
+  "db_connected": true,
+  "db_size_mb": 12.5,
+  "working_count": 42,
+  "episodic_count": 128,
+  "semantic_count": 64,
+  "last_sleep_at": "2026-04-25T13:00:00Z",
+  "uptime_seconds": 86400,
+}
+`} language="bash" />
+
+## Metrics Endpoint
+
+<CodeBlock code={`GET /metrics
+
+# Prometheus-compatible output
+mnemosyne_working_memory_entries 42
+mnemosyne_episodic_memory_entries 128
+mnemosyne_semantic_memory_entries 64
+mnemosyne_query_latency_ms{quantile="0.5"} 65
+mnemosyne_query_latency_ms{quantile="0.99"} 180
+mnemosyne_consolidation_last_run 1714060800
+mnemosyne_db_size_bytes 13107200
+`} language="bash" />
+
+## Key Metrics
+
+| Metric | Target | Alert If |
+|--------|--------|----------|
+| Query latency p50 | &lt;100ms | &gt;200ms |
+| Query latency p99 | &lt;500ms | &gt;1000ms |
+| DB size | &lt;1GB | &gt;5GB |
+| Working memory | &lt;80% max | &gt;95% |
+| Last consolidation | &lt;2x interval | &gt;3x interval |
+
+## Logging
+
+Mnemosyne uses structured JSON logging:
+
+<CodeBlock code={`{
+  "timestamp": "2026-04-25T14:30:00Z",
+  "level": "INFO",
+  "component": "retrieval",
+  "event": "query_completed",
+  "latency_ms": 65,
+  "results_count": 5,
+  "query": "user preferences",
+}
+`} language="json" />
+
+Configure log level:
+
+<CodeBlock code={`export MNEMOSYNE_LOG_LEVEL=debug  # debug, info, warning, error
+`} language="bash" />
+
+## Alerting Rules (Prometheus)
+
+<CodeBlock code={`groups:
+  - name: mnemosyne
+    rules:
+      - alert: HighQueryLatency
+        expr: mnemosyne_query_latency_ms{quantile="0.99"} &gt; 500
+        for: 5m
+        annotations:
+          summary: "Mnemosyne query latency is high"
+
+      - alert: MemoryNotConsolidating
+        expr: time() - mnemosyne_consolidation_last_run &gt; 7200
+        for: 10m
+        annotations:
+          summary: "Mnemosyne consolidation has stalled"
+`} language="yaml" />
+
+<Callout type="info" title="Grafana Dashboard">
+Import the official Mnemosyne Grafana dashboard (ID: 12345) for pre-built panels showing query latency, memory distribution, and consolidation health.
+</Callout>

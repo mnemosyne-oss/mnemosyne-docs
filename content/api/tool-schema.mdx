@@ -1,0 +1,164 @@
+# Tool Schema
+
+Complete JSON Schema for Mnemosyne tools exposed to agents.
+
+## remember
+
+<CodeBlock code={`{
+  "name": "remember",
+  "description": "Store information in the agent's long-term memory. Use for facts, preferences, decisions, and observations that should persist across sessions.",
+  "parameters": {
+    "type": "object",
+    "required": ["content"],
+    "properties": {
+      "content": {
+        "type": "string",
+        "description": "The information to store. Be specific and self-contained."
+      },
+      "tags": {
+        "type": "array",
+        "items": { "type": "string" },
+        "description": "Categorical labels for filtering. Use descriptive tags like 'user-preference', 'api-decision', 'bug-fix'."
+      },
+      "importance": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1,
+        "default": 0.5,
+        "description": "0.0 = transient, 1.0 = critical. High importance memories are promoted to Episodic Memory during consolidation."
+      },
+      "source": {
+        "type": "string",
+        "enum": ["user", "tool", "observation", "inference"],
+        "default": "user",
+        "description": "Origin of the information."
+      }
+    }
+  }
+}
+`} language="json" />
+
+## recall
+
+<CodeBlock code={`{
+  "name": "recall",
+  "description": "Retrieve relevant memories from long-term storage. Use when you need context about past interactions, user preferences, or established facts.",
+  "parameters": {
+    "type": "object",
+    "required": ["query"],
+    "properties": {
+      "query": {
+        "type": "string",
+        "description": "Natural language description of what you're looking for."
+      },
+      "top_k": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 50,
+        "default": 5,
+        "description": "Maximum number of memories to retrieve."
+      },
+      "tags": {
+        "type": "array",
+        "items": { "type": "string" },
+        "description": "Filter to memories with these tags."
+      }
+    }
+  }
+}
+`} language="json" />
+
+## add_fact
+
+<CodeBlock code={`{
+  "name": "add_fact",
+  "description": "Store a structured fact as a subject-predicate-object triple. Use for precise, relational knowledge that benefits from graph queries.",
+  "parameters": {
+    "type": "object",
+    "required": ["subject", "predicate", "object"],
+    "properties": {
+      "subject": {
+        "type": "string",
+        "description": "The entity the fact is about."
+      },
+      "predicate": {
+        "type": "string",
+        "description": "The relationship or property. Use consistent predicates for the same concept."
+      },
+      "object": {
+        "type": "string",
+        "description": "The value or target entity."
+      },
+      "confidence": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1,
+        "default": 1.0,
+        "description": "Certainty level. Lower confidence facts may be overridden by higher confidence ones."
+      }
+    }
+  }
+}
+`} language="json" />
+
+## query_facts
+
+<CodeBlock code={`{
+  "name": "query_facts",
+  "description": "Query the temporal knowledge graph for structured facts. Use for precise lookups and relationship traversal.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "subject": {
+        "type": "string",
+        "description": "Filter by subject entity."
+      },
+      "predicate": {
+        "type": "string",
+        "description": "Filter by relationship type."
+      },
+      "object": {
+        "type": "string",
+        "description": "Filter by target value."
+      },
+      "current_only": {
+        "type": "boolean",
+        "default": true,
+        "description": "Only return facts that haven't been superseded."
+      }
+    }
+  }
+}
+`} language="json" />
+
+## forget
+
+<CodeBlock code={`{
+  "name": "forget",
+  "description": "Delete a specific memory by ID. Use when information is outdated, incorrect, or explicitly requested to be removed.",
+  "parameters": {
+    "type": "object",
+    "required": ["id"],
+    "properties": {
+      "id": {
+        "type": "string",
+        "description": "The memory ID to delete."
+      }
+    }
+  }
+}
+`} language="json" />
+
+## Tool Selection Guide
+
+| Goal | Tool | Example |
+|------|------|---------|
+| Store general info | `remember` | User preferences, decisions |
+| Store relational facts | `add_fact` | Team structure, dependencies |
+| Retrieve context | `recall` | "What did we decide?" |
+| Precise lookup | `query_facts` | "Who reports to Carol?" |
+| Remove bad data | `forget` | Outdated information |
+
+<Callout type="success" title="Schema Validation">
+Tool calls are validated against these schemas before execution. Invalid parameters return a structured error that the agent can use to self-correct.
+</Callout>

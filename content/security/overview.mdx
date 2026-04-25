@@ -1,0 +1,46 @@
+# Security Overview
+
+Mnemosyne is designed with security and privacy as first-class concerns.
+
+## Security Model
+
+<MermaidDiagram chart={`
+flowchart TD
+    A[Agent] -->|Local API| M[Mnemosyne]
+    M -->|Encrypted| DB[(SQLite DB)]
+    M -->|HTTPS| E[Embeddings API]
+    DB -->|Backup| S3[Encrypted Backup]
+    
+    style M fill:#e0f2fe,stroke:#0284c7
+    style DB fill:#f0fdf4,stroke:#16a34a
+`} />
+
+## Threat Model
+
+| Threat | Mitigation |
+|--------|------------|
+| Data theft (local) | Encryption at rest |
+| Data theft (network) | No network exposure by default |
+| Prompt injection | Input validation, parameterized queries |
+| Memory poisoning | Importance scoring, confidence thresholds |
+| Backup exposure | Encrypted backups |
+
+## Security Features
+
+- **Encryption at rest**: AES-256-GCM for database files
+- **No cloud required**: All data stays local by default
+- **Input sanitization**: All user inputs are parameterized
+- **Audit logging**: Optional access logging
+- **Backup encryption**: GPG or AES-encrypted backups
+
+## Compliance
+
+| Standard | Status | Notes |
+|----------|--------|-------|
+| GDPR | Compatible | Data stays local, no third-party sharing |
+| HIPAA | Compatible | Encryption + access controls |
+| SOC 2 | Compatible | Audit logs + backup procedures |
+
+<Callout type="warning" title="Embedding API Calls">
+By default, Mnemosyne sends text to OpenAI for embedding generation. Use local embeddings (`local_embeddings=True`) to prevent any data leaving your machine.
+</Callout>

@@ -1,0 +1,66 @@
+# First Steps
+
+A hands-on walkthrough of Mnemosyne's core operations.
+
+## 1. Initialize Memory
+
+<CodeBlock code={`from mnemosyne import Memory
+
+mem = Memory()
+print(f&quot;Initialized: {mem.db_path}&quot;)
+`} language="python" />
+
+## 2. Store Information
+
+<CodeBlock code={`# Simple memory
+mem.remember(&quot;Alice is a backend engineer who prefers Go over Python.&quot;)
+
+# Structured memory with metadata
+mem.remember(
+    content=&quot;Project deadline moved to Friday.&quot;,
+    tags=[&quot;project-alpha&quot;, &quot;deadline&quot;],
+    importance=0.8,
+    source=&quot;slack&quot;,
+)
+`} language="python" />
+
+## 3. Recall Information
+
+<CodeBlock code={`# Semantic search
+results = mem.recall(&quot;What programming language does Alice prefer?&quot;)
+
+# Filtered search
+results = mem.recall(
+    query=&quot;deadline&quot;,
+    tags=[&quot;project-alpha&quot;],
+    since=&quot;2026-04-01&quot;,
+)
+
+# Access a specific memory by ID
+memory = mem.get(&quot;mem_abc123&quot;)
+`} language="python" />
+
+## 4. Update and Delete
+
+<CodeBlock code={`# Update a memory
+mem.update(&quot;mem_abc123&quot;, content=&quot;Deadline moved to Monday.&quot;)
+
+# Delete a memory
+mem.forget(&quot;mem_abc123&quot;)
+
+# Bulk delete by tag
+mem.forget_all(tags=[&quot;temp&quot;])
+`} language="python" />
+
+## 5. Inspect Memory State
+
+<CodeBlock code={`# Statistics
+stats = mem.stats()
+print(f&quot;Working: {stats.working_count}&quot;)
+print(f&quot;Episodic: {stats.episodic_count}&quot;)
+print(f&quot;Database size: {stats.db_size_mb:.1f} MB&quot;)
+`} language="python" />
+
+<Callout type="success" title="You're Ready">
+You've learned the core CRUD operations. Next, explore the [BEAM Architecture](/docs/architecture/beam-overview) to understand how Mnemosyne organizes memory.
+</Callout>

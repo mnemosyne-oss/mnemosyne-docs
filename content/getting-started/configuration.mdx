@@ -1,0 +1,49 @@
+# Configuration
+
+Mnemosyne is configured via environment variables or a `mnemosyne.yaml` file.
+
+## Environment Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `MNEMOSYNE_DB_PATH` | `./mnemosyne.db` | SQLite database file path |
+| `MNEMOSYNE_EMBEDDING_MODEL` | `text-embedding-3-small` | OpenAI embedding model |
+| `MNEMOSYNE_API_KEY` | — | OpenAI API key |
+| `MNEMOSYNE_MAX_WORKING` | `1000` | Working memory entry limit |
+| `MNEMOSYNE_CONSOLIDATION_INTERVAL` | `3600` | Sleep cycle interval (seconds) |
+| `MNEMOSYNE_ENCRYPTION_KEY` | — | AES-256 encryption key (hex) |
+
+## YAML Configuration
+
+Create `mnemosyne.yaml` in your project root:
+
+<CodeBlock code={`db_path: ./memory.db
+embedding:
+  model: text-embedding-3-small
+  api_key: ${OPENAI_API_KEY}
+
+memory:
+  working_max: 1000
+  consolidation_interval: 3600
+
+retrieval:
+  vector_weight: 0.7
+  text_weight: 0.3
+  top_k: 10
+`} language="yaml" />
+
+## Programmatic Configuration
+
+<CodeBlock code={`from mnemosyne import Memory
+
+mem = Memory(
+    db_path=&quot;./my-memory.db&quot;,
+    embedding_model=&quot;text-embedding-3-large&quot;,
+    max_working=500,
+    consolidation_interval=1800,
+)
+`} language="python" />
+
+<Callout type="info" title="Tip">
+Use `text-embedding-3-small` for development and `text-embedding-3-large` for production workloads requiring higher accuracy.
+</Callout>

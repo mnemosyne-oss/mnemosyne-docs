@@ -1,0 +1,112 @@
+# Multi-Agent Memory
+
+Share memory across a team of agents for coordinated behavior.
+
+## Architecture
+
+<MermaidDiagram chart={`
+graph TB
+    subgraph Team["Agent Team"]
+        A1[Agent A]
+        A2[Agent B]
+        A3[Agent C]
+    end
+    
+    subgraph Memory["Shared Memory"]
+        WM[Working Memory
+        Per-agent]
+        EM[Episodic Memory
+        Shared]
+        SM[Semantic Memory
+        Shared]
+    end
+    
+    A1 -->|writes| WM
+    A2 -->|writes| WM
+    A3 -->|writes| WM
+    WM -->|consolidate| EM
+    WM -->|extract| SM
+    EM -->|recall| A1
+    SM -->|query| A2
+`} />
+
+## Shared vs Private Memory
+
+| Type | Scope | Use For |
+|------|-------|---------|
+| Working Memory | Per-agent | Current task context |
+| Episodic Memory | Shared | Team experiences |
+| Semantic Memory | Shared | Common knowledge |
+| Scratchpad | Per-agent | Private reasoning |
+
+## Implementation
+
+<CodeBlock code={`from mnemosyne import Memory
+
+# Shared episodic + semantic
+shared_mem = Memory(db_path="/shared/team-memory.db")
+
+# Per-agent working memory
+agent_a = Memory(
+    db_path="/shared/team-memory.db",
+    agent_id="agent-a",
+    working_isolation=True,
+)
+
+agent_b = Memory(
+    db_path="/shared/team-memory.db",
+    agent_id="agent-b",
+    working_isolation=True,
+)
+
+# Agent A stores team observation
+agent_a.remember(
+    content="The API rate limit is 1000 req/min.",
+    tags=["infrastructure", "team-knowledge"],
+    importance=0.9,
+)
+
+# Agent B recalls it
+results = agent_b.recall("API rate limit")
+`} language="python" />
+
+## Conflict Resolution
+
+When agents store conflicting information:
+
+1. **Confidence scoring**: Higher confidence wins
+2. **Timestamp**: More recent wins
+3. **Agent authority**: Configurable priority per agent
+
+<CodeBlock code={`# Configure agent authority
+mem = Memory(
+    agent_priorities={
+        "orchestrator": 1.0,
+        "worker": 0.5,
+    }
+)
+`} language="python" />
+
+## Synchronization
+
+<CodeBlock code={`# Manual sync
+agent_a.sync_with_shared()
+
+# Auto-sync on recall
+agent_b = Memory(auto_sync=True)
+
+# Sync interval
+agent_c = Memory(sync_interval=30)  # seconds
+`} language="python" />
+
+## Deployment
+
+Use a shared volume or network filesystem:
+
+- **Docker**: Named volume mounted to all agents
+- **Kubernetes**: Shared PVC
+- **Fly.io**: Same volume mounted to multiple machines
+
+<Callout type="warning" title="SQLite Concurrency">
+SQLite handles multiple readers well but prefers single-writer. For high-write multi-agent scenarios, consider WAL mode or connection pooling.
+</Callout>

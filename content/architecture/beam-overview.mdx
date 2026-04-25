@@ -1,0 +1,131 @@
+# BEAM Architecture Overview
+
+BEAM (Biological-inspired Episodic-Associative Memory) is the core architecture powering Mnemosyne. It models human memory organization with four distinct tiers, each optimized for different retention and retrieval patterns.
+
+## The Four Memory Tiers
+
+<MermaidDiagram chart={`
+graph TB
+    subgraph Input["Agent Input"]
+        I1[Observation]
+        I2[Conversation]
+        I3[Tool Result]
+    end
+
+    subgraph BEAM["BEAM Memory System"]
+        WM[Working Memory
+        Short-term, 1K entries
+        <100ms access]
+        EM[Episodic Memory
+        Long-term experiences
+        Hybrid retrieval]
+        SM[Semantic Memory
+        Structured facts
+        Temporal graph]
+        SP[Scratchpad
+        Temporary workspace
+        Reasoning buffer]
+    end
+
+    I1 -->|immediate| WM
+    I2 -->|immediate| WM
+    I3 -->|immediate| WM
+    WM -->|consolidation| EM
+    WM -->|extraction| SM
+    EM -->|recall| WM
+    SM -->|query| WM
+    SP -->|flush| WM
+
+    style WM fill:#e0f2fe,stroke:#0284c7
+    style EM fill:#fef3c7,stroke:#d97706
+    style SM fill:#f0fdf4,stroke:#16a34a
+    style SP fill:#faf5ff,stroke:#9333ea
+`} />
+
+### Working Memory
+
+The agent's immediate context window. Holds recent observations, conversation history, and active tool results. Fastest access (&lt;100ms), limited capacity (~1000 entries), and subject to eviction.
+
+**Key characteristics:**
+- **Latency**: Sub-100ms median
+- **Capacity**: Configurable (default 1000 entries)
+- **Eviction**: LRU with importance weighting
+- **Persistence**: Survives process restarts via SQLite
+
+### Episodic Memory
+
+Long-term storage for experiences, conversations, and events. Organized chronologically with rich metadata. Uses hybrid retrieval combining vector similarity and full-text search.
+
+**Key characteristics:**
+- **Retention**: Permanent (until explicit deletion)
+- **Retrieval**: Hybrid (vector + FTS5)
+- **Compression**: AAAK algorithm for context windows
+- **Consolidation**: Automatic during sleep cycles
+
+### Semantic Memory
+
+Structured knowledge extracted from experiences. Stores facts, relationships, and concepts as a temporal knowledge graph with subject-predicate-object triples.
+
+**Key characteristics:**
+- **Format**: Temporal knowledge graph (triples)
+- **Query**: Graph traversal + vector similarity
+- **Update**: Incremental fact extraction from Working Memory
+- **Schema**: Flexible, no predefined ontology
+
+### Scratchpad
+
+A temporary workspace for reasoning, planning, and intermediate computations. Analogous to human working memory's manipulation buffer.
+
+**Key characteristics:**
+- **Lifetime**: Session-bound (cleared on agent restart)
+- **Use case**: Chain-of-thought, planning, scratch calculations
+- **Integration**: Flushes insights to Working Memory
+- **Isolation**: Per-agent, not shared
+
+## Data Flow
+
+<MermaidDiagram chart={`
+sequenceDiagram
+    participant Agent
+    participant WM as Working Memory
+    participant SP as Scratchpad
+    participant EM as Episodic Memory
+    participant SM as Semantic Memory
+
+    Agent->>WM: observe(event)
+    WM->>WM: store + index
+    Agent->>SP: write(thought)
+    SP->>SP: reason
+    SP->>WM: flush(insight)
+    Agent->>WM: recall(query)
+    WM->>EM: search(query)
+    EM->>WM: return results
+    WM->>SM: query(facts)
+    SM->>WM: return triples
+    WM->>Agent: consolidated context
+`} />
+
+## Sleep Consolidation
+
+Mnemosyne runs background "sleep" cycles that:
+
+1. **Compress** Working Memory entries using AAAK algorithm
+2. **Promote** high-importance entries to Episodic Memory
+3. **Extract** facts and relationships to Semantic Memory
+4. **Evict** low-importance entries per retention policy
+
+Configure interval via `MNEMOSYNE_CONSOLIDATION_INTERVAL` (default: 3600s).
+
+## Design Philosophy
+
+Mnemosyne's architecture prioritizes:
+
+1. **Locality**: All data in SQLite — no network calls for retrieval
+2. **Transparency**: Every operation is inspectable and debuggable
+3. **Efficiency**: Sub-100ms retrieval for typical workloads
+4. **Flexibility**: Works standalone or as a Hermes plugin
+5. **Privacy**: No data leaves your machine by default
+
+<Callout type="info" title="Comparison with Vector-Only Stores">
+Unlike pure vector databases (Pinecone, Weaviate), Mnemosyne combines dense embeddings with structured storage, full-text search, and temporal relationships. This hybrid approach delivers more precise retrieval for agent use cases where exact facts matter as much as semantic similarity.
+</Callout>

@@ -1,0 +1,47 @@
+# Installation
+
+Mnemosyne supports multiple installation methods depending on your use case.
+
+## Standalone pip Install
+
+The simplest way to get started:
+
+<CodeBlock code="pip install mnemosyne" language="bash" />
+
+This installs the core package with all required dependencies.
+
+## Hermes Plugin Install
+
+If you're using Mnemosyne as a Hermes agent plugin:
+
+<CodeBlock code="hermes plugin install mnemosyne" language="bash" />
+
+Or add to your `hermes.yaml`:
+
+<CodeBlock code={`plugins:
+  - name: mnemosyne
+    config:
+      db_path: ./memory.db
+      embedding_model: text-embedding-3-small
+`} language="yaml" />
+
+## Development Install
+
+For contributing or running from source:
+
+<CodeBlock code={`git clone https://github.com/axdsan/mnemosyne.git
+cd mnemosyne
+pip install -e &quot;.[dev]&quot;
+`} language="bash" />
+
+## Dependency Tiers
+
+| Tier | Command | Description |
+|------|---------|-------------|
+| Minimal | `pip install mnemosyne` | Core only, CPU embeddings |
+| Standard | `pip install mnemosyne[openai]` | + OpenAI embeddings |
+| Full | `pip install mnemosyne[all]` | All optional dependencies |
+
+## Verify Your Install
+
+<CodeBlock code={`python -c &quot;from mnemosyne import Memory; m = Memory(); print('OK')&quot;`} language="bash" />

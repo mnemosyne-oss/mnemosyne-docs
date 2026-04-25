@@ -1,0 +1,89 @@
+# Deploy to Fly.io
+
+Serverless deployment with persistent SQLite volumes.
+
+## Prerequisites
+
+- Fly CLI installed and authenticated
+- `flyctl` version 0.2.0 or higher
+
+## Setup
+
+### 1. Create App
+
+<CodeBlock code={`fly apps create mnemosyne-api
+`} language="bash" />
+
+### 2. Create Volume
+
+<CodeBlock code={`fly volumes create mnemosyne_data --size 10 --region ord
+`} language="bash" />
+
+### 3. fly.toml
+
+<CodeBlock code={`app = "mnemosyne-api"
+primary_region = "ord"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[mounts]
+  source = "mnemosyne_data"
+  destination = "/data"
+
+[env]
+  MNEMOSYNE_DB_PATH = "/data/mnemosyne.db"
+  MNEMOSYNE_HOST = "0.0.0.0"
+  MNEMOSYNE_PORT = "8080"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+`} language="toml" />
+
+### 4. Dockerfile
+
+<CodeBlock code={`FROM python:3.12-slim
+
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+COPY . .
+EXPOSE 8080
+
+CMD ["python", "-m", "mnemosyne.server"]
+`} language="dockerfile" />
+
+### 5. Deploy
+
+<CodeBlock code={`fly deploy
+`} language="bash" />
+
+## Scaling
+
+<CodeBlock code={`# Scale to 2 machines
+fly scale count 2
+
+# Scale memory
+fly scale memory 512
+`} language="bash" />
+
+## Monitoring
+
+<CodeBlock code={`# Logs
+fly logs
+
+# Status
+fly status
+
+# Metrics
+fly metrics
+`} language="bash" />
+
+<Callout type="info" title="Fly.io Limits">
+Fly.io free tier includes 3GB persistent volumes and 256MB RAM. For production workloads, scale to paid instances with 512MB+ RAM.
+</Callout>

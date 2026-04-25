@@ -1,0 +1,91 @@
+# Cron Deployment
+
+Run Mnemosyne as a scheduled batch process for periodic memory tasks.
+
+## Use Cases
+
+- Daily consolidation jobs
+- Scheduled memory imports
+- Periodic backups
+- Report generation
+
+## Crontab Example
+
+<CodeBlock code={`# Edit crontab
+crontab -e
+
+# Daily consolidation at 3 AM
+0 3 * * * /usr/local/bin/mnemosyne-consolidate --db /data/mnemosyne.db
+
+# Hourly backup
+0 * * * * /usr/local/bin/mnemosyne-backup --db /data/mnemosyne.db --dest /backups
+
+# Weekly report (Mondays at 9 AM)
+0 9 * * 1 /usr/local/bin/mnemosyne-report --db /data/mnemosyne.db --email admin@example.com
+`} language="bash" />
+
+## Consolidation Script
+
+<CodeBlock code={`#!/usr/bin/env python3
+# /usr/local/bin/mnemosyne-consolidate
+
+import argparse
+from mnemosyne import Memory
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--db", required=True)
+    args = parser.parse_args()
+
+    mem = Memory(db_path=args.db)
+    stats_before = mem.stats()
+
+    mem.sleep()  # Run consolidation
+
+    stats_after = mem.stats()
+    print(f"Consolidated: {stats_after.consolidated_count - stats_before.consolidated_count}")
+    print(f"Evicted: {stats_after.evicted_count - stats_before.evicted_count}")
+
+if __name__ == "__main__":
+    main()
+`} language="python" />
+
+## Backup Script
+
+<CodeBlock code={`#!/usr/bin/env python3
+# /usr/local/bin/mnemosyne-backup
+
+import argparse
+import shutil
+from datetime import datetime
+from pathlib import Path
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--db", required=True)
+    parser.add_argument("--dest", required=True)
+    args = parser.parse_args()
+
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    backup_name = f"mnemosyne_{timestamp}.db"
+    dest = Path(args.dest) / backup_name
+
+    shutil.copy2(args.db, dest)
+    print(f"Backup created: {dest}")
+
+if __name__ == "__main__":
+    main()
+`} language="python" />
+
+## Monitoring Cron Jobs
+
+<CodeBlock code={`# Add to crontab
+MAILTO=admin@example.com
+
+# Or log to file
+0 3 * * * /usr/local/bin/mnemosyne-consolidate --db /data/mnemosyne.db >> /var/log/mnemosyne/consolidate.log 2>&1
+`} language="bash" />
+
+<Callout type="success" title="Cron Best Practice">
+Use absolute paths for all commands and files. Cron runs with a minimal PATH. Test scripts manually before adding to crontab.
+</Callout>

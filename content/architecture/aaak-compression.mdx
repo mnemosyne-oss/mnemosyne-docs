@@ -1,0 +1,48 @@
+# AAAK Compression
+
+Adaptive Associative Abstraction Kernel (AAAK) is Mnemosyne's context compression algorithm. It reduces token count while preserving semantic meaning.
+
+## The Problem
+
+Agent context windows are limited (4K–128K tokens). Raw memory dumps consume precious space. AAAK compresses related memories into concise summaries.
+
+## How AAAK Works
+
+1. **Cluster**: Group related memories by vector similarity
+2. **Abstract**: Generate a summary that captures the cluster's essence
+3. **Associate**: Link the summary to original entries for drill-down
+4. **Kernel**: Store as a dense "memory kernel" for efficient retrieval
+
+## Compression Ratios
+
+| Content Type | Raw Tokens | Compressed | Ratio |
+|--------------|-----------|------------|-------|
+| Conversation | 2,000 | 200 | 10:1 |
+| Documentation | 5,000 | 400 | 12:1 |
+| Code snippets | 1,500 | 300 | 5:1 |
+| Mixed content | 3,000 | 350 | 8:1 |
+
+## Using AAAK
+
+<CodeBlock code={`# Automatic compression during sleep
+mem = Memory(aaak_enabled=True)
+
+# Manual compression
+compressed = mem.compress(memories, target_tokens=500)
+
+# Decompress for detail
+originals = mem.expand(compressed.kernel_id)
+`} language="python" />
+
+## Configuration
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `aaak_enabled` | `True` | Enable automatic compression |
+| `aaak_target_ratio` | `8.0` | Target compression ratio |
+| `aaak_min_cluster` | `3` | Minimum memories to form a cluster |
+| `aaak_max_tokens` | `500` | Maximum tokens for compressed output |
+
+<Callout type="warning" title="Lossy Compression">
+AAAK is lossy — fine details may be lost during compression. Critical facts should be stored in Semantic Memory (which is not compressed) or marked with high importance to avoid consolidation.
+</Callout>

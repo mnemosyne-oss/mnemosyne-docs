@@ -1,0 +1,123 @@
+# Hermes Plugin
+
+First-class integration with the Hermes agent framework.
+
+## Installation
+
+<CodeBlock code={`hermes plugin install mnemosyne
+`} language="bash" />
+
+Or add to `hermes.yaml`:
+
+<CodeBlock code={`plugins:
+  - name: mnemosyne
+    source: pip
+    config:
+      db_path: ./memory.db
+      embedding_model: text-embedding-3-small
+      auto_context: true
+      context_injection:
+        enabled: true
+        max_memories: 5
+        min_relevance: 0.7
+`} language="yaml" />
+
+## Auto-Context Injection
+
+When enabled, Mnemosyne automatically injects relevant memories into agent context:
+
+<MermaidDiagram chart={`
+flowchart LR
+    U[User Input] -->|query| M[Mnemosyne]
+    M -->|recall| C[Context Assembly]
+    C -->|inject| A[Agent Prompt]
+    A -->|respond| R[Response]
+    R -->|remember| M
+`} />
+
+## Plugin Hooks
+
+Mnemosyne registers the following Hermes hooks:
+
+| Hook | Timing | Action |
+|------|--------|--------|
+| `pre_prompt` | Before LLM call | Inject relevant memories |
+| `post_response` | After LLM call | Store conversation |
+| `tool_call` | After tool execution | Store tool results |
+| `shutdown` | Agent shutdown | Run sleep consolidation |
+
+## Tool Schema
+
+Mnemosyne exposes these tools to agents:
+
+<CodeBlock code={`{
+  "name": "remember",
+  "description": "Store information in long-term memory",
+  "parameters": {
+    "content": { "type": "string", "description": "Information to store" },
+    "tags": { "type": "array", "items": { "type": "string" } },
+    "importance": { "type": "number", "minimum": 0, "maximum": 1 }
+  }
+}
+
+{
+  "name": "recall",
+  "description": "Retrieve relevant memories",
+  "parameters": {
+    "query": { "type": "string" },
+    "top_k": { "type": "integer", "default": 5 }
+  }
+}
+
+{
+  "name": "add_fact",
+  "description": "Store a structured fact",
+  "parameters": {
+    "subject": { "type": "string" },
+    "predicate": { "type": "string" },
+    "object": { "type": "string" }
+  }
+}
+
+{
+  "name": "query_facts",
+  "description": "Query the knowledge graph",
+  "parameters": {
+    "subject": { "type": "string" },
+    "predicate": { "type": "string" }
+  }
+}
+`} language="json" />
+
+## Configuration Options
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `auto_context` | `true` | Inject memories into prompts |
+| `context_injection.max_memories` | `5` | Memories per injection |
+| `context_injection.min_relevance` | `0.7` | Minimum score to include |
+| `store_conversations` | `true` | Save conversation history |
+| `store_tool_results` | `true` | Save tool outputs |
+
+## Troubleshooting
+
+### Plugin not loading
+
+<CodeBlock code={`hermes plugin list
+# Verify mnemosyne appears
+
+hermes plugin logs mnemosyne
+# Check for errors
+`} language="bash" />
+
+### Context not injected
+
+Verify `auto_context` is enabled and memories exist:
+
+<CodeBlock code={`hermes config get plugins.mnemosyne.auto_context
+hermes memory stats
+`} language="bash" />
+
+<Callout type="info" title="Hermes Version">
+Requires Hermes v2.0 or higher. The plugin API changed significantly in v2 — older Hermes versions are not supported.
+</Callout>

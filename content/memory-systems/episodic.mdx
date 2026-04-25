@@ -1,0 +1,82 @@
+# Episodic Memory
+
+Long-term storage for experiences, conversations, and events. Organized chronologically with rich metadata and hybrid retrieval.
+
+## Dual-Key Schema
+
+Episodic Memory uses a dual-key design for flexible access patterns:
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `id` | TEXT | UUIDv4 primary key |
+| `content` | TEXT | Full experience record |
+| `embedding` | BLOB | Vector embedding |
+| `summary` | TEXT | AAAK-compressed summary |
+| `tags` | TEXT | JSON array |
+| `importance` | REAL | 0.0–1.0 |
+| `source` | TEXT | Origin |
+| `session_id` | TEXT | Grouping key |
+| `created_at` | INTEGER | Unix timestamp |
+| `consolidated_at` | INTEGER | When promoted from Working |
+
+## Hybrid Scoring
+
+Retrieval combines three signals:
+
+<CodeBlock code={`score = (vector_similarity * 0.5) + 
+        (fts_rank * 0.3) + 
+        (temporal_proximity * 0.2)
+`} language="python" />
+
+| Signal | Weight | Description |
+|--------|--------|-------------|
+| Vector similarity | 0.5 | Semantic closeness to query |
+| FTS5 rank | 0.3 | Full-text match quality |
+| Temporal proximity | 0.2 | Recency of the memory |
+
+Weights are configurable per-query:
+
+<CodeBlock code={`results = mem.recall(
+    "project deadline",
+    vector_weight=0.7,
+    text_weight=0.2,
+    temporal_weight=0.1,
+)`} language="python" />
+
+## Consolidation Pipeline
+
+<MermaidDiagram chart={`
+flowchart TD
+    WM[Working Memory] -->|candidate| S{Scoring}
+    S -->|importance &gt; 0.7| C[Compress with AAAK]
+    S -->|importance &lt; 0.3| E[Evict]
+    C -->|store| EM[Episodic Memory]
+    C -->|extract| SM[Semantic Memory]
+`} />
+
+## Session Grouping
+
+Episodic entries can be grouped by session for chronological recall:
+
+<CodeBlock code={`# Store with session
+mem.remember(
+    content="User approved the design mockup.",
+    session_id="design-review-2026-04-25",
+    tags=["design", "approval"],
+)
+
+# Recall entire session
+session = mem.recall_session("design-review-2026-04-25")
+`} language="python" />
+
+## Performance
+
+| Metric | Value |
+|--------|-------|
+| Median retrieval | 85ms |
+| Storage per entry | ~2KB (compressed) |
+| Queryable fields | content, tags, source, session_id, date range |
+
+<Callout type="success" title="Best Practice">
+Tag episodic memories with descriptive labels. Tags are indexed via FTS5 and heavily weighted in retrieval scoring. Good tags: `["api-design", "decision", "user-feedback"]`. Bad tags: `["misc", "stuff"]`.
+</Callout>

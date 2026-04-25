@@ -1,0 +1,82 @@
+# Docker Deployment
+
+Containerized deployment with bind mounts for persistence.
+
+## Dockerfile
+
+<CodeBlock code={`FROM python:3.12-slim
+
+WORKDIR /app
+
+# Install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Install SQLite with FTS5
+RUN apt-get update && apt-get install -y sqlite3 && rm -rf /var/lib/apt/lists/*
+
+# Copy application
+COPY . .
+
+# Create data directory
+RUN mkdir -p /data
+
+EXPOSE 8080
+
+ENV MNEMOSYNE_DB_PATH=/data/mnemosyne.db
+ENV MNEMOSYNE_HOST=0.0.0.0
+ENV MNEMOSYNE_PORT=8080
+
+CMD ["python", "-m", "mnemosyne.server"]
+`} language="dockerfile" />
+
+## docker-compose.yml
+
+<CodeBlock code={`version: "3.8"
+
+services:
+  mnemosyne:
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      - mnemosyne-data:/data
+    environment:
+      - MNEMOSYNE_DB_PATH=/data/mnemosyne.db
+      - MNEMOSYNE_API_KEY=${MNEMOSYNE_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  mnemosyne-data:
+`} language="yaml" />
+
+## Run
+
+<CodeBlock code={`docker-compose up -d
+`} language="bash" />
+
+## Health Check
+
+<CodeBlock code={`curl http://localhost:8080/health
+`} language="bash" />
+
+## Backup Volume
+
+<CodeBlock code={`# Create backup
+docker run --rm -v mnemosyne-data:/data -v $(pwd):/backup \
+  alpine tar czf /backup/mnemosyne-backup.tar.gz -C /data .
+
+# Restore
+docker run --rm -v mnemosyne-data:/data -v $(pwd):/backup \
+  alpine tar xzf /backup/mnemosyne-backup.tar.gz -C /data
+`} language="bash" />
+
+<Callout type="warning" title="Bind Mount vs Named Volume">
+Use named volumes (as shown above) for production. Bind mounts to host directories work for development but can cause permission issues.
+</Callout>
