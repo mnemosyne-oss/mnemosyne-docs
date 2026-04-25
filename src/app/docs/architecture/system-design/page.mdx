@@ -1,0 +1,93 @@
+# System Design
+
+High-level system architecture and component interactions.
+
+## Component Diagram
+
+<MermaidDiagram chart={`
+graph LR
+    subgraph Client["Client Layer"]
+        A[Agent Application]
+        H[Hermes Framework]
+    end
+
+    subgraph API["API Layer"]
+        P[Python SDK]
+        R[REST API]
+        T[Tool Schema]
+    end
+
+    subgraph Core["Core Engine"]
+        M[Memory Manager]
+        R1[Retrieval Engine]
+        S[Sleep Consolidator]
+        I[Index Manager]
+    end
+
+    subgraph Storage["Storage Layer"]
+        SQLite[(SQLite DB)]
+        V[Vector Index]
+        F[FTS5 Index]
+        G[Temporal Graph]
+    end
+
+    A --> P
+    H --> T
+    P --> M
+    R --> M
+    T --> M
+    M --> R1
+    M --> S
+    R1 --> I
+    S --> I
+    I --> SQLite
+    I --> V
+    I --> F
+    I --> G
+
+    style Core fill:#e0f2fe,stroke:#0284c7
+    style Storage fill:#f0fdf4,stroke:#16a34a
+`} />
+
+## Core Components
+
+### Memory Manager
+
+Central orchestrator handling all CRUD operations. Routes operations to appropriate memory tiers and manages cross-tier consistency.
+
+### Retrieval Engine
+
+Hybrid search coordinator. Dispatches queries to vector and text indices, then fuses results using configurable ranking algorithms.
+
+### Sleep Consolidator
+
+Background worker running consolidation cycles. Compresses, promotes, extracts, and evicts entries according to retention policies.
+
+### Index Manager
+
+Maintains all database indices: vector embeddings (via `sqlite-vec`), FTS5 full-text, and temporal graph relationships.
+
+## Technology Stack
+
+| Layer | Technology | Purpose |
+|-------|-----------|---------|
+| Database | SQLite 3.45+ | Primary storage |
+| Vectors | sqlite-vec | Vector similarity search |
+| Text | FTS5 | Full-text search |
+| Embeddings | OpenAI / SentenceTransformers | Text-to-vector |
+| ORM | SQLAlchemy | Schema management |
+| API | FastAPI | REST endpoints |
+
+## Scaling Considerations
+
+Mnemosyne is designed for single-node deployments:
+
+- **Working Memory**: In-memory LRU with SQLite backing
+- **Episodic Memory**: SQLite with vector extension
+- **Semantic Memory**: Native graph in SQLite
+
+For multi-agent deployments, each agent maintains its own database instance. Shared memory is achieved via explicit synchronization, not concurrent database access.
+
+<Callout type="warning" title="Not a Distributed System">
+Mnemosyne does not support distributed or clustered deployments. For high-availability requirements, use SQLite replication (Litestream) or export/import between instances.
+</Callout>

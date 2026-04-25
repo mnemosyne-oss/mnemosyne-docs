@@ -1,0 +1,144 @@
+# Knowledge Base
+
+Build a structured knowledge base from agent interactions and external sources.
+
+## Architecture
+
+<MermaidDiagram chart={`
+flowchart LR
+    S[Sources] -->|import| M[Mnemosyne]
+    M -->|extract| SM[Semantic Memory]
+    SM -->|query| A[Agent]
+    A -->|add| M
+    
+    style SM fill:#f0fdf4,stroke:#16a34a
+`} />
+
+## Importing Sources
+
+<CodeBlock code={`# Import from documents
+mem.import_documents(
+    paths=["docs/api.md", "docs/architecture.md"],
+    tags=["documentation"],
+)
+
+# Import from URLs
+mem.import_url(
+    url="https://api.example.com/docs",
+    tags=["api-reference"],
+)
+
+# Import from database
+mem.import_sqlite(
+    path="legacy-knowledge.db",
+    mapping={"question": "content", "answer": "metadata"},
+)
+`} language="python" />
+
+## Querying Knowledge
+
+<CodeBlock code={`# Natural language query
+results = mem.recall("How do I authenticate with the API?")
+
+# Structured query
+facts = mem.query_facts(
+    predicate="requires_authentication",
+    object="true",
+)
+
+# Hybrid: natural language + structured filter
+results = mem.recall(
+    "API authentication",
+    tags=["api-reference"],
+)
+`} language="python" />
+
+## Maintaining Knowledge
+
+### Outdated Information
+
+<CodeBlock code={`# Mark as outdated
+mem.update(
+    id="mem_old_auth",
+    tags=["api-reference", "outdated"],
+)
+
+# Add replacement
+mem.remember(
+    content="API v2 uses OAuth 2.0 with PKCE.",
+    tags=["api-reference", "current"],
+    importance=0.9,
+)
+
+# Query only current
+results = mem.recall(
+    "API authentication",
+    exclude_tags=["outdated"],
+)
+`} language="python" />
+
+### Confidence Scoring
+
+<CodeBlock code={`# Lower confidence for unverified info
+mem.add_fact(
+    subject="API",
+    predicate="rate_limit",
+    object="1000 req/min",
+    confidence=0.6,  # Unverified
+)
+
+# Higher confidence after verification
+mem.add_fact(
+    subject="API",
+    predicate="rate_limit",
+    object="1000 req/min",
+    confidence=0.95,  # Verified from docs
+)
+`} language="python" />
+
+## Knowledge Graph Visualization
+
+<CodeBlock code={`# Export graph for visualization
+mem.export_graph(format="graphml", path="knowledge.graphml")
+
+# Or query structure
+stats = mem.graph_stats()
+print(f"Entities: {stats.entity_count}")
+print(f"Relations: {stats.edge_count}")
+print(f"Predicates: {stats.predicate_count}")
+`} language="python" />
+
+## Use Case: Customer Support
+
+<CodeBlock code={`# Initialize with product docs
+mem.import_documents(
+    paths=glob("product-docs/**/*.md"),
+    tags=["product-doc"],
+)
+
+# Agent handles support ticket
+def handle_ticket(ticket):
+    # Recall relevant docs
+    docs = mem.recall(ticket.description, tags=["product-doc"])
+    
+    # Check for known issues
+    known = mem.query_facts(
+        predicate="affects_version",
+        object=ticket.version,
+    )
+    
+    # Generate response
+    response = generate_response(docs, known, ticket)
+    
+    # Store interaction
+    mem.remember(
+        content=f"Ticket {ticket.id}: {response.summary}",
+        tags=["support", f"ticket-{ticket.id}"],
+    )
+    
+    return response
+`} language="python" />
+
+<Callout type="info" title="Knowledge Freshness">
+Schedule regular re-imports of source documents to keep knowledge current. Use `since` filters to identify potentially outdated information.
+</Callout>

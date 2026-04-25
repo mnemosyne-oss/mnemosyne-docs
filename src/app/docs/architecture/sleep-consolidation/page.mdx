@@ -1,0 +1,73 @@
+# Sleep Consolidation
+
+Mnemosyne's background process that optimizes memory organization, inspired by human sleep's role in memory consolidation.
+
+## What Sleep Does
+
+During each sleep cycle, Mnemosyne:
+
+1. **Scans** Working Memory for consolidation candidates
+2. **Ranks** entries by importance, recency, and access patterns
+3. **Promotes** high-value entries to Episodic Memory
+4. **Extracts** structured facts for Semantic Memory
+5. **Compresses** related entries using AAAK
+6. **Evicts** entries that exceed retention limits
+
+## Trigger Conditions
+
+Sleep cycles trigger on:
+
+- **Time interval**: Every `consolidation_interval` seconds (default: 3600)
+- **Capacity pressure**: When Working Memory reaches 80% of max
+- **Explicit call**: `mem.sleep()` for manual consolidation
+- **Shutdown**: Graceful process exit
+
+## Consolidation Pipeline
+
+<MermaidDiagram chart={`
+flowchart LR
+    A[Working Memory] -->|scan| B[Candidate Selection]
+    B -->|importance &gt; 0.7| C[Promote to Episodic]
+    B -->|extractable| D[Extract Facts]
+    B -->|age &gt; 7d| E[Evict]
+    C -->|compress| F[AAAK Compression]
+    F --> G[Episodic Memory]
+    D --> H[Temporal Graph]
+    E --> I[Delete]
+`} />
+
+## Configuration
+
+<CodeBlock code={`from mnemosyne import Memory
+
+mem = Memory(
+    consolidation_interval=1800,  # 30 minutes
+    working_max=500,
+    eviction_policy="lru_importance",  # or "fifo", "random"
+)
+
+# Manual sleep
+mem.sleep()
+`} language="python" />
+
+## Retention Policies
+
+| Policy | Behavior | Use Case |
+|--------|----------|----------|
+| `lru_importance` | Evict least-recently used, weighted by importance | General purpose |
+| `fifo` | First-in, first-out | Streaming data |
+| `random` | Random eviction | Testing only |
+| `importance_only` | Evict lowest importance | Quality-focused |
+
+## Monitoring Consolidation
+
+<CodeBlock code={`stats = mem.stats()
+print(f"Last sleep: {stats.last_sleep_at}")
+print(f"Consolidated: {stats.consolidated_count}")
+print(f"Evicted: {stats.evicted_count}")
+print(f"Extracted facts: {stats.extracted_facts_count}")
+`} language="python" />
+
+<Callout type="info" title="Performance Impact">
+Sleep consolidation runs in a background thread and does not block agent operations. On typical hardware, a full cycle processes ~1000 entries in under 5 seconds.
+</Callout>

@@ -1,0 +1,149 @@
+# Python SDK
+
+Complete reference for the Mnemosyne Python API.
+
+## Memory Class
+
+### Constructor
+
+<CodeBlock code={`Memory(
+    db_path: str = "./mnemosyne.db",
+    embedding_model: str = "text-embedding-3-small",
+    api_key: str | None = None,
+    max_working: int = 1000,
+    consolidation_interval: int = 3600,
+    encryption_key: str | None = None,
+    config_path: str | None = None,
+) -&gt; Memory
+`} language="python" />
+
+### remember
+
+Store a memory in Working Memory.
+
+<CodeBlock code={`remember(
+    content: str,
+    tags: list[str] = [],
+    importance: float = 0.5,
+    source: str = "user",
+    session_id: str | None = None,
+) -&gt; str  # Returns memory ID
+`} language="python" />
+
+### recall
+
+Retrieve relevant memories using hybrid search.
+
+<CodeBlock code={`recall(
+    query: str,
+    top_k: int = 10,
+    tags: list[str] | None = None,
+    since: str | None = None,
+    vector_weight: float = 0.5,
+    text_weight: float = 0.3,
+    temporal_weight: float = 0.2,
+) -&gt; list[MemoryResult]
+`} language="python" />
+
+### get
+
+Retrieve a specific memory by ID.
+
+<CodeBlock code={`get(id: str) -&gt; MemoryEntry | None
+`} language="python" />
+
+### update
+
+Update an existing memory.
+
+<CodeBlock code={`update(
+    id: str,
+    content: str | None = None,
+    importance: float | None = None,
+    tags: list[str] | None = None,
+) -&gt; bool
+`} language="python" />
+
+### forget
+
+Delete a memory.
+
+<CodeBlock code={`forget(id: str) -&gt; bool
+`} language="python" />
+
+### forget_all
+
+Bulk delete by criteria.
+
+<CodeBlock code={`forget_all(
+    tags: list[str] | None = None,
+    since: str | None = None,
+    before: str | None = None,
+) -&gt; int  # Returns count deleted
+`} language="python" />
+
+## Semantic Memory API
+
+### add_fact
+
+Store a structured fact.
+
+<CodeBlock code={`add_fact(
+    subject: str,
+    predicate: str,
+    object: str,
+    confidence: float = 1.0,
+    valid_from: str | None = None,
+) -&gt; str  # Returns fact ID
+`} language="python" />
+
+### query_facts
+
+Query the temporal knowledge graph.
+
+<CodeBlock code={`query_facts(
+    subject: str | None = None,
+    predicate: str | None = None,
+    object: str | None = None,
+    current_only: bool = True,
+) -&gt; list[Fact]
+`} language="python" />
+
+### traverse
+
+Graph traversal from a starting entity.
+
+<CodeBlock code={`traverse(
+    subject: str,
+    predicate: str | None = None,
+    depth: int = 1,
+) -&gt; list[FactPath]
+`} language="python" />
+
+## Statistics
+
+<CodeBlock code={`stats() -&gt; MemoryStats
+
+# MemoryStats fields:
+# - working_count: int
+# - episodic_count: int
+# - semantic_count: int
+# - db_size_mb: float
+# - last_sleep_at: datetime | None
+# - consolidated_count: int
+# - evicted_count: int
+`} language="python" />
+
+## Exceptions
+
+| Exception | Raised When |
+|-----------|-------------|
+| `MemoryNotFoundError` | ID does not exist |
+| `DatabaseError` | SQLite operation fails |
+| `EmbeddingError` | Embedding generation fails |
+| `ConfigurationError` | Invalid config or env vars |
+| `EncryptionError` | Encryption/decryption fails |
+
+<Callout type="success" title="Type Hints">
+The Python SDK includes full type hints. Use a type checker (mypy, pyright) for static analysis and IDE autocomplete.
+</Callout>

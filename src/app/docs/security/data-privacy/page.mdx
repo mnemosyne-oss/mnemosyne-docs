@@ -1,0 +1,66 @@
+# Data Privacy
+
+Mnemosyne's privacy-first design ensures your data stays under your control.
+
+## Privacy Principles
+
+1. **Data minimization**: Only store what's necessary
+2. **Local processing**: No cloud required
+3. **User control**: Full export and deletion capabilities
+4. **Transparency**: All operations are inspectable
+
+## Data Flow
+
+<MermaidDiagram chart={`
+flowchart LR
+    U[User Input] -->|Local| M[Mnemosyne]
+    M -->|Optional| O[OpenAI Embeddings]
+    M -->|Local| DB[(SQLite)]
+    
+    style M fill:#e0f2fe,stroke:#0284c7
+    style DB fill:#f0fdf4,stroke:#16a34a
+`} />
+
+## Minimizing External Calls
+
+| Strategy | Implementation |
+|----------|---------------|
+| Local embeddings | `local_embeddings=True` |
+| No telemetry | No analytics or tracking |
+| Optional cloud | Cloud features are opt-in |
+| Self-hosted | Run entirely on your infrastructure |
+
+## GDPR Compliance
+
+### Right to Access
+
+<CodeBlock code={`# Export all data about a user
+mem.export_user_data(user_id="user_123")
+`} language="python" />
+
+### Right to Erasure
+
+<CodeBlock code={`# Delete all memories related to a user
+mem.forget_all(tags=["user_123"])
+mem.delete_user_data(user_id="user_123")
+`} language="python" />
+
+### Data Portability
+
+<CodeBlock code={`# Export in standard formats
+mem.export(format="json")   # Machine-readable
+mem.export(format="csv")    # Spreadsheet-friendly
+`} language="python" />
+
+## PII Handling
+
+Mnemosyne does not automatically detect or redact PII. Best practices:
+
+1. Tag PII-containing memories: `tags=["pii"]`
+2. Use encryption for sensitive data
+3. Implement retention policies for PII
+4. Audit access to PII-tagged memories
+
+<Callout type="success" title="Privacy by Default">
+With `local_embeddings=True` and no cloud features enabled, Mnemosyne operates entirely offline. No data ever leaves your machine.
+</Callout>

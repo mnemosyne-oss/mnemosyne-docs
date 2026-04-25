@@ -1,0 +1,102 @@
+# Ranking & Scoring
+
+How Mnemosyne ranks and scores retrieval results across different search modes.
+
+## Scoring Pipeline
+
+<MermaidDiagram chart={`
+flowchart LR
+    Q[Query] -->|embed| V[Vector Score]
+    Q -->|tokenize| T[FTS5 Score]
+    Q -->|timestamp| TM[Temporal Score]
+    V -->|weight| F[Rank Fusion]
+    T -->|weight| F
+    TM -->|weight| F
+    F -->|sort| R[Ranked Results]
+`} />
+
+## Individual Scorers
+
+### Vector Score
+
+Cosine similarity between query embedding and memory embedding:
+
+<CodeBlock code={`vector_score = dot(query_vec, mem_vec) / (norm(query_vec) * norm(mem_vec))
+`} language="python" />
+
+Range: 0.0 (unrelated) to 1.0 (identical)
+
+### FTS5 Score
+
+BM25 relevance score normalized to 0–1:
+
+<CodeBlock code={`fts_score = bm25_score / max_bm25_score_in_results
+`} language="python" />
+
+### Temporal Score
+
+Recency bonus decaying exponentially:
+
+<CodeBlock code={`temporal_score = exp(-age_hours / half_life_hours)
+`} language="python" />
+
+Default half-life: 168 hours (7 days)
+
+## Rank Fusion
+
+<CodeBlock code={`final_score = (vector_score * w_v) + 
+              (fts_score * w_t) + 
+              (temporal_score * w_tm) +
+              (importance_bonus * w_i)
+
+# Bonus for high-importance memories
+importance_bonus = memory.importance * 0.1
+`} language="python" />
+
+## Custom Scoring
+
+<CodeBlock code={`# Override weights
+results = mem.recall(
+    "deployment",
+    vector_weight=0.4,
+    text_weight=0.4,
+    temporal_weight=0.1,
+    importance_weight=0.1,
+)
+
+# Custom scorer function
+results = mem.recall(
+    "deployment",
+    custom_scorer=my_scorer_fn,
+)
+`} language="python" />
+
+## Result Deduplication
+
+When the same memory appears in multiple result sets, Mnemosyne deduplicates and keeps the highest score:
+
+<CodeBlock code={`# Deduplication strategy
+seen_ids = set()
+for result in all_results:
+    if result.id not in seen_ids:
+        seen_ids.add(result.id)
+        yield result
+`} language="python" />
+
+## Re-ranking
+
+For top-k results, Mnemosyne can apply a learned re-ranker:
+
+<CodeBlock code={`# Enable cross-encoder re-ranking
+results = mem.recall(
+    "database choice",
+    rerank=True,
+    rerank_model="cross-encoder/ms-marco-MiniLM-L-6-v2",
+)
+`} language="python" />
+
+Re-ranking improves precision at the cost of additional latency (~50ms per result).
+
+<Callout type="success" title="Tuning Tip">
+Start with default weights and adjust based on your use case. If agents frequently miss exact facts, increase `text_weight`. If they struggle with conceptual queries, increase `vector_weight`.
+</Callout>

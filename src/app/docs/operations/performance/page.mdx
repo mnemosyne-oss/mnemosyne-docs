@@ -1,0 +1,90 @@
+# Performance
+
+Optimize Mnemosyne for your workload.
+
+## Benchmarks
+
+All benchmarks run on a single core, SQLite with `sqlite-vec`:
+
+| Metric | 1K Entries | 10K Entries | 100K Entries |
+|--------|-----------|-------------|--------------|
+| Write | 12ms | 15ms | 18ms |
+| Vector search | 15ms | 35ms | 85ms |
+| Hybrid search | 45ms | 65ms | 150ms |
+| FTS5 search | 5ms | 8ms | 20ms |
+| Consolidation | 2s | 5s | 25s |
+
+## Optimization Strategies
+
+### 1. Batch Writes
+
+<CodeBlock code={`# Bad: Individual writes
+for item in items:
+    mem.remember(item)
+
+# Good: Batch transaction
+with mem.transaction():
+    for item in items:
+        mem.remember(item)
+`} language="python" />
+
+### 2. Connection Pooling
+
+For multi-threaded applications:
+
+<CodeBlock code={`mem = Memory(pool_size=10)
+`} language="python" />
+
+### 3. Embedding Caching
+
+Cache embeddings to avoid redundant API calls:
+
+<CodeBlock code={`mem = Memory(embedding_cache_size=10000)
+`} language="python" />
+
+### 4. Index Tuning
+
+<CodeBlock code={`# Rebuild indices after bulk load
+mem.rebuild_indices()
+
+# Analyze query patterns
+mem.analyze_queries()
+
+# Vacuum database
+mem.vacuum()
+`} language="python" />
+
+### 5. Working Memory Limits
+
+Keep Working Memory lean:
+
+<CodeBlock code={`mem = Memory(
+    max_working=500,  # Lower = faster eviction, faster queries
+    consolidation_interval=1800,  # More frequent consolidation
+)
+`} language="python" />
+
+## Profiling
+
+<CodeBlock code={`# Enable query logging
+mem = Memory(profile_queries=True)
+
+# Get slow queries
+slow = mem.slow_queries(min_latency_ms=100)
+for q in slow:
+    print(f"{q.latency_ms}ms: {q.query}")
+`} language="python" />
+
+## Memory Usage
+
+| Component | Per Entry | 10K Entries |
+|-----------|-----------|-------------|
+| Working Memory | ~50KB | ~500MB |
+| Episodic Memory | ~2KB | ~20MB |
+| Semantic Memory | ~500B | ~5MB |
+| Vector Index | ~6KB | ~60MB |
+| FTS5 Index | ~2KB | ~20MB |
+
+<Callout type="success" title="SSD Recommended">
+SQLite performance is heavily I/O bound. Use SSD storage for production deployments. HDD is acceptable for development but will show 5-10x slower query times.
+</Callout>

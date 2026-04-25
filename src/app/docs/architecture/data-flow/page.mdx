@@ -1,0 +1,70 @@
+# Data Flow
+
+How information moves through Mnemosyne's memory tiers.
+
+## Write Path
+
+<MermaidDiagram chart={`
+flowchart LR
+    A[Agent Input] -->|observe| WM[Working Memory]
+    WM -->|index| VI[Vector Index]
+    WM -->|index| FI[FTS5 Index]
+    WM -->|trigger| SC[Sleep Consolidator]
+    SC -->|promote| EM[Episodic Memory]
+    SC -->|extract| SM[Semantic Memory]
+    SC -->|evict| DEL[Deleted]
+`} />
+
+1. **Agent observes** an event, conversation turn, or tool result
+2. **Working Memory** stores the raw entry with metadata
+3. **Indices** are updated synchronously (vector + FTS5)
+4. **Sleep Consolidator** (async) processes entries during sleep cycles
+5. **Promotion** moves high-importance entries to Episodic Memory
+6. **Extraction** pulls structured facts into Semantic Memory
+7. **Eviction** removes low-importance entries per policy
+
+## Read Path
+
+<MermaidDiagram chart={`
+flowchart LR
+    Q[Query] -->|parse| RE[Retrieval Engine]
+    RE -->|vector| VI[Vector Index]
+    RE -->|text| FI[FTS5 Index]
+    RE -->|graph| TG[Temporal Graph]
+    VI -->|scores| RF[Rank Fusion]
+    FI -->|scores| RF
+    TG -->|triples| RF
+    RF -->|results| WM[Working Memory]
+    WM -->|context| A[Agent]
+`} />
+
+1. **Query** enters the Retrieval Engine
+2. **Parallel dispatch** to vector, text, and graph indices
+3. **Rank Fusion** combines scores using configurable weights
+4. **Working Memory** assembles the final context window
+5. **Agent receives** consolidated, relevant context
+
+## Consolidation Flow
+
+<MermaidDiagram chart={`
+flowchart TD
+    START[Sleep Cycle Trigger] -->|every N seconds| WM2[Scan Working Memory]
+    WM2 -->|select| CAND[Candidates]
+    CAND -->|importance &gt; threshold| PROMOTE[Promote to Episodic]
+    CAND -->|extractable facts| EXTRACT[Extract to Semantic]
+    CAND -->|age &gt; limit| EVICT[Evict]
+    PROMOTE --> COMPRESS[AAAK Compress]
+    COMPRESS --> EM2[Episodic Memory]
+    EXTRACT --> TG2[Temporal Graph]
+    EVICT --> DEL[Remove]
+`} />
+
+## Event Lifecycle
+
+| Stage | Location | Trigger | Duration |
+|-------|----------|---------|----------|
+| Ingestion | Working Memory | Agent observation | Immediate |
+| Indexing | Vector + FTS5 | Write completion | &lt;50ms |
+| Consolidation | Episodic + Semantic | Sleep cycle | Minutes to hours |
+| Retrieval | Working Memory | Agent query | &lt;100ms |
+| Eviction | Deleted | Retention policy | Configurable |

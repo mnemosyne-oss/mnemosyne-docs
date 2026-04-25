@@ -1,0 +1,85 @@
+# Hybrid Search
+
+Mnemosyne's flagship retrieval capability — combining dense vector similarity with SQLite FTS5 full-text search for results that are both semantically relevant and precisely matched.
+
+## Why Hybrid?
+
+| Approach | Strengths | Weaknesses |
+|----------|-----------|------------|
+| Vector only | Semantic similarity, fuzzy matching | Misses exact terms, no boolean logic |
+| Text only | Exact matching, boolean queries | No semantic understanding, synonym blind |
+| **Hybrid** | **Best of both** | **Slightly higher latency** |
+
+## Fusion Algorithm
+
+<CodeBlock code={`final_score = (vector_score * vector_weight) + 
+              (text_score * text_weight) + 
+              (temporal_score * temporal_weight)
+`} language="python" />
+
+Default weights:
+- Vector: 0.5
+- Text: 0.3  
+- Temporal: 0.2
+
+## Usage
+
+<CodeBlock code={`# Default hybrid search
+results = mem.recall("What database does the project use?")
+
+# Custom weights
+results = mem.recall(
+    "What database does the project use?",
+    vector_weight=0.3,   # Prefer exact text matches
+    text_weight=0.6,
+    temporal_weight=0.1,
+)
+
+# With filters
+results = mem.recall(
+    "database migration",
+    tags=["backend", "infrastructure"],
+    since="2026-04-01",
+    top_k=5,
+)
+`} language="python" />
+
+## Result Format
+
+<CodeBlock code={`[
+    {
+        "id": "mem_abc123",
+        "content": "We decided to use PostgreSQL for the primary database...",
+        "score": 0.92,
+        "vector_score": 0.88,
+        "text_score": 0.95,
+        "source": "decision",
+        "created_at": 1714060800,
+    },
+    ...
+]
+`} language="python" />
+
+## Performance
+
+| Query Type | Median Latency | p99 Latency |
+|------------|---------------|-------------|
+| Vector only | 35ms | 120ms |
+| FTS5 only | 15ms | 45ms |
+| Hybrid (default) | 65ms | 180ms |
+| Hybrid + filters | 85ms | 250ms |
+
+## Tuning Weights
+
+Different use cases benefit from different weight configurations:
+
+| Use Case | Vector | Text | Temporal |
+|----------|--------|------|----------|
+| Fact lookup | 0.2 | 0.7 | 0.1 |
+| Concept search | 0.7 | 0.2 | 0.1 |
+| Recent events | 0.3 | 0.3 | 0.4 |
+| General recall | 0.5 | 0.3 | 0.2 |
+
+<Callout type="info" title="Index Requirements">
+Hybrid search requires both vector and FTS5 indices to be built. These are created automatically on first use. Initial index build may take a few seconds for large datasets.
+</Callout>

@@ -1,0 +1,95 @@
+# Troubleshooting
+
+Common issues and their resolutions.
+
+## Installation Issues
+
+### SQLite Version Too Old
+
+<CodeBlock code={`# Check version
+sqlite3 --version
+
+# Upgrade (Ubuntu/Debian)
+sudo apt-get update
+sudo apt-get install sqlite3
+
+# Or use conda
+conda install -c conda-forge sqlite
+`} language="bash" />
+
+### FTS5 Not Available
+
+<CodeBlock code={`# Verify FTS5
+python -c "import sqlite3; conn = sqlite3.connect(':memory:'); conn.execute('CREATE VIRTUAL TABLE test USING fts5(content)')"
+
+# If error, rebuild SQLite with FTS5
+`} language="bash" />
+
+## Runtime Issues
+
+### Database Locked
+
+<CodeBlock code={`# Enable WAL mode for better concurrency
+sqlite3 mnemosyne.db "PRAGMA journal_mode=WAL;"
+
+# Or in Python
+mem = Memory(wal_mode=True)
+`} language="bash" />
+
+### Slow Queries
+
+1. Check index health: `mem.rebuild_indices()`
+2. Enable query profiling: `mem = Memory(profile_queries=True)`
+3. Reduce Working Memory size
+4. Verify SSD storage
+
+### Memory Leaks
+
+<CodeBlock code={`# Check memory stats
+import psutil
+process = psutil.Process()
+print(f"RSS: {process.memory_info().rss / 1024 / 1024:.1f} MB")
+
+# Enable memory tracking
+mem = Memory(track_memory=True)
+`} language="python" />
+
+## Data Issues
+
+### Corrupted Database
+
+<CodeBlock code={`# Check integrity
+sqlite3 mnemosyne.db "PRAGMA integrity_check"
+
+# If corrupted, restore from backup
+cp mnemosyne-backup.db mnemosyne.db
+`} language="bash" />
+
+### Missing Embeddings
+
+<CodeBlock code={`# Rebuild vector index
+mem.rebuild_vector_index()
+
+# Check API key
+print(mem.embedding_status())
+`} language="python" />
+
+## Error Reference
+
+| Error | Cause | Fix |
+|-------|-------|-----|
+| `DatabaseError: database is locked` | Concurrent access | Enable WAL mode |
+| `EmbeddingError: rate limited` | OpenAI quota | Check API key, add rate limiting |
+| `MemoryNotFoundError` | Wrong ID | Verify ID format |
+| `ConfigurationError` | Bad env var | Check `MNEMOSYNE_*` variables |
+| `EncryptionError` | Wrong key | Verify `MNEMOSYNE_ENCRYPTION_KEY` |
+
+## Getting Help
+
+1. Check logs: `MNEMOSYNE_LOG_LEVEL=debug`
+2. Run diagnostics: `python -m mnemosyne.diagnostics`
+3. Open an issue: https://github.com/axdsan/mnemosyne/issues
+
+<Callout type="info" title="Debug Mode">
+Enable debug logging to see every SQL query and embedding request. This is verbose but invaluable for diagnosing issues.
+</Callout>

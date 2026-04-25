@@ -1,0 +1,74 @@
+# Migration
+
+Upgrade Mnemosyne versions and migrate data between instances.
+
+## Version Upgrade
+
+### Check Current Version
+
+<CodeBlock code={`python -c "import mnemosyne; print(mnemosyne.__version__)"
+`} language="bash" />
+
+### Upgrade Steps
+
+<CodeBlock code={`# 1. Backup current database
+cp mnemosyne.db mnemosyne-pre-upgrade.db
+
+# 2. Upgrade package
+pip install --upgrade mnemosyne
+
+# 3. Run migrations
+python -m mnemosyne.migrate --db mnemosyne.db
+
+# 4. Verify
+python -c "from mnemosyne import Memory; m = Memory(); print(m.stats())"
+`} language="bash" />
+
+## Schema Migrations
+
+Mnemosyne uses automatic schema migrations:
+
+| Version | Migration | Description |
+|---------|-----------|-------------|
+| 1.0 → 2.0 | `m_1_0_to_2_0` | Add semantic memory, FTS5 indices |
+| 2.0 → 2.1 | `m_2_0_to_2_1` | Add session_id to episodic |
+| 2.1 → 2.2 | `m_2_1_to_2_2` | Add temporal graph indexes |
+
+Migrations run automatically on first connection. No manual intervention needed.
+
+## Cross-Instance Migration
+
+Export from old instance, import to new:
+
+<CodeBlock code={`# Export
+python -m mnemosyne.export --db old.db --format json --output export.json
+
+# Import
+python -m mnemosyne.import --db new.db --format json --input export.json
+`} language="bash" />
+
+### Export Formats
+
+| Format | Use Case | Size |
+|--------|----------|------|
+| JSON | Human-readable, version control | Large |
+| SQLite | Fast, preserves all metadata | Compact |
+| CSV | Spreadsheet analysis | Medium |
+
+## Rollback
+
+If upgrade fails:
+
+<CodeBlock code={`# Stop application
+# Restore pre-upgrade backup
+cp mnemosyne-pre-upgrade.db mnemosyne.db
+
+# Downgrade package
+pip install mnemosyne==1.0.0
+
+# Restart
+`} language="bash" />
+
+<Callout type="warning" title="Breaking Changes">
+Major version upgrades (1.x → 2.x) may include breaking changes. Always read the changelog and test in staging before production deployment.
+</Callout>

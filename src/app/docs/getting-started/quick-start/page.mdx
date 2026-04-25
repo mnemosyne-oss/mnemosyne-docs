@@ -1,0 +1,46 @@
+# Quick Start
+
+Get Mnemosyne running in under 5 minutes. This guide covers installation, basic configuration, and your first memory operations.
+
+## Prerequisites
+
+- Python 3.10 or higher
+- pip or uv package manager
+- (Optional) An OpenAI API key for embedding generation
+
+## Install
+
+<CodeBlock code="pip install mnemosyne" language="bash" />
+
+Or with uv (recommended for speed):
+
+<CodeBlock code="uv add mnemosyne" language="bash" />
+
+## Verify Installation
+
+<CodeBlock code="python -c &quot;import mnemosyne; print(mnemosyne.__version__)&quot;" language="bash" />
+
+## First Memory Operation
+
+<CodeBlock code={`from mnemosyne import Memory
+
+# Initialize memory
+mem = Memory()
+
+# Store a memory
+mem.remember(
+    content=&quot;The user prefers dark mode and uses Vim keybindings.&quot;,
+    tags=[&quot;preferences&quot;, &quot;ui&quot;]
+)
+
+# Recall relevant memories
+results = mem.recall(&quot;What are the user's interface preferences?&quot;)
+for r in results:
+    print(r.content)
+`} language="python" />
+
+## What's Next?
+
+- Read the [Installation Guide](/docs/getting-started/installation) for detailed setup options
+- Learn about [Configuration](/docs/getting-started/configuration) to customize behavior
+- Explore the [BEAM Architecture](/docs/architecture/beam-overview) to understand how memory works
