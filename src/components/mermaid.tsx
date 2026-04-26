@@ -1,46 +1,60 @@
-import mermaid from "mermaid";
+"use client";
 
-// Initialize mermaid for server-side rendering
-mermaid.initialize({
-  startOnLoad: false,
-  theme: "default",
-  securityLevel: "strict",
-  fontFamily: "var(--font-sans), sans-serif",
-});
+import { useEffect, useRef, useState } from "react";
 
 interface MermaidDiagramProps {
   chart?: string;
   children?: string;
 }
 
-export async function MermaidDiagram({ chart, children }: MermaidDiagramProps) {
-  // Support both prop syntax: <MermaidDiagram chart={`...`} /> 
-  // and children syntax: <MermaidDiagram>...</MermaidDiagram>
-  const content = chart || children || "";
+export function MermaidDiagram({ chart, children }: MermaidDiagramProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [svg, setSvg] = useState<string | null>(null);
 
-  if (!content.trim()) {
-    return (
-      <div className="callout callout-warning">
-        <strong>Missing diagram content</strong>
-      </div>
-    );
-  }
+  const mermaidSource = chart || children || "";
 
-  try {
-    const id = `mermaid-${Math.random().toString(36).slice(2, 11)}`;
-    const { svg } = await mermaid.render(id, content.trim());
+  useEffect(() => {
+    let cancelled = false;
 
+    async function render() {
+      if (!mermaidSource || !containerRef.current) return;
+
+      const { default: mermaid } = await import("mermaid");
+      mermaid.initialize({
+        startOnLoad: false,
+        theme: "dark",
+        securityLevel: "strict",
+      });
+
+      const id = `mermaid-${Math.random().toString(36).slice(2)}`;
+      try {
+        const { svg } = await mermaid.render(id, mermaidSource.trim());
+        if (!cancelled) setSvg(svg);
+      } catch (err) {
+        console.error("Mermaid render error:", err);
+        if (!cancelled) setSvg(null);
+      }
+    }
+
+    render();
+    return () => {
+      cancelled = true;
+    };
+  }, [mermaidSource]);
+
+  if (svg) {
     return (
       <div
+        ref={containerRef}
         className="mermaid"
         dangerouslySetInnerHTML={{ __html: svg }}
       />
     );
-  } catch (err: any) {
-    return (
-      <div className="callout callout-danger">
-        <strong>Diagram Error:</strong> {err.message || "Failed to render diagram"}
-      </div>
-    );
   }
+
+  return (
+    <div ref={containerRef} className="mermaid">
+      <pre>{mermaidSource}</pre>
+    </div>
+  );
 }
