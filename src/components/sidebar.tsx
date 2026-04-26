@@ -127,8 +127,8 @@ function SidebarItem({ item, depth = 0 }: { item: NavItem; depth?: number }) {
         href={item.href}
         className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm transition-colors ${
           isActive
-            ? "bg-brand-50 dark:bg-brand-950/30 text-brand-700 dark:text-brand-300 font-medium"
-            : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-zinc-200"
+            ? "bg-cream-dark text-accent-terracotta font-medium"
+            : "text-warm-gray hover:bg-cream-dark hover:text-charcoal"
         } ${depth > 0 ? "ml-4" : ""}`}
         onClick={() => hasChildren && setExpanded(!expanded)}
       >
@@ -151,8 +151,8 @@ function SidebarItem({ item, depth = 0 }: { item: NavItem; depth?: number }) {
               href={sub.href}
               className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm transition-colors ml-6 ${
                 pathname === sub.href
-                  ? "bg-brand-50 dark:bg-brand-950/30 text-brand-700 dark:text-brand-300 font-medium"
-                  : "text-zinc-500 dark:text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-700 dark:hover:text-zinc-300"
+                  ? "bg-cream-dark text-accent-terracotta font-medium"
+                  : "text-warm-gray-light hover:bg-cream-dark hover:text-warm-gray"
               }`}
             >
               <span className="truncate">{sub.title}</span>
@@ -168,15 +168,15 @@ function SidebarItem({ item, depth = 0 }: { item: NavItem; depth?: number }) {
 export function Sidebar({ mobile = false, onClose }: { mobile?: boolean; onClose?: () => void }) {
   return (
     <div className={`${mobile ? "" : "w-64 shrink-0"} h-full`}>
-      <div className="flex items-center justify-between px-4 py-3 border-b border-sidebar-border">
-        <Link href="/" className="flex items-center gap-2 font-semibold text-zinc-900 dark:text-zinc-100">
-          <div className="w-7 h-7 rounded-lg bg-brand-500 flex items-center justify-center text-white text-sm font-bold">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-border-warm">
+        <Link href="/" className="flex items-center gap-2 font-serif font-semibold text-charcoal">
+          <div className="w-7 h-7 rounded-lg bg-charcoal flex items-center justify-center text-cream text-sm font-bold">
             M
           </div>
           Mnemosyne
         </Link>
         {mobile && onClose && (
-          <button onClick={onClose} className="text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300">
+          <button onClick={onClose} className="text-warm-gray hover:text-charcoal">
             <X size={20} />
           </button>
         )}
@@ -184,7 +184,7 @@ export function Sidebar({ mobile = false, onClose }: { mobile?: boolean; onClose
       <nav className="px-3 py-4 space-y-6 overflow-y-auto h-[calc(100%-3.5rem)]">
         {navigation.map((section) => (
           <div key={section.title}>
-            <div className="flex items-center gap-2 px-3 mb-2 text-xs font-semibold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">
+            <div className="flex items-center gap-2 px-3 mb-2 text-xs font-semibold text-warm-gray-muted uppercase tracking-wider">
               {section.icon}
               {section.title}
             </div>
@@ -207,7 +207,7 @@ export function MobileSidebar() {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="lg:hidden flex items-center justify-center w-9 h-9 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400"
+        className="lg:hidden flex items-center justify-center w-9 h-9 rounded-lg bg-cream-dark text-warm-gray"
         aria-label="Open sidebar"
       >
         <Menu size={18} />
@@ -215,7 +215,7 @@ export function MobileSidebar() {
       {open && (
         <div className="fixed inset-0 z-40 lg:hidden">
           <div className="sidebar-overlay absolute inset-0" onClick={() => setOpen(false)} />
-          <div className="absolute left-0 top-0 bottom-0 w-72 bg-white dark:bg-zinc-950 border-r border-sidebar-border shadow-xl">
+          <div className="absolute left-0 top-0 bottom-0 w-72 bg-white border-r border-border-warm shadow-xl">
             <Sidebar mobile onClose={() => setOpen(false)} />
           </div>
         </div>

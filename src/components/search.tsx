@@ -94,13 +94,13 @@ export function Search() {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 text-sm hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors w-48 justify-between"
+        className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-cream-dark text-warm-gray text-sm hover:bg-border-warm transition-colors w-48 justify-between"
       >
         <span className="flex items-center gap-2">
           <SearchIcon size={14} />
           <span>Search docs...</span>
         </span>
-        <kbd className="hidden sm:inline-block text-xs bg-zinc-200 dark:bg-zinc-700 px-1.5 py-0.5 rounded">
+        <kbd className="hidden sm:inline-block text-xs bg-border-warm px-1.5 py-0.5 rounded">
           ⌘K
         </kbd>
       </button>
@@ -110,31 +110,31 @@ export function Search() {
           className="fixed inset-0 z-50 flex items-start justify-center pt-[20vh]"
           onClick={() => setOpen(false)}
         >
-          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
+          <div className="fixed inset-0 bg-charcoal/50 backdrop-blur-sm" />
           <div
-            className="relative w-full max-w-xl bg-white dark:bg-zinc-900 rounded-xl shadow-2xl border border-zinc-200 dark:border-zinc-700 overflow-hidden"
+            className="relative w-full max-w-xl bg-white rounded-xl shadow-2xl border border-border-warm overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center gap-3 px-4 py-3 border-b border-zinc-200 dark:border-zinc-700">
-              <SearchIcon size={18} className="text-zinc-400" />
+            <div className="flex items-center gap-3 px-4 py-3 border-b border-border-warm">
+              <SearchIcon size={18} className="text-warm-gray-muted" />
               <input
                 ref={inputRef}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="Search documentation..."
-                className="flex-1 bg-transparent outline-none text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400"
+                className="flex-1 bg-transparent outline-none text-charcoal placeholder:text-warm-gray-muted"
               />
               <button
                 onClick={() => setOpen(false)}
-                className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300"
+                className="text-warm-gray-muted hover:text-warm-gray"
               >
                 <X size={18} />
               </button>
             </div>
             <div className="max-h-[50vh] overflow-y-auto">
               {results.length === 0 && query && (
-                <div className="px-4 py-8 text-center text-zinc-500">
+                <div className="px-4 py-8 text-center text-warm-gray">
                   No results found for "{query}"
                 </div>
               )}
@@ -142,16 +142,16 @@ export function Search() {
                 <button
                   key={result.href}
                   onClick={() => handleSelect(result)}
-                  className={`w-full text-left px-4 py-3 flex items-start gap-3 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors ${
-                    i === selected ? "bg-zinc-50 dark:bg-zinc-800" : ""
+                  className={`w-full text-left px-4 py-3 flex items-start gap-3 hover:bg-cream transition-colors ${
+                    i === selected ? "bg-cream" : ""
                   }`}
                 >
-                  <FileText size={16} className="mt-0.5 text-zinc-400 shrink-0" />
+                  <FileText size={16} className="mt-0.5 text-warm-gray-muted shrink-0" />
                   <div>
-                    <div className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
+                    <div className="text-sm font-medium text-charcoal">
                       {result.title}
                     </div>
-                    <div className="text-xs text-zinc-500 mt-0.5">
+                    <div className="text-xs text-warm-gray mt-0.5">
                       {result.section} — {result.excerpt}
                     </div>
                   </div>
