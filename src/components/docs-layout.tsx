@@ -10,7 +10,7 @@ export function DocsLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex flex-col h-screen">
       {/* Top bar */}
-      <header className="h-14 border-b border-border-warm bg-white/80 backdrop-blur-sm flex items-center justify-between px-4 shrink-0 z-30">
+      <header className="h-14 border-b border-border-warm dark:border-border-warm-dark bg-white/80 dark:bg-charcoal/80 backdrop-blur-sm flex items-center justify-between px-4 shrink-0 z-30">
         <div className="flex items-center gap-3">
           <MobileSidebar />
           <Link href="/" className="hidden lg:flex items-center gap-2 font-serif font-semibold text-charcoal">
@@ -26,7 +26,7 @@ export function DocsLayout({ children }: { children: React.ReactNode }) {
             href="https://github.com/axdsan/mnemosyne"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-center w-9 h-9 rounded-lg bg-cream-dark text-warm-gray hover:bg-border-warm transition-colors"
+            className="flex items-center justify-center w-9 h-9 rounded-lg bg-cream-dark text-warm-gray hover:bg-border-warm dark:bg-charcoal-light dark:text-warm-gray-light dark:hover:bg-border-warm-dark transition-colors"
             aria-label="GitHub"
           >
             <ExternalLink size={18} />
@@ -38,7 +38,7 @@ export function DocsLayout({ children }: { children: React.ReactNode }) {
       {/* Main content area */}
       <div className="flex flex-1 overflow-hidden">
         {/* Desktop sidebar */}
-        <aside className="hidden lg:block w-64 shrink-0 border-r border-border-warm bg-sidebar-bg overflow-y-auto">
+        <aside className="hidden lg:block w-64 shrink-0 border-r border-border-warm dark:border-border-warm-dark bg-sidebar-bg overflow-y-auto">
           <Sidebar />
         </aside>
 
@@ -47,7 +47,7 @@ export function DocsLayout({ children }: { children: React.ReactNode }) {
           <div className="prose max-w-4xl mx-auto px-6 py-10 min-h-full">
             {children}
           </div>
-          <footer className="border-t border-border-warm py-8 px-6 mt-10">
+          <footer className="border-t border-border-warm dark:border-border-warm-dark py-8 px-6 mt-10">
             <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-warm-gray-light">
               <div>
                 &copy; {new Date().getFullYear()} Mnemosyne. Built by{" "}

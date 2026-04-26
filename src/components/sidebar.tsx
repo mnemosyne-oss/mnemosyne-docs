@@ -168,7 +168,7 @@ function SidebarItem({ item, depth = 0 }: { item: NavItem; depth?: number }) {
 export function Sidebar({ mobile = false, onClose }: { mobile?: boolean; onClose?: () => void }) {
   return (
     <div className={`${mobile ? "" : "w-64 shrink-0"} h-full`}>
-      <div className="flex items-center justify-between px-4 py-3 border-b border-border-warm">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-border-warm dark:border-border-warm-dark">
         <Link href="/" className="flex items-center gap-2 font-serif font-semibold text-charcoal">
           <div className="w-7 h-7 rounded-lg bg-charcoal flex items-center justify-center text-cream text-sm font-bold">
             M
@@ -207,7 +207,7 @@ export function MobileSidebar() {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="lg:hidden flex items-center justify-center w-9 h-9 rounded-lg bg-cream-dark text-warm-gray"
+        className="lg:hidden flex items-center justify-center w-9 h-9 rounded-lg bg-cream-dark text-warm-gray dark:bg-charcoal-light dark:text-warm-gray-light"
         aria-label="Open sidebar"
       >
         <Menu size={18} />
@@ -215,7 +215,7 @@ export function MobileSidebar() {
       {open && (
         <div className="fixed inset-0 z-40 lg:hidden">
           <div className="sidebar-overlay absolute inset-0" onClick={() => setOpen(false)} />
-          <div className="absolute left-0 top-0 bottom-0 w-72 bg-white border-r border-border-warm shadow-xl">
+          <div className="absolute left-0 top-0 bottom-0 w-72 bg-white dark:bg-charcoal border-r border-border-warm dark:border-border-warm-dark shadow-xl">
             <Sidebar mobile onClose={() => setOpen(false)} />
           </div>
         </div>
