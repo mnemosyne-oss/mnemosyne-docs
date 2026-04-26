@@ -26,7 +26,7 @@ Upgrade Mnemosyne versions and migrate data between instances.
 cp mnemosyne.db mnemosyne-pre-upgrade.db
 
 # 2. Upgrade package
-pip install --upgrade mnemosyne
+pip install --upgrade mnemosyne-memory
 
 # 3. Run migrations
 python -m mnemosyne.migrate --db mnemosyne.db
@@ -75,7 +75,7 @@ If upgrade fails:
 cp mnemosyne-pre-upgrade.db mnemosyne.db
 
 # Downgrade package
-pip install mnemosyne==1.0.0
+memoryemory==1.0.0
 
 # Restart
 `} language="bash" />

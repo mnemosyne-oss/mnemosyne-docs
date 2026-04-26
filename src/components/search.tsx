@@ -13,7 +13,7 @@ interface SearchResult {
 
 const searchIndex: SearchResult[] = [
   { title: "Quick Start", href: "/getting-started/quick-start", excerpt: "Get Mnemosyne running in 5 minutes", section: "Getting Started" },
-  { title: "Installation", href: "/getting-started/installation", excerpt: "pip install mnemosyne or use as Hermes plugin", section: "Getting Started" },
+  { title: "Installation", href: "/getting-started/installation", excerpt: "pip install mnemosyne-memory or use as Hermes plugin", section: "Getting Started" },
   { title: "Configuration", href: "/getting-started/configuration", excerpt: "Environment variables and setup options", section: "Getting Started" },
   { title: "BEAM Architecture", href: "/architecture/beam-overview", excerpt: "Biological-inspired memory architecture", section: "Architecture" },
   { title: "System Architecture", href: "/architecture/system-design", excerpt: "High-level system design and data flow", section: "Architecture" },
