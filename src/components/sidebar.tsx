@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronRight, BookOpen, Layers, Brain, Search, Code, Rocket, Shield, Briefcase, Settings, Menu, X } from "lucide-react";
@@ -202,6 +203,29 @@ export function Sidebar({ mobile = false, onClose }: { mobile?: boolean; onClose
 
 export function MobileSidebar() {
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => { setMounted(true); }, []);
+
+  // Lock body scroll when open
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [open]);
+
+  // Close on Escape
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, [open]);
 
   return (
     <>
@@ -212,18 +236,19 @@ export function MobileSidebar() {
       >
         <Menu size={18} />
       </button>
-      {open && (
+      {open && mounted && createPortal(
         <div className="fixed inset-0 z-50 lg:hidden flex">
           {/* Backdrop */}
           <div
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
             onClick={() => setOpen(false)}
           />
           {/* Slide-in panel */}
-          <div className="relative w-80 max-w-[85vw] h-full bg-warm-white dark:bg-charcoal border-r border-border-warm dark:border-charcoal-light shadow-2xl flex flex-col z-50 animate-in slide-in-from-left duration-200">
+          <div className="relative w-80 max-w-[85vw] h-full bg-warm-white dark:bg-charcoal border-r border-border-warm dark:border-charcoal-light shadow-2xl flex flex-col">
             <Sidebar mobile onClose={() => setOpen(false)} />
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );
