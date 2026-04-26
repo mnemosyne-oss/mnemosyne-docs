@@ -21,9 +21,9 @@ export function CodeBlock({ code, language = "text", filename }: CodeBlockProps)
   return (
     <div className="code-block-wrapper my-6">
       {filename && (
-        <div className="flex items-center justify-between px-4 py-2 bg-cream-dark border border-b-0 border-border-warm rounded-t-lg">
-          <span className="text-xs font-mono text-warm-gray">{filename}</span>
-          <span className="text-xs text-warm-gray-light uppercase tracking-wider">{language}</span>
+        <div className="flex items-center justify-between px-4 py-2 bg-cream-dark dark:bg-charcoal border border-b-0 border-border-warm dark:border-charcoal-light rounded-t-lg">
+          <span className="text-xs font-mono text-warm-gray dark:text-warm-gray-muted">{filename}</span>
+          <span className="text-xs text-warm-gray-light dark:text-warm-gray uppercase tracking-wider">{language}</span>
         </div>
       )}
       <div className={`relative ${filename ? "rounded-b-lg" : "rounded-lg"}`}>
@@ -32,7 +32,7 @@ export function CodeBlock({ code, language = "text", filename }: CodeBlockProps)
         </pre>
         <button
           onClick={copy}
-          className="code-copy-btn flex items-center gap-1 px-2 py-1 rounded-md bg-border-warm-dark text-warm-gray-light text-xs hover:bg-warm-gray hover:text-cream transition-colors"
+          className="code-copy-btn flex items-center gap-1 px-2 py-1 rounded-md bg-border-warm-dark dark:bg-graphite text-warm-gray-light dark:text-warm-gray-muted text-xs hover:bg-warm-gray hover:text-cream transition-colors"
           aria-label="Copy code"
         >
           {copied ? <Check size={14} /> : <Copy size={14} />}

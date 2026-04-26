@@ -127,8 +127,8 @@ function SidebarItem({ item, depth = 0 }: { item: NavItem; depth?: number }) {
         href={item.href}
         className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm transition-colors ${
           isActive
-            ? "bg-cream-dark text-accent-terracotta font-medium"
-            : "text-warm-gray hover:bg-cream-dark hover:text-charcoal"
+            ? "bg-cream-dark dark:bg-charcoal-light text-accent-terracotta dark:text-accent-terracotta-light font-medium"
+            : "text-warm-gray dark:text-warm-gray-muted hover:bg-cream-dark dark:hover:bg-charcoal-light hover:text-charcoal dark:hover:text-parchment"
         } ${depth > 0 ? "ml-4" : ""}`}
         onClick={() => hasChildren && setExpanded(!expanded)}
       >
@@ -151,8 +151,8 @@ function SidebarItem({ item, depth = 0 }: { item: NavItem; depth?: number }) {
               href={sub.href}
               className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm transition-colors ml-6 ${
                 pathname === sub.href
-                  ? "bg-cream-dark text-accent-terracotta font-medium"
-                  : "text-warm-gray-light hover:bg-cream-dark hover:text-warm-gray"
+                  ? "bg-cream-dark dark:bg-charcoal-light text-accent-terracotta dark:text-accent-terracotta-light font-medium"
+                  : "text-warm-gray-light dark:text-warm-gray-muted hover:bg-cream-dark dark:hover:bg-charcoal-light hover:text-warm-gray dark:hover:text-parchment"
               }`}
             >
               <span className="truncate">{sub.title}</span>
@@ -168,15 +168,15 @@ function SidebarItem({ item, depth = 0 }: { item: NavItem; depth?: number }) {
 export function Sidebar({ mobile = false, onClose }: { mobile?: boolean; onClose?: () => void }) {
   return (
     <div className={`${mobile ? "" : "w-64 shrink-0"} h-full`}>
-      <div className="flex items-center justify-between px-4 py-3 border-b border-border-warm dark:border-border-warm-dark">
-        <Link href="/" className="flex items-center gap-2 font-serif font-semibold text-charcoal">
-          <div className="w-7 h-7 rounded-lg bg-charcoal flex items-center justify-center text-cream text-sm font-bold">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-border-warm dark:border-charcoal-light">
+        <Link href="/" className="flex items-center gap-2 font-serif font-semibold text-charcoal dark:text-parchment">
+          <div className="w-7 h-7 rounded-lg bg-charcoal dark:bg-parchment flex items-center justify-center text-cream dark:text-midnight text-sm font-bold">
             M
           </div>
           Mnemosyne
         </Link>
         {mobile && onClose && (
-          <button onClick={onClose} className="text-warm-gray hover:text-charcoal">
+          <button onClick={onClose} className="text-warm-gray dark:text-warm-gray-muted hover:text-charcoal dark:hover:text-parchment">
             <X size={20} />
           </button>
         )}
@@ -184,7 +184,7 @@ export function Sidebar({ mobile = false, onClose }: { mobile?: boolean; onClose
       <nav className="px-3 py-4 space-y-6 overflow-y-auto h-[calc(100%-3.5rem)]">
         {navigation.map((section) => (
           <div key={section.title}>
-            <div className="flex items-center gap-2 px-3 mb-2 text-xs font-semibold text-warm-gray-muted uppercase tracking-wider">
+            <div className="flex items-center gap-2 px-3 mb-2 text-xs font-semibold text-warm-gray-muted dark:text-warm-gray uppercase tracking-wider">
               {section.icon}
               {section.title}
             </div>
@@ -207,7 +207,7 @@ export function MobileSidebar() {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="lg:hidden flex items-center justify-center w-9 h-9 rounded-lg bg-cream-dark text-warm-gray dark:bg-charcoal-light dark:text-warm-gray-light"
+        className="lg:hidden flex items-center justify-center w-9 h-9 rounded-lg bg-cream-dark dark:bg-charcoal-light text-warm-gray dark:text-warm-gray-muted"
         aria-label="Open sidebar"
       >
         <Menu size={18} />
@@ -215,7 +215,7 @@ export function MobileSidebar() {
       {open && (
         <div className="fixed inset-0 z-40 lg:hidden">
           <div className="sidebar-overlay absolute inset-0" onClick={() => setOpen(false)} />
-          <div className="absolute left-0 top-0 bottom-0 w-72 bg-white dark:bg-charcoal border-r border-border-warm dark:border-border-warm-dark shadow-xl">
+          <div className="absolute left-0 top-0 bottom-0 w-72 bg-warm-white dark:bg-charcoal border-r border-border-warm dark:border-charcoal-light shadow-xl">
             <Sidebar mobile onClose={() => setOpen(false)} />
           </div>
         </div>

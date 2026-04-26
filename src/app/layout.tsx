@@ -71,7 +71,7 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${playfair.variable} ${cormorant.variable} ${greatVibes.variable} ${inter.variable} ${jetbrains.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-cream text-charcoal">
+      <body className="min-h-full flex flex-col bg-cream dark:bg-midnight text-charcoal dark:text-parchment transition-colors">
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>

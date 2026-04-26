@@ -94,13 +94,13 @@ export function Search() {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-cream-dark text-warm-gray text-sm hover:bg-border-warm transition-colors w-48 justify-between"
+        className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-cream-dark dark:bg-charcoal-light text-warm-gray dark:text-warm-gray-muted text-sm hover:bg-border-warm dark:hover:bg-graphite transition-colors w-48 justify-between"
       >
         <span className="flex items-center gap-2">
           <SearchIcon size={14} />
           <span>Search docs...</span>
         </span>
-        <kbd className="hidden sm:inline-block text-xs bg-border-warm px-1.5 py-0.5 rounded">
+        <kbd className="hidden sm:inline-block text-xs bg-border-warm dark:bg-graphite px-1.5 py-0.5 rounded">
           ⌘K
         </kbd>
       </button>
@@ -110,12 +110,12 @@ export function Search() {
           className="fixed inset-0 z-50 flex items-start justify-center pt-[20vh]"
           onClick={() => setOpen(false)}
         >
-          <div className="fixed inset-0 bg-charcoal/50 backdrop-blur-sm" />
+          <div className="fixed inset-0 bg-charcoal/50 dark:bg-midnight/70 backdrop-blur-sm" />
           <div
-            className="relative w-full max-w-xl bg-white rounded-xl shadow-2xl border border-border-warm overflow-hidden"
+            className="relative w-full max-w-xl bg-warm-white dark:bg-charcoal rounded-xl shadow-2xl border border-border-warm dark:border-charcoal-light overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center gap-3 px-4 py-3 border-b border-border-warm">
+            <div className="flex items-center gap-3 px-4 py-3 border-b border-border-warm dark:border-charcoal-light">
               <SearchIcon size={18} className="text-warm-gray-muted" />
               <input
                 ref={inputRef}
@@ -123,35 +123,35 @@ export function Search() {
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="Search documentation..."
-                className="flex-1 bg-transparent outline-none text-charcoal placeholder:text-warm-gray-muted"
+                className="flex-1 bg-transparent outline-none text-charcoal dark:text-parchment placeholder:text-warm-gray-muted"
               />
               <button
                 onClick={() => setOpen(false)}
-                className="text-warm-gray-muted hover:text-warm-gray"
+                className="text-warm-gray-muted hover:text-warm-gray dark:hover:text-parchment"
               >
                 <X size={18} />
               </button>
             </div>
             <div className="max-h-[50vh] overflow-y-auto">
               {results.length === 0 && query && (
-                <div className="px-4 py-8 text-center text-warm-gray">
-                  No results found for "{query}"
+                <div className="px-4 py-8 text-center text-warm-gray dark:text-warm-gray-muted">
+                  No results found for &quot;{query}&quot;
                 </div>
               )}
               {results.map((result, i) => (
                 <button
                   key={result.href}
                   onClick={() => handleSelect(result)}
-                  className={`w-full text-left px-4 py-3 flex items-start gap-3 hover:bg-cream transition-colors ${
-                    i === selected ? "bg-cream" : ""
+                  className={`w-full text-left px-4 py-3 flex items-start gap-3 hover:bg-cream dark:hover:bg-charcoal-light transition-colors ${
+                    i === selected ? "bg-cream dark:bg-charcoal-light" : ""
                   }`}
                 >
                   <FileText size={16} className="mt-0.5 text-warm-gray-muted shrink-0" />
                   <div>
-                    <div className="text-sm font-medium text-charcoal">
+                    <div className="text-sm font-medium text-charcoal dark:text-parchment">
                       {result.title}
                     </div>
-                    <div className="text-xs text-warm-gray mt-0.5">
+                    <div className="text-xs text-warm-gray dark:text-warm-gray-muted mt-0.5">
                       {result.section} — {result.excerpt}
                     </div>
                   </div>
