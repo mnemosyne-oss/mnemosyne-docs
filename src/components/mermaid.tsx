@@ -9,11 +9,16 @@ mermaid.initialize({
 });
 
 interface MermaidDiagramProps {
-  children: string;
+  chart?: string;
+  children?: string;
 }
 
-export async function MermaidDiagram({ children }: MermaidDiagramProps) {
-  if (!children) {
+export async function MermaidDiagram({ chart, children }: MermaidDiagramProps) {
+  // Support both prop syntax: <MermaidDiagram chart={`...`} /> 
+  // and children syntax: <MermaidDiagram>...</MermaidDiagram>
+  const content = chart || children || "";
+
+  if (!content.trim()) {
     return (
       <div className="callout callout-warning">
         <strong>Missing diagram content</strong>
@@ -23,7 +28,7 @@ export async function MermaidDiagram({ children }: MermaidDiagramProps) {
 
   try {
     const id = `mermaid-${Math.random().toString(36).slice(2, 11)}`;
-    const { svg } = await mermaid.render(id, children.trim());
+    const { svg } = await mermaid.render(id, content.trim());
 
     return (
       <div
