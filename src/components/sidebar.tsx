@@ -167,8 +167,8 @@ function SidebarItem({ item, depth = 0 }: { item: NavItem; depth?: number }) {
 
 export function Sidebar({ mobile = false, onClose }: { mobile?: boolean; onClose?: () => void }) {
   return (
-    <div className={`${mobile ? "" : "w-64 shrink-0"} h-full`}>
-      <div className="flex items-center justify-between px-4 py-3 border-b border-border-warm dark:border-charcoal-light">
+    <div className={`${mobile ? "" : "w-64 shrink-0"} h-full flex flex-col`}>
+      <div className="flex items-center justify-between px-4 py-3 border-b border-border-warm dark:border-charcoal-light shrink-0">
         <Link href="/" className="flex items-center gap-2 font-serif font-semibold text-charcoal dark:text-parchment">
           <div className="w-7 h-7 rounded-lg bg-charcoal dark:bg-parchment flex items-center justify-center text-cream dark:text-midnight text-sm font-bold">
             M
@@ -181,7 +181,7 @@ export function Sidebar({ mobile = false, onClose }: { mobile?: boolean; onClose
           </button>
         )}
       </div>
-      <nav className="px-3 py-4 space-y-6 overflow-y-auto h-[calc(100%-3.5rem)]">
+      <nav className="px-3 py-4 space-y-6 overflow-y-auto flex-1 min-h-0 overscroll-contain">
         {navigation.map((section) => (
           <div key={section.title}>
             <div className="flex items-center gap-2 px-3 mb-2 text-xs font-semibold text-warm-gray-muted dark:text-warm-gray uppercase tracking-wider">
@@ -213,9 +213,14 @@ export function MobileSidebar() {
         <Menu size={18} />
       </button>
       {open && (
-        <div className="fixed inset-0 z-40 lg:hidden">
-          <div className="sidebar-overlay absolute inset-0" onClick={() => setOpen(false)} />
-          <div className="absolute left-0 top-0 bottom-0 w-72 bg-warm-white dark:bg-charcoal border-r border-border-warm dark:border-charcoal-light shadow-xl">
+        <div className="fixed inset-0 z-50 lg:hidden flex">
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+            onClick={() => setOpen(false)}
+          />
+          {/* Slide-in panel */}
+          <div className="relative w-80 max-w-[85vw] h-full bg-warm-white dark:bg-charcoal border-r border-border-warm dark:border-charcoal-light shadow-2xl flex flex-col z-50 animate-in slide-in-from-left duration-200">
             <Sidebar mobile onClose={() => setOpen(false)} />
           </div>
         </div>
