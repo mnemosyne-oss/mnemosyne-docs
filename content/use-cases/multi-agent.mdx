@@ -4,7 +4,8 @@ Share memory across a team of agents for coordinated behavior.
 
 ## Architecture
 
-<MermaidDiagram chart={`
+<MermaidDiagram>
+
 graph TB
     subgraph Team["Agent Team"]
         A1[Agent A]
@@ -28,7 +29,8 @@ graph TB
     WM -->|extract| SM
     EM -->|recall| A1
     SM -->|query| A2
-`} />
+
+</MermaidDiagram>
 
 ## Shared vs Private Memory
 

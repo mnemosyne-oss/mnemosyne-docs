@@ -4,7 +4,8 @@ Mnemosyne is designed with security and privacy as first-class concerns.
 
 ## Security Model
 
-<MermaidDiagram chart={`
+<MermaidDiagram>
+
 flowchart TD
     A[Agent] -->|Local API| M[Mnemosyne]
     M -->|Encrypted| DB[(SQLite DB)]
@@ -13,7 +14,8 @@ flowchart TD
     
     style M fill:#e0f2fe,stroke:#0284c7
     style DB fill:#f0fdf4,stroke:#16a34a
-`} />
+
+</MermaidDiagram>
 
 ## Threat Model
 

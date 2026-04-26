@@ -13,7 +13,8 @@ Deploy Mnemosyne to production with confidence. This section covers multiple dep
 
 ## Architecture Decision
 
-<MermaidDiagram chart={`
+<MermaidDiagram>
+
 flowchart TD
     A[Choose Deployment] -->|Serverless| B[Fly.io]
     A -->|Containers| C[Docker]
@@ -23,7 +24,8 @@ flowchart TD
     C -->|Bind Mount| F
     D -->|Local Disk| F
     E -->|Shared Volume| F
-`} />
+
+</MermaidDiagram>
 
 ## Common Requirements
 

@@ -39,14 +39,16 @@ When Working Memory reaches capacity, entries are evicted by:
 
 ## Consolidation Path
 
-<MermaidDiagram chart={`
+<MermaidDiagram>
+
 flowchart LR
     A[New Entry] -->|insert| WM[Working Memory]
     WM -->|sleep cycle| C{Consolidation}
-    C -->|importance &gt; 0.7| EM[Episodic Memory]
+    C -->|importance > 0.7| EM[Episodic Memory]
     C -->|extractable facts| SM[Semantic Memory]
     C -->|low score| DEL[Evicted]
-`} />
+
+</MermaidDiagram>
 
 ## API Reference
 

@@ -4,7 +4,8 @@ How information moves through Mnemosyne's memory tiers.
 
 ## Write Path
 
-<MermaidDiagram chart={`
+<MermaidDiagram>
+
 flowchart LR
     A[Agent Input] -->|observe| WM[Working Memory]
     WM -->|index| VI[Vector Index]
@@ -13,7 +14,8 @@ flowchart LR
     SC -->|promote| EM[Episodic Memory]
     SC -->|extract| SM[Semantic Memory]
     SC -->|evict| DEL[Deleted]
-`} />
+
+</MermaidDiagram>
 
 1. **Agent observes** an event, conversation turn, or tool result
 2. **Working Memory** stores the raw entry with metadata
@@ -25,7 +27,8 @@ flowchart LR
 
 ## Read Path
 
-<MermaidDiagram chart={`
+<MermaidDiagram>
+
 flowchart LR
     Q[Query] -->|parse| RE[Retrieval Engine]
     RE -->|vector| VI[Vector Index]
@@ -36,7 +39,8 @@ flowchart LR
     TG -->|triples| RF
     RF -->|results| WM[Working Memory]
     WM -->|context| A[Agent]
-`} />
+
+</MermaidDiagram>
 
 1. **Query** enters the Retrieval Engine
 2. **Parallel dispatch** to vector, text, and graph indices
@@ -46,18 +50,20 @@ flowchart LR
 
 ## Consolidation Flow
 
-<MermaidDiagram chart={`
+<MermaidDiagram>
+
 flowchart TD
     START[Sleep Cycle Trigger] -->|every N seconds| WM2[Scan Working Memory]
     WM2 -->|select| CAND[Candidates]
-    CAND -->|importance &gt; threshold| PROMOTE[Promote to Episodic]
+    CAND -->|importance > threshold| PROMOTE[Promote to Episodic]
     CAND -->|extractable facts| EXTRACT[Extract to Semantic]
-    CAND -->|age &gt; limit| EVICT[Evict]
+    CAND -->|age > limit| EVICT[Evict]
     PROMOTE --> COMPRESS[AAAK Compress]
     COMPRESS --> EM2[Episodic Memory]
     EXTRACT --> TG2[Temporal Graph]
     EVICT --> DEL[Remove]
-`} />
+
+</MermaidDiagram>
 
 ## Event Lifecycle
 

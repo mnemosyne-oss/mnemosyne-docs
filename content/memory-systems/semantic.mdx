@@ -71,12 +71,14 @@ matches = mem.query_facts(
 
 Mnemosyne automatically extracts triples during consolidation:
 
-<MermaidDiagram chart={`
+<MermaidDiagram>
+
 flowchart LR
     WM[Working Memory Entry] -->|NLP extraction| T[Candidate Triples]
-    T -->|confidence &gt; 0.7| SM[Semantic Memory]
-    T -->|confidence &lt; 0.7| DISCARD[Discard]
-`} />
+    T -->|confidence > 0.7| SM[Semantic Memory]
+    T -->|confidence < 0.7| DISCARD[Discard]
+
+</MermaidDiagram>
 
 Extraction uses a lightweight local model (no API calls) and runs during sleep cycles.
 

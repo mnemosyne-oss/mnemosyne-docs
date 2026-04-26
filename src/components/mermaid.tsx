@@ -11,22 +11,22 @@ mermaid.initialize({
 });
 
 interface MermaidDiagramProps {
-  chart: string;
+  children: string;
 }
 
-export function MermaidDiagram({ chart }: MermaidDiagramProps) {
+export function MermaidDiagram({ children }: MermaidDiagramProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [svg, setSvg] = useState<string>("");
   const [error, setError] = useState<string>("");
 
   useEffect(() => {
-    if (!ref.current) return;
+    if (!ref.current || !children) return;
     const id = `mermaid-${Math.random().toString(36).slice(2, 11)}`;
     mermaid
-      .render(id, chart.trim())
+      .render(id, children.trim())
       .then(({ svg }) => setSvg(svg))
       .catch((err) => setError(err.message));
-  }, [chart]);
+  }, [children]);
 
   if (error) {
     return (

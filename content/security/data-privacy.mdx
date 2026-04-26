@@ -11,7 +11,8 @@ Mnemosyne's privacy-first design ensures your data stays under your control.
 
 ## Data Flow
 
-<MermaidDiagram chart={`
+<MermaidDiagram>
+
 flowchart LR
     U[User Input] -->|Local| M[Mnemosyne]
     M -->|Optional| O[OpenAI Embeddings]
@@ -19,7 +20,8 @@ flowchart LR
     
     style M fill:#e0f2fe,stroke:#0284c7
     style DB fill:#f0fdf4,stroke:#16a34a
-`} />
+
+</MermaidDiagram>
 
 ## Minimizing External Calls
 

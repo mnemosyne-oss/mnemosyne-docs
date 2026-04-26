@@ -4,14 +4,16 @@ The graph structure underlying Semantic Memory, enabling relationship traversal 
 
 ## Graph Structure
 
-<MermaidDiagram chart={`
+<MermaidDiagram>
+
 graph LR
     A[Alice] -->|prefers_language| B[Go]
     A -->|works_on| C[Project Alpha]
     C -->|has_deadline| D[2026-05-01]
     C -->|depends_on| E[Auth Service]
     E -->|maintained_by| F[Bob]
-`} />
+
+</MermaidDiagram>
 
 ## Temporal Dimensions
 

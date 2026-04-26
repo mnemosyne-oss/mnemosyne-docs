@@ -24,17 +24,19 @@ Sleep cycles trigger on:
 
 ## Consolidation Pipeline
 
-<MermaidDiagram chart={`
+<MermaidDiagram>
+
 flowchart LR
     A[Working Memory] -->|scan| B[Candidate Selection]
-    B -->|importance &gt; 0.7| C[Promote to Episodic]
+    B -->|importance > 0.7| C[Promote to Episodic]
     B -->|extractable| D[Extract Facts]
-    B -->|age &gt; 7d| E[Evict]
+    B -->|age > 7d| E[Evict]
     C -->|compress| F[AAAK Compression]
     F --> G[Episodic Memory]
     D --> H[Temporal Graph]
     E --> I[Delete]
-`} />
+
+</MermaidDiagram>
 
 ## Configuration
 

@@ -26,14 +26,16 @@ Or add to `hermes.yaml`:
 
 When enabled, Mnemosyne automatically injects relevant memories into agent context:
 
-<MermaidDiagram chart={`
+<MermaidDiagram>
+
 flowchart LR
     U[User Input] -->|query| M[Mnemosyne]
     M -->|recall| C[Context Assembly]
     C -->|inject| A[Agent Prompt]
     A -->|respond| R[Response]
     R -->|remember| M
-`} />
+
+</MermaidDiagram>
 
 ## Plugin Hooks
 

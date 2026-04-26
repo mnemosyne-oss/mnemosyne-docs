@@ -4,7 +4,8 @@ Build a structured knowledge base from agent interactions and external sources.
 
 ## Architecture
 
-<MermaidDiagram chart={`
+<MermaidDiagram>
+
 flowchart LR
     S[Sources] -->|import| M[Mnemosyne]
     M -->|extract| SM[Semantic Memory]
@@ -12,7 +13,8 @@ flowchart LR
     A -->|add| M
     
     style SM fill:#f0fdf4,stroke:#16a34a
-`} />
+
+</MermaidDiagram>
 
 ## Importing Sources
 

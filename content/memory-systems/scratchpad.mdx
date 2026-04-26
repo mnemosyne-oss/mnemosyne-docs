@@ -29,14 +29,16 @@ mem.scratchpad.flush_to_working(tags=["insight"])
 
 ## Lifecycle
 
-<MermaidDiagram chart={`
+<MermaidDiagram>
+
 flowchart LR
     A[Agent Start] -->|create| SP[Scratchpad]
     SP -->|write/read| SP
     SP -->|flush| WM[Working Memory]
     WM -->|agent uses| A
     A -->|shutdown| DEL[Discard Scratchpad]
-`} />
+
+</MermaidDiagram>
 
 ## Configuration
 

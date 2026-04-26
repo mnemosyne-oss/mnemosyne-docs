@@ -4,7 +4,8 @@ How Mnemosyne ranks and scores retrieval results across different search modes.
 
 ## Scoring Pipeline
 
-<MermaidDiagram chart={`
+<MermaidDiagram>
+
 flowchart LR
     Q[Query] -->|embed| V[Vector Score]
     Q -->|tokenize| T[FTS5 Score]
@@ -13,7 +14,8 @@ flowchart LR
     T -->|weight| F
     TM -->|weight| F
     F -->|sort| R[Ranked Results]
-`} />
+
+</MermaidDiagram>
 
 ## Individual Scorers
 
