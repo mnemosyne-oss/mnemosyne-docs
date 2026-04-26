@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Playfair_Display, Cormorant_Garamond, Great_Vibes, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
+import { StructuredData } from "@/components/structured-data";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -36,6 +37,7 @@ const jetbrains = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://docs.mnemosyne.site"),
   title: {
     default: "Mnemosyne Documentation",
     template: "%s | Mnemosyne Docs",
@@ -57,6 +59,29 @@ export const metadata: Metadata = {
     title: "Mnemosyne Documentation",
     description: "The native memory system for AI agents",
     type: "website",
+    siteName: "Mnemosyne",
+    locale: "en_US",
+    url: "https://docs.mnemosyne.site",
+    images: [
+      {
+        url: "/og-image.svg",
+        width: 1200,
+        height: 630,
+        alt: "Mnemosyne — AI Agent Memory System",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    site: "@axdsan",
+    creator: "@axdsan",
+  },
+  alternates: {
+    canonical: "https://docs.mnemosyne.site",
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 
@@ -72,7 +97,10 @@ export default function RootLayout({
       className={`${playfair.variable} ${cormorant.variable} ${greatVibes.variable} ${inter.variable} ${jetbrains.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-cream dark:bg-midnight text-charcoal dark:text-parchment transition-colors">
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          <StructuredData slug="/" />
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

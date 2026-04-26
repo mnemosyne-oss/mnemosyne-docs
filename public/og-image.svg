@@ -1,0 +1,37 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#faf8f5"/>
+      <stop offset="100%" stop-color="#f0ebe3"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#c9a96e"/>
+      <stop offset="50%" stop-color="#b85c38"/>
+      <stop offset="100%" stop-color="#7a8b6e"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  
+  <!-- Accent bar at bottom -->
+  <rect x="0" y="624" width="1200" height="6" fill="url(#accent)"/>
+  
+  <!-- Logo -->
+  <rect x="80" y="80" width="56" height="56" rx="12" fill="#1a1a1a"/>
+  <text x="108" y="118" text-anchor="middle" fill="#faf8f5" font-family="system-ui" font-size="28" font-weight="700">M</text>
+  
+  <!-- Brand name -->
+  <text x="152" y="118" fill="#1a1a1a" font-family="system-ui" font-size="32" font-weight="600" letter-spacing="-0.5">Mnemosyne</text>
+  
+  <!-- Title -->
+  <text x="80" y="230" fill="#1a1a1a" font-family="system-ui" font-size="52" font-weight="700" letter-spacing="-1.5">Memory for AI Agents</text>
+  <text x="80" y="300" fill="#1a1a1a" font-family="system-ui" font-size="52" font-weight="700" letter-spacing="-1.5">That Actually Works</text>
+  
+  <!-- Description -->
+  <text x="80" y="370" fill="#6b6b6b" font-family="system-ui" font-size="22">Persistent, structured, and context-aware memory</text>
+  <text x="80" y="400" fill="#6b6b6b" font-family="system-ui" font-size="22">built on SQLite with hybrid vector + full-text search.</text>
+  
+  <!-- URL -->
+  <text x="80" y="570" fill="#c9a96e" font-family="system-ui" font-size="18" font-weight="500">docs.mnemosyne.site</text>
+</svg>

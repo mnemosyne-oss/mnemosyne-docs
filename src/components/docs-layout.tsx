@@ -3,6 +3,8 @@
 import { Sidebar, MobileSidebar } from "./sidebar";
 import { ThemeToggle } from "./theme-toggle";
 import { Search } from "./search";
+import { Breadcrumbs } from "./breadcrumbs";
+import { RelatedPages } from "./related-pages";
 import { ExternalLink } from "lucide-react";
 import Link from "next/link";
 
@@ -45,7 +47,9 @@ export function DocsLayout({ children }: { children: React.ReactNode }) {
         {/* Content */}
         <main className="flex-1 overflow-y-auto">
           <div className="prose max-w-4xl mx-auto px-6 py-10 min-h-full">
+            <Breadcrumbs />
             {children}
+            <RelatedPages />
           </div>
           <footer className="border-t border-border-warm dark:border-charcoal-light py-8 px-6 mt-10">
             <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-warm-gray-light dark:text-warm-gray">
