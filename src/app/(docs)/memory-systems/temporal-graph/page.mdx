@@ -28,14 +28,14 @@ Every edge has temporal metadata:
 
 <CodeBlock code={`# Who works on Project Alpha?
 mem.query_facts(predicate="works_on", object="Project Alpha")
-# &gt; Alice
+# > Alice
 `} language="python" />
 
 ### Path Traversal
 
 <CodeBlock code={`# What services does Project Alpha depend on (2 hops)?
 mem.traverse(subject="Project Alpha", depth=2)
-# &gt; Auth Service &gt; Bob (maintainer)
+# > Auth Service > Bob (maintainer)
 `} language="python" />
 
 ### Temporal Filtering

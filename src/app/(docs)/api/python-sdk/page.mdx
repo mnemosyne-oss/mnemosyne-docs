@@ -14,7 +14,7 @@ Complete reference for the Mnemosyne Python API.
     consolidation_interval: int = 3600,
     encryption_key: str | None = None,
     config_path: str | None = None,
-) -&gt; Memory
+) -> Memory
 `} language="python" />
 
 ### remember
@@ -27,7 +27,7 @@ Store a memory in Working Memory.
     importance: float = 0.5,
     source: str = "user",
     session_id: str | None = None,
-) -&gt; str  # Returns memory ID
+) -> str  # Returns memory ID
 `} language="python" />
 
 ### recall
@@ -42,14 +42,14 @@ Retrieve relevant memories using hybrid search.
     vector_weight: float = 0.5,
     text_weight: float = 0.3,
     temporal_weight: float = 0.2,
-) -&gt; list[MemoryResult]
+) -> list[MemoryResult]
 `} language="python" />
 
 ### get
 
 Retrieve a specific memory by ID.
 
-<CodeBlock code={`get(id: str) -&gt; MemoryEntry | None
+<CodeBlock code={`get(id: str) -> MemoryEntry | None
 `} language="python" />
 
 ### update
@@ -61,14 +61,14 @@ Update an existing memory.
     content: str | None = None,
     importance: float | None = None,
     tags: list[str] | None = None,
-) -&gt; bool
+) -> bool
 `} language="python" />
 
 ### forget
 
 Delete a memory.
 
-<CodeBlock code={`forget(id: str) -&gt; bool
+<CodeBlock code={`forget(id: str) -> bool
 `} language="python" />
 
 ### forget_all
@@ -79,7 +79,7 @@ Bulk delete by criteria.
     tags: list[str] | None = None,
     since: str | None = None,
     before: str | None = None,
-) -&gt; int  # Returns count deleted
+) -> int  # Returns count deleted
 `} language="python" />
 
 ## Semantic Memory API
@@ -94,7 +94,7 @@ Store a structured fact.
     object: str,
     confidence: float = 1.0,
     valid_from: str | None = None,
-) -&gt; str  # Returns fact ID
+) -> str  # Returns fact ID
 `} language="python" />
 
 ### query_facts
@@ -106,7 +106,7 @@ Query the temporal knowledge graph.
     predicate: str | None = None,
     object: str | None = None,
     current_only: bool = True,
-) -&gt; list[Fact]
+) -> list[Fact]
 `} language="python" />
 
 ### traverse
@@ -117,12 +117,12 @@ Graph traversal from a starting entity.
     subject: str,
     predicate: str | None = None,
     depth: int = 1,
-) -&gt; list[FactPath]
+) -> list[FactPath]
 `} language="python" />
 
 ## Statistics
 
-<CodeBlock code={`stats() -&gt; MemoryStats
+<CodeBlock code={`stats() -> MemoryStats
 
 # MemoryStats fields:
 # - working_count: int

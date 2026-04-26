@@ -69,13 +69,13 @@ Configure log level:
   - name: mnemosyne
     rules:
       - alert: HighQueryLatency
-        expr: mnemosyne_query_latency_ms{quantile="0.99"} &gt; 500
+        expr: mnemosyne_query_latency_ms{quantile="0.99"} > 500
         for: 5m
         annotations:
           summary: "Mnemosyne query latency is high"
 
       - alert: MemoryNotConsolidating
-        expr: time() - mnemosyne_consolidation_last_run &gt; 7200
+        expr: time() - mnemosyne_consolidation_last_run > 7200
         for: 10m
         annotations:
           summary: "Mnemosyne consolidation has stalled"

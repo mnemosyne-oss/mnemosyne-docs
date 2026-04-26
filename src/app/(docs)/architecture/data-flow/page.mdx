@@ -50,9 +50,9 @@ flowchart LR
 flowchart TD
     START[Sleep Cycle Trigger] -->|every N seconds| WM2[Scan Working Memory]
     WM2 -->|select| CAND[Candidates]
-    CAND -->|importance &gt; threshold| PROMOTE[Promote to Episodic]
+    CAND -->|importance > threshold| PROMOTE[Promote to Episodic]
     CAND -->|extractable facts| EXTRACT[Extract to Semantic]
-    CAND -->|age &gt; limit| EVICT[Evict]
+    CAND -->|age > limit| EVICT[Evict]
     PROMOTE --> COMPRESS[AAAK Compress]
     COMPRESS --> EM2[Episodic Memory]
     EXTRACT --> TG2[Temporal Graph]

@@ -48,8 +48,8 @@ Weights are configurable per-query:
 <MermaidDiagram chart={`
 flowchart TD
     WM[Working Memory] -->|candidate| S{Scoring}
-    S -->|importance &gt; 0.7| C[Compress with AAAK]
-    S -->|importance &lt; 0.3| E[Evict]
+    S -->|importance > 0.7| C[Compress with AAAK]
+    S -->|importance < 0.3| E[Evict]
     C -->|store| EM[Episodic Memory]
     C -->|extract| SM[Semantic Memory]
 `} />

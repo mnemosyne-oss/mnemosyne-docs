@@ -6,7 +6,7 @@ Mnemosyne supports multiple installation methods depending on your use case.
 
 The simplest way to get started:
 
-<CodeBlock code="pip install mnemosyne" language="bash" />
+<CodeBlock code={`pip install mnemosyne`} language="bash" />
 
 This installs the core package with all required dependencies.
 
@@ -14,7 +14,7 @@ This installs the core package with all required dependencies.
 
 If you're using Mnemosyne as a Hermes agent plugin:
 
-<CodeBlock code="hermes plugin install mnemosyne" language="bash" />
+<CodeBlock code={`hermes plugin install mnemosyne`} language="bash" />
 
 Or add to your `hermes.yaml`:
 
@@ -31,7 +31,7 @@ For contributing or running from source:
 
 <CodeBlock code={`git clone https://github.com/axdsan/mnemosyne.git
 cd mnemosyne
-pip install -e &quot;.[dev]&quot;
+pip install -e ".[dev]"
 `} language="bash" />
 
 ## Dependency Tiers
@@ -44,4 +44,4 @@ pip install -e &quot;.[dev]&quot;
 
 ## Verify Your Install
 
-<CodeBlock code={`python -c &quot;from mnemosyne import Memory; m = Memory(); print('OK')&quot;`} language="bash" />
+<CodeBlock code={`python -c "from mnemosyne import Memory; m = Memory(); print('OK')"`} language="bash" />
