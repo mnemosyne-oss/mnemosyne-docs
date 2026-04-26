@@ -27,12 +27,12 @@ export function CodeBlock({ code, language = "text", filename }: CodeBlockProps)
         </div>
       )}
       <div className={`relative ${filename ? "rounded-b-lg" : "rounded-lg"}`}>
-        <pre className={`overflow-x-auto p-4 text-sm leading-relaxed ${filename ? "" : "rounded-lg"}`}>
+        <pre className={`code-pre overflow-x-auto p-4 text-sm leading-relaxed ${filename ? "" : "rounded-lg"}`}>
           <code className="font-mono">{code}</code>
         </pre>
         <button
           onClick={copy}
-          className="code-copy-btn flex items-center gap-1 px-2 py-1 rounded-md bg-border-warm text-warm-gray text-xs hover:bg-border-warm-dark transition-colors"
+          className="code-copy-btn flex items-center gap-1 px-2 py-1 rounded-md bg-border-warm-dark text-warm-gray-light text-xs hover:bg-warm-gray hover:text-cream transition-colors"
           aria-label="Copy code"
         >
           {copied ? <Check size={14} /> : <Copy size={14} />}
