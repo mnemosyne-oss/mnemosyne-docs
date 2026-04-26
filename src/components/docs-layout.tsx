@@ -44,7 +44,7 @@ export function DocsLayout({ children }: { children: React.ReactNode }) {
 
         {/* Content */}
         <main className="flex-1 overflow-y-auto">
-          <div className="max-w-4xl mx-auto px-6 py-10 min-h-full">
+          <div className="prose max-w-4xl mx-auto px-6 py-10 min-h-full">
             {children}
           </div>
           <footer className="border-t border-border-warm py-8 px-6 mt-10">
