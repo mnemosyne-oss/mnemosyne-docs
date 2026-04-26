@@ -23,14 +23,14 @@ export default function Home() {
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <Link
-            href="https://docs.mnemosyne.site/getting-started/quick-start"
+            href="/getting-started/quick-start"
             className="btn-primary inline-flex items-center gap-2"
           >
             Get Started
             <ArrowRight size={18} />
           </Link>
           <Link
-            href="https://docs.mnemosyne.site/architecture/beam-overview"
+            href="/architecture/beam-overview"
             className="btn-ghost inline-flex items-center gap-2"
           >
               Architecture
@@ -100,7 +100,7 @@ export default function Home() {
             Start with the Quick Start guide and have Mnemosyne running in under 5 minutes.
           </p>
           <Link
-            href="https://docs.mnemosyne.site/getting-started/quick-start"
+            href="/getting-started/quick-start"
             className="btn-gold inline-flex items-center gap-2"
           >
             Quick Start

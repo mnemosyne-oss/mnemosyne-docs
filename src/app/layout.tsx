@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Playfair_Display, Cormorant_Garamond, Great_Vibes, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
-import { DocsLayout } from "@/components/docs-layout";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -73,9 +72,7 @@ export default function RootLayout({
       className={`${playfair.variable} ${cormorant.variable} ${greatVibes.variable} ${inter.variable} ${jetbrains.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-cream text-charcoal">
-        <ThemeProvider>
-          <DocsLayout>{children}</DocsLayout>
-        </ThemeProvider>
+        <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
   );

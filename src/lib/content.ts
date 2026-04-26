@@ -126,7 +126,7 @@ export function getPageNav(
     const prevPath = pageOrder[idx - 1];
     const prevPage = getPageBySlug(prevPath.split("/"));
     if (prevPage) {
-      result.prev = { title: prevPage.title, href: `/docs/${prevPath}` };
+      result.prev = { title: prevPage.title, href: `/${prevPath}` };
     }
   }
 
@@ -134,7 +134,7 @@ export function getPageNav(
     const nextPath = pageOrder[idx + 1];
     const nextPage = getPageBySlug(nextPath.split("/"));
     if (nextPage) {
-      result.next = { title: nextPage.title, href: `/docs/${nextPath}` };
+      result.next = { title: nextPage.title, href: `/${nextPath}` };
     }
   }
 
