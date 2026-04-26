@@ -30,14 +30,14 @@ Every edge has temporal metadata:
 
 <CodeBlock code={`# Who works on Project Alpha?
 mem.query_facts(predicate="works_on", object="Project Alpha")
-# &gt; Alice
+# > Alice
 `} language="python" />
 
 ### Path Traversal
 
 <CodeBlock code={`# What services does Project Alpha depend on (2 hops)?
 mem.traverse(subject="Project Alpha", depth=2)
-# &gt; Auth Service &gt; Bob (maintainer)
+# > Auth Service > Bob (maintainer)
 `} language="python" />
 
 ### Temporal Filtering
@@ -70,5 +70,5 @@ The graph is stored in SQLite with:
 No external graph database required.
 
 <Callout type="success" title="Performance Tip">
-Graph queries are fast for shallow traversals (1–3 hops). Deep traversals (5+ hops) may require optimization. Consider materializing common paths if your use case requires deep graph walks.
+Graph queries are fast for shallow traversals (1-3 hops). Deep traversals (5+ hops) may require optimization. Consider materializing common paths if your use case requires deep graph walks.
 </Callout>

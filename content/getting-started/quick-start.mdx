@@ -10,15 +10,15 @@ Get Mnemosyne running in under 5 minutes. This guide covers installation, basic 
 
 ## Install
 
-<CodeBlock code="pip install mnemosyne" language="bash" />
+<CodeBlock code={`pip install mnemosyne-memory`} language="bash" />
 
 Or with uv (recommended for speed):
 
-<CodeBlock code="uv add mnemosyne" language="bash" />
+<CodeBlock code={`uv add mnemosyne-memory`} language="bash" />
 
 ## Verify Installation
 
-<CodeBlock code="python -c &quot;import mnemosyne; print(mnemosyne.__version__)&quot;" language="bash" />
+<CodeBlock code={`python -c "import mnemosyne; print(mnemosyne.__version__)"`} language="bash" />
 
 ## First Memory Operation
 
@@ -29,12 +29,12 @@ mem = Memory()
 
 # Store a memory
 mem.remember(
-    content=&quot;The user prefers dark mode and uses Vim keybindings.&quot;,
-    tags=[&quot;preferences&quot;, &quot;ui&quot;]
+    content="The user prefers dark mode and uses Vim keybindings.",
+    tags=["preferences", "ui"]
 )
 
 # Recall relevant memories
-results = mem.recall(&quot;What are the user's interface preferences?&quot;)
+results = mem.recall("What are the user's interface preferences?")
 for r in results:
     print(r.content)
 `} language="python" />

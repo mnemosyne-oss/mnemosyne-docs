@@ -18,7 +18,7 @@ WorkingDirectory=/opt/mnemosyne
 Environment="MNEMOSYNE_DB_PATH=/opt/mnemosyne/data/mnemosyne.db"
 Environment="MNEMOSYNE_HOST=0.0.0.0"
 Environment="MNEMOSYNE_PORT=8080"
-Environment="MNEMOSYNE_API_KEY=your-secure-key"
+Environment="MNEMOSYNE_API_KEY=***
 ExecStart=/opt/mnemosyne/venv/bin/python -m mnemosyne.server
 Restart=always
 RestartSec=5
@@ -40,7 +40,7 @@ sudo chown -R mnemosyne:mnemosyne /opt/mnemosyne
 sudo -u mnemosyne bash -c '
 cd /opt/mnemosyne
 python3 -m venv venv
-venv/bin/pip install mnemosyne
+venv/bin/pip install mnemosyne-memory
 '
 
 # Copy service file

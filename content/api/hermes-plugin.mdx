@@ -4,13 +4,13 @@ First-class integration with the Hermes agent framework.
 
 ## Installation
 
-<CodeBlock code={`hermes plugin install mnemosyne
+<CodeBlock code={`hermes plugin install mnemosyne-memory
 `} language="bash" />
 
 Or add to `hermes.yaml`:
 
 <CodeBlock code={`plugins:
-  - name: mnemosyne
+  - name: mnemosyne-memory
     source: pip
     config:
       db_path: ./memory.db
@@ -106,9 +106,9 @@ Mnemosyne exposes these tools to agents:
 ### Plugin not loading
 
 <CodeBlock code={`hermes plugin list
-# Verify mnemosyne appears
+# Verify mnemosyne-memory appears
 
-hermes plugin logs mnemosyne
+hermes plugin logs mnemosyne-memory
 # Check for errors
 `} language="bash" />
 
@@ -116,10 +116,10 @@ hermes plugin logs mnemosyne
 
 Verify `auto_context` is enabled and memories exist:
 
-<CodeBlock code={`hermes config get plugins.mnemosyne.auto_context
+<CodeBlock code={`hermes config get plugins.mnemosyne-memory.auto_context
 hermes memory stats
 `} language="bash" />
 
 <Callout type="info" title="Hermes Version">
-Requires Hermes v2.0 or higher. The plugin API changed significantly in v2 — older Hermes versions are not supported.
+Requires Hermes v2.0 or higher. The plugin API changed significantly in v2 -- older Hermes versions are not supported.
 </Callout>
