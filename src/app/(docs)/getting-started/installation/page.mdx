@@ -42,13 +42,24 @@ You *must* activate the venv before running pip. Without it, the package install
 Use the command that matches how your virtual environment was created:
 
 <CodeBlock code={`# If your venv was created with python -m venv or virtualenv
-pip install mnemosyne-memory
+pip install mnemosyne-memory[embeddings]
 
 # If your venv was created with uv venv (pip is not included)
-uv pip install mnemosyne-memory`} language="bash" />
+uv pip install mnemosyne-memory[embeddings]`} language="bash" />
 
 <Callout type="warning" title="uv venv does not include pip">
 If you created the Hermes venv with `uv venv`, running `pip install` will fail with "command not found." This is by design — uv replaces pip with `uv pip`. Always use `uv pip install` in uv-created environments.
+</Callout>
+
+<Callout type="danger" title="fastembed is required for semantic memory">
+The `[embeddings]` extra installs **fastembed**, which powers semantic vector search. Without it, Mnemosyne falls back to primitive FTS5 keyword search only. You will **not** get:
+
+- Semantic similarity search
+- Context-aware retrieval
+- Meaning-based memory matching
+- Hybrid search (vector + text combined)
+
+Always install with `[embeddings]` unless you are explicitly running a keyword-only deployment.
 </Callout>
 
 **Step 3 — Register with Hermes:**
@@ -65,15 +76,15 @@ Both work. `uv` is faster, but only if you use the matching install command:
 
 | Venv created with | Install command |
 |-------------------|-----------------|
-| `python -m venv`  | `pip install mnemosyne-memory` |
-| `virtualenv`      | `pip install mnemosyne-memory` |
-| `uv venv`         | `uv pip install mnemosyne-memory` |
+| `python -m venv`  | `pip install mnemosyne-memory[embeddings]` |
+| `virtualenv`      | `pip install mnemosyne-memory[embeddings]` |
+| `uv venv`         | `uv pip install mnemosyne-memory[embeddings]` |
 
 <CodeBlock code={`# Standard pip (venv created with python -m venv)
-pip install mnemosyne-memory
+pip install mnemosyne-memory[embeddings]
 
 # uv (venv created with uv venv)
-uv pip install mnemosyne-memory`} language="bash" />
+uv pip install mnemosyne-memory[embeddings]`} language="bash" />
 
 ### Extras
 
@@ -81,13 +92,13 @@ Mnemosyne ships optional dependency groups you can install as needed:
 
 | Extra | Command | What it adds |
 |-------|---------|--------------|
-| Core | `pip install mnemosyne-memory` | Base package with FTS5 full-text search |
-| LLM | `pip install mnemosyne-memory[llm]` | + LLM provider integrations |
-| Embeddings | `pip install mnemosyne-memory[embeddings]` | + Embedding model support |
+| Core (not recommended) | `pip install mnemosyne-memory` | Base package with FTS5 keyword search only |
+| **Embeddings** | `pip install mnemosyne-memory[embeddings]` | **+ fastembed for semantic vector search** |
+| LLM | `pip install mnemosyne-memory[llm]` | + ctransformers for local LLM consolidation |
 | Everything | `pip install mnemosyne-memory[all]` | All optional dependencies |
 
-<Callout type="info">
-The core install is fully functional for FTS5-based memory search. You only need the extras if your workflow requires LLM-powered consolidation or dedicated embedding providers.
+<Callout type="danger">
+The **core install without `[embeddings]` is strongly discouraged** for production use. You get primitive keyword matching only. Install with `[embeddings]` to unlock semantic search, hybrid retrieval, and context-aware memory matching.
 </Callout>
 
 ## Verify Installation
