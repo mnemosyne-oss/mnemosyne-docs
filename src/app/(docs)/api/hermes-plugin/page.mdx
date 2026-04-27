@@ -15,12 +15,22 @@ First-class integration with the Hermes agent framework.
 
 ## Installation
 
-Activate the Hermes venv, install via pip, then register:
+Activate the Hermes venv, install the package, then register:
 
 <CodeBlock code={`source ~/.hermes/hermes-agent/venv/bin/activate
+
+# If your venv was created with python -m venv or virtualenv
 pip install mnemosyne-memory
+
+# If your venv was created with uv venv (pip is not included)
+uv pip install mnemosyne-memory
+
 python -m mnemosyne.install
 `} language="bash" />
+
+<Callout type="warning" title="uv venv does not include pip">
+If you created the Hermes venv with `uv venv`, running `pip install` will fail with "command not found." This is by design — uv replaces pip with `uv pip`. Always use `uv pip install` in uv-created environments.
+</Callout>
 
 Or add to `hermes.yaml`:
 
