@@ -21,34 +21,35 @@ Get Mnemosyne running in under 5 minutes. This guide covers installation, basic 
 
 ## Install
 
+First, activate the Hermes agent virtual environment:
+
+<CodeBlock code={`source ~/.hermes/hermes-agent/venv/bin/activate`} language="bash" />
+
+Then install the Mnemosyne package:
+
 <CodeBlock code={`pip install mnemosyne-memory`} language="bash" />
 
 Or with uv (recommended for speed):
 
 <CodeBlock code={`uv pip install mnemosyne-memory`} language="bash" />
 
+## Initialize the Database
+
+Run the built-in installer to set up the SQLite database and schema:
+
+<CodeBlock code={`python -m mnemosyne.install`} language="bash" />
+
+> **Note:** Mnemosyne uses SQLite with FTS5 for full-text search by default. If `sqlite-vec` is available, vector search is enabled automatically — but it is entirely optional.
+
 ## Verify Installation
 
-<CodeBlock code={`python -c "import mnemosyne; print(mnemosyne.__version__)"`} language="bash" />
+Confirm everything is working:
 
-## First Memory Operation
+<CodeBlock code={`hermes mnemosyne stats`} language="bash" />
 
-<CodeBlock code={`from mnemosyne import Memory
+This should print memory statistics (e.g. total memories, database size). You can also check the version:
 
-# Initialize memory
-mem = Memory()
-
-# Store a memory
-mem.remember(
-    content="The user prefers dark mode and uses Vim keybindings.",
-    tags=["preferences", "ui"]
-)
-
-# Recall relevant memories
-results = mem.recall("What are the user's interface preferences?")
-for r in results:
-    print(r.content)
-`} language="python" />
+<CodeBlock code={`hermes mnemosyne version`} language="bash" />
 
 ## What's Next?
 

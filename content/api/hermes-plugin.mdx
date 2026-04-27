@@ -4,7 +4,11 @@ First-class integration with the Hermes agent framework.
 
 ## Installation
 
-<CodeBlock code={`hermes plugin install mnemosyne-memory
+Activate the Hermes venv, install via pip, then register:
+
+<CodeBlock code={`source ~/.hermes/hermes-agent/venv/bin/activate
+pip install mnemosyne-memory
+python -m mnemosyne.install
 `} language="bash" />
 
 Or add to `hermes.yaml`:
@@ -26,16 +30,14 @@ Or add to `hermes.yaml`:
 
 When enabled, Mnemosyne automatically injects relevant memories into agent context:
 
-<MermaidDiagram>
-
+<MermaidDiagram chart={`
 flowchart LR
     U[User Input] -->|query| M[Mnemosyne]
     M -->|recall| C[Context Assembly]
     C -->|inject| A[Agent Prompt]
     A -->|respond| R[Response]
     R -->|remember| M
-
-</MermaidDiagram>
+`} />
 
 ## Plugin Hooks
 
@@ -53,7 +55,7 @@ Mnemosyne registers the following Hermes hooks:
 Mnemosyne exposes these tools to agents:
 
 <CodeBlock code={`{
-  "name": "remember",
+  "name": "mnemosyne_remember",
   "description": "Store information in long-term memory",
   "parameters": {
     "content": { "type": "string", "description": "Information to store" },
@@ -63,7 +65,7 @@ Mnemosyne exposes these tools to agents:
 }
 
 {
-  "name": "recall",
+  "name": "mnemosyne_recall",
   "description": "Retrieve relevant memories",
   "parameters": {
     "query": { "type": "string" },
@@ -72,8 +74,8 @@ Mnemosyne exposes these tools to agents:
 }
 
 {
-  "name": "add_fact",
-  "description": "Store a structured fact",
+  "name": "mnemosyne_triple_add",
+  "description": "Store a structured fact as a knowledge graph triple",
   "parameters": {
     "subject": { "type": "string" },
     "predicate": { "type": "string" },
@@ -82,7 +84,7 @@ Mnemosyne exposes these tools to agents:
 }
 
 {
-  "name": "query_facts",
+  "name": "mnemosyne_triple_query",
   "description": "Query the knowledge graph",
   "parameters": {
     "subject": { "type": "string" },
@@ -105,21 +107,21 @@ Mnemosyne exposes these tools to agents:
 
 ### Plugin not loading
 
-<CodeBlock code={`hermes plugin list
-# Verify mnemosyne-memory appears
+<CodeBlock code={`hermes plugins list
+# Verify mnemosyne appears
 
-hermes plugin logs mnemosyne-memory
-# Check for errors
+hermes mnemosyne stats
+# Check memory statistics
 `} language="bash" />
 
 ### Context not injected
 
 Verify `auto_context` is enabled and memories exist:
 
-<CodeBlock code={`hermes config get plugins.mnemosyne-memory.auto_context
-hermes memory stats
+<CodeBlock code={`hermes plugins list
+hermes mnemosyne stats
 `} language="bash" />
 
 <Callout type="info" title="Hermes Version">
-Requires Hermes v2.0 or higher. The plugin API changed significantly in v2 -- older Hermes versions are not supported.
+Requires Hermes v2.0 or higher. The plugin API changed significantly in v2 — older Hermes versions are not supported.
 </Callout>

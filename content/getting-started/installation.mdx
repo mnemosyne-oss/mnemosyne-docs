@@ -1,47 +1,126 @@
 # Installation
 
-Mnemosyne supports multiple installation methods depending on your use case.
+Mnemosyne is installed as a Python package and registered with your Hermes agent. This page walks through every step — from prerequisites to verification.
 
-## Standalone pip Install
+## Prerequisites
 
-The simplest way to get started:
+Before installing Mnemosyne, make sure you have:
+
+- **Python 3.10 or higher** — check with `python --version`
+- **Hermes Agent** already installed and initialized at `~/.hermes/hermes-agent/`
+- **pip** or **uv** package manager available in your shell
+
+<Callout type="info" title="Don't have Hermes yet?">
+If you haven't set up Hermes Agent, do that first. Mnemosyne is a plugin that runs *inside* the Hermes ecosystem — it won't work as a standalone tool without it.
+</Callout>
+
+## Quick Install
+
+Three commands. That's all it takes.
+
+**Step 1 — Activate the Hermes virtual environment:**
+
+<CodeBlock code={`source ~/.hermes/hermes-agent/venv/bin/activate`} language="bash" />
+
+<Callout type="warning" title="Required step">
+You *must* activate the venv before running pip. Without it, the package installs into the wrong Python environment and Hermes won't find it.
+</Callout>
+
+**Step 2 — Install the package:**
 
 <CodeBlock code={`pip install mnemosyne-memory`} language="bash" />
 
-This installs the core package with all required dependencies.
+**Step 3 — Register with Hermes:**
 
-## Hermes Plugin Install
+<CodeBlock code={`python -m mnemosyne.install`} language="bash" />
 
-If you're using Mnemosyne as a Hermes agent plugin:
+This creates the plugin symlink and updates `config.yaml` so Hermes knows about Mnemosyne.
 
-<CodeBlock code={`hermes plugin install mnemosyne-memory`} language="bash" />
+## Install Options
 
-Or add to your `hermes.yaml`:
+### pip vs uv
 
-<CodeBlock code={`plugins:
-  - name: mnemosyne-memory
-    config:
-      db_path: ./memory.db
-      embedding_model: text-embedding-3-small
-`} language="yaml" />
+Both work. `uv` is faster:
 
-## Development Install
+<CodeBlock code={`# Standard pip
+pip install mnemosyne-memory
 
-For contributing or running from source:
+# uv (recommended for speed)
+uv pip install mnemosyne-memory`} language="bash" />
 
-<CodeBlock code={`git clone https://github.com/axdsan/mnemosyne.git
+### Extras
+
+Mnemosyne ships optional dependency groups you can install as needed:
+
+| Extra | Command | What it adds |
+|-------|---------|--------------|
+| Core | `pip install mnemosyne-memory` | Base package with FTS5 full-text search |
+| LLM | `pip install mnemosyne-memory[llm]` | + LLM provider integrations |
+| Embeddings | `pip install mnemosyne-memory[embeddings]` | + Embedding model support |
+| Everything | `pip install mnemosyne-memory[all]` | All optional dependencies |
+
+<Callout type="info">
+The core install is fully functional for FTS5-based memory search. You only need the extras if your workflow requires LLM-powered consolidation or dedicated embedding providers.
+</Callout>
+
+## Verify Installation
+
+Run the stats command through Hermes to confirm everything is wired up:
+
+<CodeBlock code={`hermes mnemosyne stats`} language="bash" />
+
+You should see a summary of memory tiers and database status. If the command is not found, the registration step may have failed — re-run `python -m mnemosyne.install`.
+
+You can also verify the Python package directly:
+
+<CodeBlock code={`python -c "import mnemosyne; print(mnemosyne.__version__)"`} language="bash" />
+
+### Useful Hermes Commands
+
+Once installed, these are the Mnemosyne commands available through Hermes:
+
+| Command | Description |
+|---------|-------------|
+| `hermes mnemosyne stats` | Show memory statistics |
+| `hermes mnemosyne version` | Show installed version |
+| `hermes mnemosyne inspect [query]` | Search memories interactively |
+| `hermes mnemosyne sleep` | Run consolidation (sleep cycle) |
+| `hermes mnemosyne export --output <path>` | Export memories to JSON |
+| `hermes mnemosyne import --input <path>` | Import memories from JSON |
+| `hermes memory setup` | Interactive provider picker (curses UI) |
+| `hermes memory status` | Show current memory provider config |
+
+<Callout type="danger" title="Common mistake">
+Do **not** use `hermes plugin install mnemosyne` — that command doesn't exist. The correct Hermes plugin commands are `hermes plugins install <git-url>` (note the plural *plugins*), which expects a Git repository URL. Mnemosyne is installed via `pip` and registered with `python -m mnemosyne.install`, not through the plugin manager.
+</Callout>
+
+## Optional: sqlite-vec for Vector Search
+
+Mnemosyne uses **FTS5** (full-text search) by default, which works out of the box with no extra dependencies. If you want **semantic vector search**, you can optionally install sqlite-vec:
+
+<CodeBlock code={`pip install sqlite-vec`} language="bash" />
+
+<Callout type="success" title="FTS5 works great on its own">
+sqlite-vec is entirely optional. Without it, Mnemosyne gracefully falls back to FTS5-only mode — all `remember` and `recall` operations still work. Add sqlite-vec only if you need vector similarity in addition to text search.
+</Callout>
+
+## Development Install (from Source)
+
+If you're contributing or want to run the latest unreleased changes:
+
+<CodeBlock code={`# Activate the Hermes venv first
+source ~/.hermes/hermes-agent/venv/bin/activate
+
+# Clone the repo
+git clone https://github.com/axdsan/mnemosyne.git
 cd mnemosyne
+
+# Install in editable mode with dev dependencies
 pip install -e ".[dev]"
-`} language="bash" />
 
-## Dependency Tiers
+# Register with Hermes
+python -m mnemosyne.install`} language="bash" />
 
-| Tier | Command | Description |
-|------|---------|-------------|
-| Minimal | `pip install mnemosyne-memory` | Core only, CPU embeddings |
-| Standard | `pip install mnemosyne-memory[openai]` | + OpenAI embeddings |
-| Full | `pip install mnemosyne-memory[all]` | All optional dependencies |
-
-## Verify Your Install
-
-<CodeBlock code={`python -c "from mnemosyne import Memory; m = Memory(); print('OK')"`} language="bash" />
+<Callout type="info" title="Editable mode">
+The `-e` flag installs in "editable" mode — changes to the source code take effect immediately without re-installing. Perfect for development and debugging.
+</Callout>
