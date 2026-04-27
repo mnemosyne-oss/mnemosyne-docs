@@ -25,27 +25,24 @@ graph TB
 
     subgraph BEAM["BEAM Memory System"]
         WM[Working Memory
-        Short-term, 1K entries
+        Short-term, up to 10K entries
         <100ms access]
         EM[Episodic Memory
         Long-term experiences
         Hybrid retrieval]
         SM[Semantic Memory
         Structured facts
-        Temporal graph]
+        Subject-predicate-object triples]
         SP[Scratchpad
         Temporary workspace
-        Reasoning buffer]
+        Up to 1K entries]
     end
 
-    I1 -->|immediate| WM
-    I2 -->|immediate| WM
-    I3 -->|immediate| WM
-    WM -->|consolidation| EM
-    WM -->|extraction| SM
-    EM -->|recall| WM
-    SM -->|query| WM
-    SP -->|flush| WM
+    I1 -->|remember| WM
+    I2 -->|remember| WM
+    I3 -->|remember| WM
+    WM -->|sleep consolidation| EM
+    EM -->|recall| Agent
 
     style WM fill:#e0f2fe,stroke:#0284c7
     style EM fill:#fef3c7,stroke:#d97706
@@ -55,12 +52,12 @@ graph TB
 
 ### Working Memory
 
-The agent's immediate context window. Holds recent observations, conversation history, and active tool results. Fastest access (&lt;100ms), limited capacity (~1000 entries), and subject to eviction.
+The agent's immediate context window. Holds recent observations, conversation history, and active tool results. Fastest access (&lt;100ms), limited capacity (up to 10,000 entries), and subject to eviction via sleep consolidation.
 
 **Key characteristics:**
 - **Latency**: Sub-100ms median
-- **Capacity**: Configurable (default 1000 entries)
-- **Eviction**: LRU with importance weighting
+- **Capacity**: Up to 10,000 entries (configurable via `MNEMOSYNE_WM_MAX_ITEMS`, default 10,000)
+- **TTL**: 24 hours (configurable via `MNEMOSYNE_WM_TTL_HOURS`, default 24)
 - **Persistence**: Survives process restarts via SQLite
 
 ### Episodic Memory
@@ -69,18 +66,17 @@ Long-term storage for experiences, conversations, and events. Organized chronolo
 
 **Key characteristics:**
 - **Retention**: Permanent (until explicit deletion)
-- **Retrieval**: Hybrid (vector + FTS5)
-- **Compression**: AAAK algorithm for context windows
-- **Consolidation**: Automatic during sleep cycles
+- **Retrieval**: Hybrid (vector + FTS5) with fixed scoring weights
+- **Consolidation**: Promoted from Working Memory via `sleep()`
 
 ### Semantic Memory
 
-Structured knowledge extracted from experiences. Stores facts, relationships, and concepts as a temporal knowledge graph with subject-predicate-object triples.
+Structured knowledge stored as subject-predicate-object triples. Managed by the separate `TripleStore` class (not part of the main `Mnemosyne` class).
 
 **Key characteristics:**
-- **Format**: Temporal knowledge graph (triples)
-- **Query**: Graph traversal + vector similarity
-- **Update**: Incremental fact extraction from Working Memory
+- **Format**: Subject-predicate-object triples with confidence and validity timestamps
+- **Query**: Filter by subject, predicate, or object via `TripleStore.query()`
+- **Access**: Separate `TripleStore` class or module-level `add_triple()` / `query_triples()` helpers
 - **Schema**: Flexible, no predefined ontology
 
 ### Scratchpad
@@ -88,10 +84,10 @@ Structured knowledge extracted from experiences. Stores facts, relationships, an
 A temporary workspace for reasoning, planning, and intermediate computations. Analogous to human working memory's manipulation buffer.
 
 **Key characteristics:**
-- **Lifetime**: Session-bound (cleared on agent restart)
+- **Capacity**: Up to 1,000 entries (configurable via `MNEMOSYNE_SP_MAX`, default 1,000)
 - **Use case**: Chain-of-thought, planning, scratch calculations
-- **Integration**: Flushes insights to Working Memory
-- **Isolation**: Per-agent, not shared
+- **API**: `scratchpad_write()`, `scratchpad_read()`, `scratchpad_clear()`
+- **Lifetime**: Session-bound
 
 ## Data Flow
 
@@ -101,31 +97,31 @@ sequenceDiagram
     participant WM as Working Memory
     participant SP as Scratchpad
     participant EM as Episodic Memory
-    participant SM as Semantic Memory
+    participant SM as Semantic Memory (TripleStore)
 
-    Agent->>WM: observe(event)
+    Agent->>WM: remember(content)
     WM->>WM: store + index
-    Agent->>SP: write(thought)
-    SP->>SP: reason
-    SP->>WM: flush(insight)
-    Agent->>WM: recall(query)
-    WM->>EM: search(query)
-    EM->>WM: return results
-    WM->>SM: query(facts)
-    SM->>WM: return triples
-    WM->>Agent: consolidated context
+    Agent->>SP: scratchpad_write(thought)
+    SP->>SP: store
+    Agent->>EM: recall(query)
+    EM->>Agent: return results
+    Agent->>SM: add_triple(s, p, o)
+    SM->>SM: store triple
+    Agent->>SM: query_triples(s, p, o)
+    SM->>Agent: return triples
 `} />
 
 ## Sleep Consolidation
 
-Mnemosyne runs background "sleep" cycles that:
+Call `mem.sleep()` to run a consolidation cycle that:
 
-1. **Compress** Working Memory entries using AAAK algorithm
-2. **Promote** high-importance entries to Episodic Memory
-3. **Extract** facts and relationships to Semantic Memory
-4. **Evict** low-importance entries per retention policy
+1. **Select** Working Memory entries older than TTL/2 (12 hours by default)
+2. **Group** candidates by source
+3. **Summarize** each group via LLM or AAAK text substitution
+4. **Promote** summaries to Episodic Memory
+5. **Evict** the original Working Memory entries
 
-Configure interval via `MNEMOSYNE_CONSOLIDATION_INTERVAL` (default: 3600s).
+Sleep is triggered explicitly — it does not run automatically on a timer.
 
 ## Design Philosophy
 

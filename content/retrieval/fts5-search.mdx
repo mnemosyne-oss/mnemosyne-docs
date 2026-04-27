@@ -7,27 +7,18 @@ SQLite's built-in full-text search engine for exact term matching, boolean queri
 - **Term matching**: Exact word and phrase search
 - **Boolean logic**: `AND`, `OR`, `NOT` operators
 - **Prefix search**: `data*` matches "database", "datastore"
-- **Column filtering**: Search specific fields
 - **Ranking**: BM25-based relevance scoring
 
-## Query Syntax
+## How FTS5 is Used
 
-<CodeBlock code={`# Simple term
-results = mem.text_search("database")
+FTS5 search is performed automatically as part of the `recall()` method. There is no separate `text_search()` API. The FTS5 index is queried internally and its results are fused with vector search results.
 
-# Phrase (exact sequence)
-results = mem.text_search('"machine learning"')
+<CodeBlock code={`from mnemosyne import Memory
 
-# Boolean
-results = mem.text_search("deployment AND kubernetes")
-results = mem.text_search("python OR golang")
-results = mem.text_search("database NOT mongodb")
+mem = Memory()
 
-# Prefix
-results = mem.text_search("auth*")
-
-# Column filter
-results = mem.text_search("tags:production database")
+# recall() internally performs vector + FTS5 hybrid search
+results = mem.recall("database migration strategy", top_k=5)
 `} language="python" />
 
 ## BM25 Ranking
@@ -46,14 +37,13 @@ Where:
 
 ## Integration with Hybrid Search
 
-FTS5 scores are normalized and fused with vector scores:
+FTS5 scores are normalized and fused with vector scores using a fixed weighting:
 
-<CodeBlock code={`# FTS5 contributes 30% to final score by default
-results = mem.recall(
-    "database migration strategy",
-    text_weight=0.3,
-)
-`} language="python" />
+- **Vector score**: weight 0.5
+- **FTS5 score**: weight 0.3
+- **Importance**: weight 0.2
+
+These weights are not configurable through the `recall()` API. `recall()` accepts only `query` and `top_k` parameters.
 
 ## Performance
 
@@ -66,15 +56,40 @@ results = mem.recall(
 
 ## Index Schema
 
-<CodeBlock code={`CREATE VIRTUAL TABLE working_fts USING fts5(
+Two separate FTS5 virtual tables are maintained:
+
+### fts_episodes (synced to Episodic Memory)
+
+<CodeBlock code={`-- Synced to the episodic_memory table via triggers
+CREATE VIRTUAL TABLE fts_episodes USING fts5(
     content,
-    tags,
     source,
     content_rowid=rowid
 );
+
+-- Triggers keep fts_episodes in sync with episodic_memory
+CREATE TRIGGER episodic_ai AFTER INSERT ON episodic_memory BEGIN
+    INSERT INTO fts_episodes(rowid, content, source)
+    VALUES (new.id, new.content, new.source);
+END;
+CREATE TRIGGER episodic_ad AFTER DELETE ON episodic_memory BEGIN
+    INSERT INTO fts_episodes(fts_episodes, rowid, content, source)
+    VALUES ('delete', old.id, old.content, old.source);
+END;
 `} language="sql" />
 
-FTS5 indices are maintained automatically via triggers on the main tables.
+### fts_working (standalone for Working Memory)
+
+<CodeBlock code={`-- Standalone FTS5 index for working memory
+-- Uses content= option to avoid duplicating data
+CREATE VIRTUAL TABLE fts_working USING fts5(
+    id UNINDEXED,
+    content,
+    content='',
+);
+`} language="sql" />
+
+The `fts_episodes` index mirrors the `content` and `source` fields from the `episodic_memory` table and stays synchronized via triggers. The `fts_working` index is standalone with `id UNINDEXED` and `content` columns. FTS5 indices are maintained automatically — no manual rebuild is required.
 
 <Callout type="info" title="SQLite Version">
 FTS5 requires SQLite 3.45 or higher. Mnemosyne checks this at initialization and raises a clear error if your SQLite version is too old.

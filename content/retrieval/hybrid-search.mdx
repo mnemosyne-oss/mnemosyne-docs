@@ -12,36 +12,38 @@ Mnemosyne's flagship retrieval capability — combining dense vector similarity 
 
 ## Fusion Algorithm
 
-<CodeBlock code={`final_score = (vector_score * vector_weight) + 
-              (text_score * text_weight) + 
-              (temporal_score * temporal_weight)
+The `recall()` method performs hybrid search internally using a fixed scoring formula:
+
+<CodeBlock code={`# Step 1: Weighted combination of scores
+base_score = (vector_score * 0.5) +
+             (fts_score * 0.3) +
+             (importance * 0.2)
+
+# Step 2: Apply recency decay
+final_score = base_score * (0.7 + 0.3 * recency_decay)
 `} language="python" />
 
-Default weights:
-- Vector: 0.5
-- Text: 0.3  
-- Temporal: 0.2
+The weights are fixed:
+- **Vector**: 0.5 (semantic similarity via BAAI/bge-small-en-v1.5, 384 dims)
+- **FTS5**: 0.3 (BM25 text relevance)
+- **Importance**: 0.2 (memory importance rating, 0.0–1.0)
+
+The recency decay uses an exponential half-life (default 168 hours / 7 days, configurable via `MNEMOSYNE_RECENCY_HALFLIFE`).
 
 ## Usage
 
-<CodeBlock code={`# Default hybrid search
-results = mem.recall("What database does the project use?")
+<CodeBlock code={`from mnemosyne import Mnemosyne
 
-# Custom weights
-results = mem.recall(
-    "What database does the project use?",
-    vector_weight=0.3,   # Prefer exact text matches
-    text_weight=0.6,
-    temporal_weight=0.1,
-)
+mem = Mnemosyne()
 
-# With filters
-results = mem.recall(
-    "database migration",
-    tags=["backend", "infrastructure"],
-    since="2026-04-01",
-    top_k=5,
-)
+# recall() performs hybrid search by default
+# It accepts only query and top_k — no weight overrides
+results = mem.recall("What database does the project use?", top_k=5)
+
+for r in results:
+    print(f"Score: {r['score']:.3f}")
+    print(f"  Content: {r['content'][:100]}")
+    print(f"  Source: {r['source']}")
 `} language="python" />
 
 ## Result Format
@@ -51,14 +53,17 @@ results = mem.recall(
         "id": "mem_abc123",
         "content": "We decided to use PostgreSQL for the primary database...",
         "score": 0.92,
-        "vector_score": 0.88,
-        "text_score": 0.95,
         "source": "decision",
+        "importance": 0.8,
         "created_at": 1714060800,
     },
     ...
 ]
 `} language="python" />
+
+## Working Memory Retrieval
+
+When searching Working Memory (recent, non-consolidated entries), a keyword-based fallback is used with different weights than the episodic formula. This handles the case where vector embeddings may not yet be available for very recent entries.
 
 ## Performance
 
@@ -67,18 +72,6 @@ results = mem.recall(
 | Vector only | 35ms | 120ms |
 | FTS5 only | 15ms | 45ms |
 | Hybrid (default) | 65ms | 180ms |
-| Hybrid + filters | 85ms | 250ms |
-
-## Tuning Weights
-
-Different use cases benefit from different weight configurations:
-
-| Use Case | Vector | Text | Temporal |
-|----------|--------|------|----------|
-| Fact lookup | 0.2 | 0.7 | 0.1 |
-| Concept search | 0.7 | 0.2 | 0.1 |
-| Recent events | 0.3 | 0.3 | 0.4 |
-| General recall | 0.5 | 0.3 | 0.2 |
 
 <Callout type="info" title="Index Requirements">
 Hybrid search requires both vector and FTS5 indices to be built. These are created automatically on first use. Initial index build may take a few seconds for large datasets.

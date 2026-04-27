@@ -2,11 +2,11 @@
 
 Complete JSON Schema for Mnemosyne tools exposed to agents.
 
-## remember
+## mnemosyne_remember
 
 <CodeBlock code={`{
-  "name": "remember",
-  "description": "Store information in the agent's long-term memory. Use for facts, preferences, decisions, and observations that should persist across sessions.",
+  "name": "mnemosyne_remember",
+  "description": "Store information in long-term memory. Use for facts, preferences, decisions, and observations that should persist across sessions.",
   "parameters": {
     "type": "object",
     "required": ["content"],
@@ -24,24 +24,17 @@ Complete JSON Schema for Mnemosyne tools exposed to agents.
         "type": "number",
         "minimum": 0,
         "maximum": 1,
-        "default": 0.5,
         "description": "0.0 = transient, 1.0 = critical. High importance memories are promoted to Episodic Memory during consolidation."
-      },
-      "source": {
-        "type": "string",
-        "enum": ["user", "tool", "observation", "inference"],
-        "default": "user",
-        "description": "Origin of the information."
       }
     }
   }
 }
 `} language="json" />
 
-## recall
+## mnemosyne_recall
 
 <CodeBlock code={`{
-  "name": "recall",
+  "name": "mnemosyne_recall",
   "description": "Retrieve relevant memories from long-term storage. Use when you need context about past interactions, user preferences, or established facts.",
   "parameters": {
     "type": "object",
@@ -57,22 +50,59 @@ Complete JSON Schema for Mnemosyne tools exposed to agents.
         "maximum": 50,
         "default": 5,
         "description": "Maximum number of memories to retrieve."
-      },
-      "tags": {
-        "type": "array",
-        "items": { "type": "string" },
-        "description": "Filter to memories with these tags."
       }
     }
   }
 }
 `} language="json" />
 
-## add_fact
+## mnemosyne_sleep
 
 <CodeBlock code={`{
-  "name": "add_fact",
-  "description": "Store a structured fact as a subject-predicate-object triple. Use for precise, relational knowledge that benefits from graph queries.",
+  "name": "mnemosyne_sleep",
+  "description": "Run sleep consolidation to promote Working Memory entries to Episodic and Semantic memory. Triggers summarization and importance-based promotion.",
+  "parameters": {
+    "type": "object",
+    "properties": {}
+  }
+}
+`} language="json" />
+
+## mnemosyne_stats
+
+<CodeBlock code={`{
+  "name": "mnemosyne_stats",
+  "description": "Get memory system statistics including entry counts across all memory stores, database size, and consolidation status.",
+  "parameters": {
+    "type": "object",
+    "properties": {}
+  }
+}
+`} language="json" />
+
+## mnemosyne_invalidate
+
+<CodeBlock code={`{
+  "name": "mnemosyne_invalidate",
+  "description": "Mark a specific memory as invalidated. Use when information is outdated, incorrect, or explicitly requested to be removed.",
+  "parameters": {
+    "type": "object",
+    "required": ["id"],
+    "properties": {
+      "id": {
+        "type": "string",
+        "description": "The memory ID to invalidate."
+      }
+    }
+  }
+}
+`} language="json" />
+
+## mnemosyne_triple_add
+
+<CodeBlock code={`{
+  "name": "mnemosyne_triple_add",
+  "description": "Store a structured fact as a subject-predicate-object triple in the temporal knowledge graph. Use for precise, relational knowledge that benefits from graph queries.",
   "parameters": {
     "type": "object",
     "required": ["subject", "predicate", "object"],
@@ -88,23 +118,16 @@ Complete JSON Schema for Mnemosyne tools exposed to agents.
       "object": {
         "type": "string",
         "description": "The value or target entity."
-      },
-      "confidence": {
-        "type": "number",
-        "minimum": 0,
-        "maximum": 1,
-        "default": 1.0,
-        "description": "Certainty level. Lower confidence facts may be overridden by higher confidence ones."
       }
     }
   }
 }
 `} language="json" />
 
-## query_facts
+## mnemosyne_triple_query
 
 <CodeBlock code={`{
-  "name": "query_facts",
+  "name": "mnemosyne_triple_query",
   "description": "Query the temporal knowledge graph for structured facts. Use for precise lookups and relationship traversal.",
   "parameters": {
     "type": "object",
@@ -116,33 +139,6 @@ Complete JSON Schema for Mnemosyne tools exposed to agents.
       "predicate": {
         "type": "string",
         "description": "Filter by relationship type."
-      },
-      "object": {
-        "type": "string",
-        "description": "Filter by target value."
-      },
-      "current_only": {
-        "type": "boolean",
-        "default": true,
-        "description": "Only return facts that haven't been superseded."
-      }
-    }
-  }
-}
-`} language="json" />
-
-## forget
-
-<CodeBlock code={`{
-  "name": "forget",
-  "description": "Delete a specific memory by ID. Use when information is outdated, incorrect, or explicitly requested to be removed.",
-  "parameters": {
-    "type": "object",
-    "required": ["id"],
-    "properties": {
-      "id": {
-        "type": "string",
-        "description": "The memory ID to delete."
       }
     }
   }
@@ -151,13 +147,15 @@ Complete JSON Schema for Mnemosyne tools exposed to agents.
 
 ## Tool Selection Guide
 
-| Goal | Tool | Example |
+|| Goal | Tool | Example |
 |------|------|---------|
-| Store general info | `remember` | User preferences, decisions |
-| Store relational facts | `add_fact` | Team structure, dependencies |
-| Retrieve context | `recall` | "What did we decide?" |
-| Precise lookup | `query_facts` | "Who reports to Carol?" |
-| Remove bad data | `forget` | Outdated information |
+| Store general info | `mnemosyne_remember` | User preferences, decisions |
+| Retrieve context | `mnemosyne_recall` | "What did we decide?" |
+| Consolidate memories | `mnemosyne_sleep` | End-of-session cleanup |
+| Check system health | `mnemosyne_stats` | Memory counts, DB size |
+| Remove bad data | `mnemosyne_invalidate` | Outdated information |
+| Store relational facts | `mnemosyne_triple_add` | Team structure, dependencies |
+| Precise lookup | `mnemosyne_triple_query` | "Who reports to Carol?" |
 
 <Callout type="success" title="Schema Validation">
 Tool calls are validated against these schemas before execution. Invalid parameters return a structured error that the agent can use to self-correct.

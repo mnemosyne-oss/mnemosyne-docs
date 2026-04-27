@@ -1,6 +1,6 @@
 # Multi-Agent Memory
 
-Share memory across a team of agents for coordinated behavior.
+Use separate Mnemosyne instances to coordinate memory across a team of agents.
 
 ## Architecture
 
@@ -13,92 +13,100 @@ graph TB
         A3[Agent C]
     end
     
-    subgraph Memory["Shared Memory"]
-        WM[Working Memory
-        Per-agent]
-        EM[Episodic Memory
-        Shared]
-        SM[Semantic Memory
-        Shared]
+    subgraph Storage["Storage"]
+        DBA[(Agent A DB)]
+        DBB[(Agent B DB)]
+        DBC[(Agent C DB)]
+        DBS[(Shared DB)]
     end
     
-    A1 -->|writes| WM
-    A2 -->|writes| WM
-    A3 -->|writes| WM
-    WM -->|consolidate| EM
-    WM -->|extract| SM
-    EM -->|recall| A1
-    SM -->|query| A2
+    A1 -->|private| DBA
+    A2 -->|private| DBB
+    A3 -->|private| DBC
+    A1 -->|shared| DBS
+    A2 -->|shared| DBS
+    A3 -->|shared| DBS
 
 </MermaidDiagram>
 
-## Shared vs Private Memory
+## Separate Database Instances
 
-| Type | Scope | Use For |
-|------|-------|---------|
-| Working Memory | Per-agent | Current task context |
-| Episodic Memory | Shared | Team experiences |
-| Semantic Memory | Shared | Common knowledge |
-| Scratchpad | Per-agent | Private reasoning |
+Each agent gets its own `Mnemosyne` instance. Use separate `db_path` values for isolation, or share a path for coordination:
 
-## Implementation
+<CodeBlock code={`from mnemosyne import Mnemosyne
 
-<CodeBlock code={`from mnemosyne import Memory
-
-# Shared episodic + semantic
-shared_mem = Memory(db_path="/shared/team-memory.db")
-
-# Per-agent working memory
-agent_a = Memory(
-    db_path="/shared/team-memory.db",
-    agent_id="agent-a",
-    working_isolation=True,
+# Each agent has its own isolated database
+agent_a = Mnemosyne(
+    session_id="agent-a",
+    db_path="/data/agent-a/memories.db",
 )
 
-agent_b = Memory(
-    db_path="/shared/team-memory.db",
-    agent_id="agent-b",
-    working_isolation=True,
+agent_b = Mnemosyne(
+    session_id="agent-b",
+    db_path="/data/agent-b/memories.db",
 )
 
-# Agent A stores team observation
+# Agent A stores an observation
 agent_a.remember(
     content="The API rate limit is 1000 req/min.",
-    tags=["infrastructure", "team-knowledge"],
+    source="observation",
     importance=0.9,
 )
 
-# Agent B recalls it
+# Agent B cannot see Agent A's memories
+results = agent_b.recall("API rate limit")  # Returns nothing from agent-a's DB
+`} language="python" />
+
+## Shared Memory Pattern
+
+To share knowledge between agents, point them at the same database file with different `session_id` values:
+
+<CodeBlock code={`from mnemosyne import Mnemosyne
+
+# Both agents share the same database file
+agent_a = Mnemosyne(
+    session_id="agent-a",
+    db_path="/shared/team-memory.db",
+)
+
+agent_b = Mnemosyne(
+    session_id="agent-b",
+    db_path="/shared/team-memory.db",
+)
+
+# Agent A stores team knowledge
+agent_a.remember(
+    content="The API rate limit is 1000 req/min.",
+    source="infrastructure-check",
+    importance=0.9,
+    scope="global",  # Visible to all sessions
+)
+
+# Agent B can recall shared knowledge
 results = agent_b.recall("API rate limit")
 `} language="python" />
 
-## Conflict Resolution
+## Private vs Shared Context
 
-When agents store conflicting information:
+Use `scope` to control what is private vs shared:
 
-1. **Confidence scoring**: Higher confidence wins
-2. **Timestamp**: More recent wins
-3. **Agent authority**: Configurable priority per agent
+<CodeBlock code={`from mnemosyne import Mnemosyne
 
-<CodeBlock code={`# Configure agent authority
-mem = Memory(
-    agent_priorities={
-        "orchestrator": 1.0,
-        "worker": 0.5,
-    }
+agent_a = Mnemosyne(session_id="agent-a", db_path="/shared/team-memory.db")
+
+# Private to agent-a's session (default)
+agent_a.remember(
+    content="My current subtask: validate user inputs.",
+    scope="session",
+    importance=0.5,
 )
-`} language="python" />
 
-## Synchronization
-
-<CodeBlock code={`# Manual sync
-agent_a.sync_with_shared()
-
-# Auto-sync on recall
-agent_b = Memory(auto_sync=True)
-
-# Sync interval
-agent_c = Memory(sync_interval=30)  # seconds
+# Shared with all sessions in this database
+agent_a.remember(
+    content="Deployment target is us-east-1 region.",
+    scope="global",
+    importance=0.8,
+)
 `} language="python" />
 
 ## Deployment

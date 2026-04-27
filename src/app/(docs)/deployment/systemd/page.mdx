@@ -26,11 +26,8 @@ Type=simple
 User=mnemosyne
 Group=mnemosyne
 WorkingDirectory=/opt/mnemosyne
-Environment="MNEMOSYNE_DB_PATH=/opt/mnemosyne/data/mnemosyne.db"
-Environment="MNEMOSYNE_HOST=0.0.0.0"
-Environment="MNEMOSYNE_PORT=8080"
-Environment="MNEMOSYNE_API_KEY=your-secure-key"
-ExecStart=/opt/mnemosyne/venv/bin/python -m mnemosyne.server
+Environment="MNEMOSYNE_DATA_DIR=/opt/mnemosyne/data"
+ExecStart=/opt/mnemosyne/venv/bin/python -m mnemosyne --host 0.0.0.0 --port 8090 --db-path /opt/mnemosyne/data/mnemosyne.db
 Restart=always
 RestartSec=5
 

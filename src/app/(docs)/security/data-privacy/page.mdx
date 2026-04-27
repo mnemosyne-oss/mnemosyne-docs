@@ -1,6 +1,6 @@
 export const metadata = {
-  title: 'Data Privacy — GDPR & Privacy Compliance for Agents',
-  description: 'Understand Mnemosyne\'s privacy model: data retention policies, PII handling, right-to-deletion support, and compliance features for privacy-sensitive deployments.',
+  title: 'Data Privacy — Privacy by Default for Agent Memory',
+  description: 'Understand Mnemosyne\'s privacy model: local-first storage, data retention via TTL, scope-based isolation, and best practices for privacy-sensitive deployments.',
   openGraph: {
     images: ['/og-image.svg'],
   },
@@ -16,16 +16,16 @@ Mnemosyne's privacy-first design ensures your data stays under your control.
 ## Privacy Principles
 
 1. **Data minimization**: Only store what's necessary
-2. **Local processing**: No cloud required
-3. **User control**: Full export and deletion capabilities
-4. **Transparency**: All operations are inspectable
+2. **Local processing**: No cloud required — all data and embeddings stay local
+3. **User control**: Full control via `remember()`, `recall()`, and `forget()`
+4. **Transparency**: All operations are inspectable via `get_stats()`
 
 ## Data Flow
 
 <MermaidDiagram chart={`
 flowchart LR
     U[User Input] -->|Local| M[Mnemosyne]
-    M -->|Optional| O[OpenAI Embeddings]
+    M -->|Local| E[fastembed Embeddings]
     M -->|Local| DB[(SQLite)]
     
     style M fill:#e0f2fe,stroke:#0284c7
@@ -36,42 +36,78 @@ flowchart LR
 
 | Strategy | Implementation |
 |----------|---------------|
-| Local embeddings | `local_embeddings=True` |
+| Local embeddings | BAAI/bge-small-en-v1.5 via fastembed (default) |
 | No telemetry | No analytics or tracking |
-| Optional cloud | Cloud features are opt-in |
+| No cloud dependency | All features work offline |
 | Self-hosted | Run entirely on your infrastructure |
 
-## GDPR Compliance
+## Data Retention
 
-### Right to Access
+Use the `valid_until` parameter on `remember()` to set expiration times for memories:
 
-<CodeBlock code={`# Export all data about a user
-mem.export_user_data(user_id="user_123")
+<CodeBlock code={`from mnemosyne import Mnemosyne
+from datetime import datetime, timedelta
+
+mem = Mnemosyne(session_id="support-bot")
+
+# Memory expires in 30 days
+mem.remember(
+    content="User prefers dark mode",
+    importance=0.3,
+    valid_until=(datetime.now() + timedelta(days=30)).isoformat(),
+)
 `} language="python" />
 
-### Right to Erasure
+## Data Deletion
 
-<CodeBlock code={`# Delete all memories related to a user
-mem.forget_all(tags=["user_123"])
-mem.delete_user_data(user_id="user_123")
+Remove specific memories using `forget()`:
+
+<CodeBlock code={`from mnemosyne import Mnemosyne
+
+mem = Mnemosyne(session_id="default")
+
+# Store a memory
+mem.remember(
+    content="User email is alice@example.com",
+    importance=0.5,
+)
+
+# Delete a specific memory by ID
+stats = mem.get_stats()
+# ... find the memory_id ...
+mem.forget(memory_id="mem_abc123")
 `} language="python" />
 
-### Data Portability
+## Scope-Based Isolation
 
-<CodeBlock code={`# Export in standard formats
-mem.export(format="json")   # Machine-readable
-mem.export(format="csv")    # Spreadsheet-friendly
+Use the `scope` parameter to control memory visibility:
+
+<CodeBlock code={`from mnemosyne import Mnemosyne
+
+mem = Mnemosyne(session_id="my-agent")
+
+# Session-scoped memory (default)
+mem.remember(
+    content="Working on bug #42",
+    scope="session",
+)
+
+# Global memory visible across sessions
+mem.remember(
+    content="Project uses Python 3.12",
+    scope="global",
+)
 `} language="python" />
 
 ## PII Handling
 
 Mnemosyne does not automatically detect or redact PII. Best practices:
 
-1. Tag PII-containing memories: `tags=["pii"]`
-2. Use encryption for sensitive data
-3. Implement retention policies for PII
-4. Audit access to PII-tagged memories
+1. Use `metadata` dict to flag PII-containing memories
+2. Set `valid_until` for time-limited PII retention
+3. Use separate `session_id` values to isolate PII by context
+4. Use `forget()` to remove PII when no longer needed
 
 <Callout type="success" title="Privacy by Default">
-With `local_embeddings=True` and no cloud features enabled, Mnemosyne operates entirely offline. No data ever leaves your machine.
+Mnemosyne runs entirely offline. All embedding generation uses fastembed locally. No data ever leaves your machine.
 </Callout>

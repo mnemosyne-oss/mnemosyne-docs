@@ -8,9 +8,9 @@ Mnemosyne is designed with security and privacy as first-class concerns.
 
 flowchart TD
     A[Agent] -->|Local API| M[Mnemosyne]
-    M -->|Encrypted| DB[(SQLite DB)]
-    M -->|HTTPS| E[Embeddings API]
-    DB -->|Backup| S3[Encrypted Backup]
+    M -->|Local| DB[(SQLite DB)]
+    M -->|Local| E[fastembed Embeddings]
+    DB -->|Backup| S3[Disaster Recovery]
     
     style M fill:#e0f2fe,stroke:#0284c7
     style DB fill:#f0fdf4,stroke:#16a34a
@@ -21,28 +21,25 @@ flowchart TD
 
 | Threat | Mitigation |
 |--------|------------|
-| Data theft (local) | Encryption at rest |
+| Data theft (local) | Filesystem permissions on SQLite DB |
 | Data theft (network) | No network exposure by default |
 | Prompt injection | Input validation, parameterized queries |
-| Memory poisoning | Importance scoring, confidence thresholds |
-| Backup exposure | Encrypted backups |
+| Memory poisoning | Importance scoring, scope isolation |
+| Data loss | Backup and recovery via disaster recovery module |
 
 ## Security Features
 
-- **Encryption at rest**: AES-256-GCM for database files
+- **Local-first**: All data stays in a local SQLite database by default
+- **Local embeddings**: Uses BAAI/bge-small-en-v1.5 via fastembed (384 dims) — no external API calls
 - **No cloud required**: All data stays local by default
 - **Input sanitization**: All user inputs are parameterized
-- **Audit logging**: Optional access logging
-- **Backup encryption**: GPG or AES-encrypted backups
+- **Session isolation**: Separate session IDs isolate memory contexts
+- **Disaster recovery**: Backup and restore via `mnemosyne.dr.recovery`
 
-## Compliance
+## Embedding Model
 
-| Standard | Status | Notes |
-|----------|--------|-------|
-| GDPR | Compatible | Data stays local, no third-party sharing |
-| HIPAA | Compatible | Encryption + access controls |
-| SOC 2 | Compatible | Audit logs + backup procedures |
+Mnemosyne uses **BAAI/bge-small-en-v1.5** via the `fastembed` library for all embedding generation. This runs entirely locally — no text is ever sent to an external API.
 
-<Callout type="warning" title="Embedding API Calls">
-By default, Mnemosyne sends text to OpenAI for embedding generation. Use local embeddings (`local_embeddings=True`) to prevent any data leaving your machine.
+<Callout type="info" title="No External API Calls">
+By default, Mnemosyne does not send any data to external services. All embedding generation happens locally via fastembed. No OpenAI or other cloud embedding APIs are used.
 </Callout>

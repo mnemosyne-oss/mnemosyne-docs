@@ -7,70 +7,72 @@ How information moves through Mnemosyne's memory tiers.
 <MermaidDiagram>
 
 flowchart LR
-    A[Agent Input] -->|observe| WM[Working Memory]
-    WM -->|index| VI[Vector Index]
+    A[Agent Input] -->|remember| WM[Working Memory]
     WM -->|index| FI[FTS5 Index]
-    WM -->|trigger| SC[Sleep Consolidator]
+    WM -->|sleep| SC[Sleep Consolidator]
     SC -->|promote| EM[Episodic Memory]
-    SC -->|extract| SM[Semantic Memory]
+    EM -->|index| VI[Vector Index + FTS5]
     SC -->|evict| DEL[Deleted]
 
 </MermaidDiagram>
 
-1. **Agent observes** an event, conversation turn, or tool result
-2. **Working Memory** stores the raw entry with metadata
-3. **Indices** are updated synchronously (vector + FTS5)
-4. **Sleep Consolidator** (async) processes entries during sleep cycles
-5. **Promotion** moves high-importance entries to Episodic Memory
-6. **Extraction** pulls structured facts into Semantic Memory
-7. **Eviction** removes low-importance entries per policy
+1. **Agent calls `remember()`** with content, source, importance, and optional metadata
+2. **Working Memory** stores the raw entry with metadata in SQLite
+3. **FTS5 index** is updated for full-text search
+4. **Sleep consolidation** (triggered by calling `sleep()`) processes older entries
+5. **Promotion** summarizes and moves entries to Episodic Memory
+6. **Vector + FTS5 indexing** occurs on the new Episodic entries
+7. **Eviction** removes the original Working Memory entries
 
 ## Read Path
 
 <MermaidDiagram>
 
 flowchart LR
-    Q[Query] -->|parse| RE[Retrieval Engine]
-    RE -->|vector| VI[Vector Index]
-    RE -->|text| FI[FTS5 Index]
-    RE -->|graph| TG[Temporal Graph]
+    Q[Query] -->|recall| RE[Retrieval Engine]
+    RE -->|vector search| VI[sqlite-vec Index]
+    RE -->|text search| FI[FTS5 Index]
     VI -->|scores| RF[Rank Fusion]
     FI -->|scores| RF
-    TG -->|triples| RF
-    RF -->|results| WM[Working Memory]
-    WM -->|context| A[Agent]
+    RF -->|ranked results| A[Agent]
 
 </MermaidDiagram>
 
-1. **Query** enters the Retrieval Engine
-2. **Parallel dispatch** to vector, text, and graph indices
-3. **Rank Fusion** combines scores using configurable weights
-4. **Working Memory** assembles the final context window
-5. **Agent receives** consolidated, relevant context
+1. **Agent calls `recall(query, top_k=5)`**
+2. **Query is embedded** using BAAI/bge-small-en-v1.5 (384 dims) for vector search
+3. **Parallel dispatch** to vector (sqlite-vec) and text (FTS5) indices
+4. **Rank Fusion** combines scores: `vec×0.5 + fts×0.3 + importance×0.2`, then applies recency decay: `score × (0.7 + 0.3 × recency_decay)`
+5. **Agent receives** ranked results
 
 ## Consolidation Flow
 
 <MermaidDiagram>
 
 flowchart TD
-    START[Sleep Cycle Trigger] -->|every N seconds| WM2[Scan Working Memory]
-    WM2 -->|select| CAND[Candidates]
-    CAND -->|importance > threshold| PROMOTE[Promote to Episodic]
-    CAND -->|extractable facts| EXTRACT[Extract to Semantic]
-    CAND -->|age > limit| EVICT[Evict]
-    PROMOTE --> COMPRESS[AAAK Compress]
-    COMPRESS --> EM2[Episodic Memory]
-    EXTRACT --> TG2[Temporal Graph]
-    EVICT --> DEL[Remove]
+    START[sleep called] --> SELECT[Select entries older than TTL/2]
+    SELECT --> GROUP[Group by source]
+    GROUP --> SUMMARIZE[Summarize via LLM or AAAK]
+    SUMMARIZE --> PROMOTE[Store summary in Episodic Memory]
+    PROMOTE --> INDEX[Index new episodic entry]
+    INDEX --> EVICT[Evict originals from Working Memory]
 
 </MermaidDiagram>
+
+Consolidation is triggered explicitly by calling `mem.sleep()`:
+
+1. **Select** Working Memory entries older than TTL/2 (default 12 hours)
+2. **Group** candidates by their source field
+3. **Summarize** each group via LLM (if enabled) or AAAK text substitution
+4. **Promote** the summary as a new Episodic Memory entry (with `summary_of` tracking)
+5. **Index** the new entry in vector and FTS5 indices
+6. **Evict** the original entries from Working Memory
 
 ## Event Lifecycle
 
 | Stage | Location | Trigger | Duration |
 |-------|----------|---------|----------|
-| Ingestion | Working Memory | Agent observation | Immediate |
-| Indexing | Vector + FTS5 | Write completion | &lt;50ms |
-| Consolidation | Episodic + Semantic | Sleep cycle | Minutes to hours |
-| Retrieval | Working Memory | Agent query | &lt;100ms |
-| Eviction | Deleted | Retention policy | Configurable |
+| Ingestion | Working Memory | `remember()` | Immediate |
+| FTS5 Indexing | FTS5 virtual table | Write completion | &lt;50ms |
+| Consolidation | Episodic Memory | `sleep()` call | Depends on batch size |
+| Retrieval | Episodic Memory | `recall()` | &lt;100ms |
+| Eviction | Working Memory | `sleep()` completion | Immediate |

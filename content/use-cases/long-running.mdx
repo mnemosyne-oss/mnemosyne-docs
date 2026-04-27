@@ -18,7 +18,7 @@ Without persistent memory, context is lost.
 
 flowchart LR
     S1[Session 1
-    Day 1] -->|store| DB[(Mnemosyne)]
+    Day 1] -->|remember| DB[(Mnemosyne)]
     S2[Session 2
     Day 3] -->|recall| DB
     S3[Session 3
@@ -28,65 +28,109 @@ flowchart LR
 
 </MermaidDiagram>
 
-## Session Management
+## Session Persistence
 
-<CodeBlock code={`from mnemosyne import Memory
+Use `session_id` and `db_path` to persist memory across restarts:
 
-mem = Memory()
+<CodeBlock code={`from mnemosyne import Mnemosyne
 
-# Start a task
-session_id = mem.start_session(
-    name="website-redesign",
-    description="Redesign company website",
+# Connect to a persistent database with a named session
+mem = Mnemosyne(
+    session_id="website-redesign",
+    db_path="/data/memories.db",
 )
 
 # Store progress
 mem.remember(
     content="Completed hero section design. User approved color palette.",
-    session_id=session_id,
-    tags=["website-redesign", "design"],
+    source="conversation",
+    importance=0.7,
 )
 
-# Later session — resume context
-mem.resume_session(session_id)
-context = mem.recall_session(session_id)
+# Store task state
+mem.remember(
+    content="Next step: implement responsive navigation component.",
+    source="task-tracker",
+    importance=0.8,
+)
 `} language="python" />
 
-## Checkpointing
+## Resuming Across Restarts
 
-Save intermediate states:
+When your agent restarts, reconnect with the same `session_id` and `db_path`:
 
-<CodeBlock code={`# Create checkpoint
-checkpoint = mem.checkpoint()
-mem.remember(
-    content=f"Checkpoint: {checkpoint.id}",
-    tags=["checkpoint"],
+<CodeBlock code={`from mnemosyne import Mnemosyne
+
+# New process — reconnect to the same session
+mem = Mnemosyne(
+    session_id="website-redesign",
+    db_path="/data/memories.db",
 )
 
+# Recover context
+context = mem.recall("design progress and next steps", top_k=10)
+for item in context:
+    print(item)
+`} language="python" />
+
+## Using Scope for Long-Running Tasks
+
+The `scope` parameter helps separate temporary vs. permanent memories:
+
+<CodeBlock code={`from mnemosyne import Mnemosyne
+
+mem = Mnemosyne(session_id="website-redesign", db_path="/data/memories.db")
+
+# Temporary task context (session-scoped)
+mem.remember(
+    content="Current CSS file is main.scss in /src/styles.",
+    scope="session",
+    importance=0.4,
+)
+
+# Permanent project knowledge (global)
+mem.remember(
+    content="Website uses the company design system v3.",
+    scope="global",
+    importance=0.9,
+)
+`} language="python" />
+
+## Backup & Recovery
+
+Use the disaster recovery module to protect long-running work:
+
+<CodeBlock code={`from mnemosyne.dr.recovery import create_backup, restore_backup
+
+# Create backup before risky operations
+create_backup(db_path="/data/memories.db", backup_path="/backups/pre-deploy.bak")
+
 # Restore if needed
-mem.restore_checkpoint(checkpoint.id)
+restore_backup(backup_path="/backups/pre-deploy.bak", db_path="/data/memories.db")
 `} language="python" />
 
 ## Deployment Considerations
 
 | Concern | Solution |
 |---------|----------|
-| Database persistence | Persistent volume |
-| Backup before deploy | Pre-deploy backup job |
+| Database persistence | Persistent volume for `db_path` |
+| Backup before deploy | Pre-deploy backup via `create_backup()` |
 | Migration on upgrade | Automatic schema migration |
-| Monitoring | Alert if last session > 24h old |
+| Monitoring | Check `get_stats()` for memory count |
 
 ## Example: Weekly Report Agent
 
-<CodeBlock code={`# Runs every Monday at 9 AM
+<CodeBlock code={`from mnemosyne import Mnemosyne
+
+# Runs every Monday at 9 AM
 def generate_weekly_report():
-    mem = Memory()
-    
-    # Recall last week's activities
-    last_week = mem.recall(
-        "project updates decisions",
-        since=(datetime.now() - timedelta(days=7)).isoformat(),
+    mem = Mnemosyne(
+        session_id="weekly-reports",
+        db_path="/data/reports.db",
     )
+    
+    # Recall recent activities
+    last_week = mem.recall("project updates decisions", top_k=10)
     
     # Generate report
     report = compile_report(last_week)
@@ -94,7 +138,7 @@ def generate_weekly_report():
     # Store report for future reference
     mem.remember(
         content=report.summary,
-        tags=["weekly-report", f"week-{get_week_number()}"],
+        source="weekly-report",
         importance=0.7,
     )
     

@@ -1,55 +1,66 @@
 # Access Control
 
-Control who can read, write, and administer Mnemosyne.
+Control memory isolation and access using Mnemosyne's session and scope model.
 
-## REST API Authentication
+## Session-Based Isolation
 
-<CodeBlock code={`# Require API key
-export MNEMOSYNE_API_KEYS=key1,key2,key3
+Each `Mnemosyne` instance is identified by a `session_id`. Different sessions maintain separate memory contexts:
 
-# Or from file
-export MNEMOSYNE_API_KEYS_FILE=/etc/mnemosyne/keys
-`} language="bash" />
+<CodeBlock code={`from mnemosyne import Mnemosyne
 
-## Role-Based Access (Future)
+# Separate sessions with isolated memories
+user_a_mem = Mnemosyne(session_id="user-alice")
+user_b_mem = Mnemosyne(session_id="user-bob")
 
-Planned for v2.1:
+# Alice's memories are isolated from Bob's
+user_a_mem.remember(content="Alice prefers dark mode", importance=0.5)
+user_b_mem.remember(content="Bob prefers light mode", importance=0.5)
 
-| Role | Read | Write | Admin |
-|------|------|-------|-------|
-| `reader` | All | No | No |
-| `writer` | All | Yes | No |
-| `admin` | All | Yes | Yes |
+# Each user only recalls their own context
+user_a_mem.recall("UI preferences")  # Returns Alice's preferences
+user_b_mem.recall("UI preferences")  # Returns Bob's preferences
+`} language="python" />
 
-## IP Restrictions
+## Scope-Based Access
 
-<CodeBlock code={`# Bind to localhost only
-export MNEMOSYNE_HOST=127.0.0.1
+Use the `scope` parameter on `remember()` to control visibility within a session:
 
-# Or use firewall
-ufw allow from 10.0.0.0/8 to any port 8080
-`} language="bash" />
+<CodeBlock code={`from mnemosyne import Mnemosyne
 
-## Audit Logging
+mem = Mnemosyne(session_id="my-agent")
 
-<CodeBlock code={`# Enable access logging
-export MNEMOSYNE_AUDIT_LOG=/var/log/mnemosyne/audit.log
+# Session-scoped (default) — only visible in this session
+mem.remember(
+    content="Current task: fixing bug #42",
+    scope="session",
+)
 
-# Log format
-{
-  "timestamp": "2026-04-25T14:30:00Z",
-  "action": "remember",
-  "user": "api_key_1234",
-  "memory_id": "mem_abc123",
-  "ip": "10.0.0.5",
-}
-`} language="json" />
+# Global — visible across all sessions sharing the same DB
+mem.remember(
+    content="Company style guide link: ...",
+    scope="global",
+)
+`} language="python" />
 
-<Callout type="info" title="Unix Sockets">
-For local-only deployments, bind to a Unix socket instead of TCP:
+## Multi-Tenant Pattern
 
-<CodeBlock code={`export MNEMOSYNE_SOCKET=/run/mnemosyne.sock
-`} language="bash" />
+Isolate tenants by using separate databases:
 
-This eliminates network exposure entirely.
+<CodeBlock code={`from mnemosyne import Mnemosyne
+
+# Each tenant gets their own database file
+tenant_a = Mnemosyne(session_id="default", db_path="/data/tenant-a/memories.db")
+tenant_b = Mnemosyne(session_id="default", db_path="/data/tenant-b/memories.db")
+`} language="python" />
+
+## Filesystem Permissions
+
+Since Mnemosyne stores data in local SQLite files, standard OS-level access controls apply:
+
+- Set restrictive file permissions on the database directory
+- Use dedicated OS users for different agent services
+- Place database files on encrypted filesystems if required
+
+<Callout type="info" title="Local-Only by Default">
+Mnemosyne does not expose a network API by default. All access is via the Python SDK, which means access control is governed by your application code and OS-level permissions.
 </Callout>

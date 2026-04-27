@@ -69,11 +69,6 @@ Mnemosyne uses structured JSON logging:
 }
 `} language="json" />
 
-Configure log level:
-
-<CodeBlock code={`export MNEMOSYNE_LOG_LEVEL=debug  # debug, info, warning, error
-`} language="bash" />
-
 ## Alerting Rules (Prometheus)
 
 <CodeBlock code={`groups:
@@ -91,7 +86,3 @@ Configure log level:
         annotations:
           summary: "Mnemosyne consolidation has stalled"
 `} language="yaml" />
-
-<Callout type="info" title="Grafana Dashboard">
-Import the official Mnemosyne Grafana dashboard (ID: 12345) for pre-built panels showing query latency, memory distribution, and consolidation health.
-</Callout>
