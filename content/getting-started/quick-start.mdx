@@ -13,43 +13,43 @@ First, activate the Hermes agent virtual environment:
 
 <CodeBlock code={`source ~/.hermes/hermes-agent/venv/bin/activate`} language="bash" />
 
-Then install Mnemosyne **with full semantic search support**:
+Then install Mnemosyne **with semantic search**:
 
 <CodeBlock code={`# If your venv was created with python -m venv or virtualenv
-pip install mnemosyne-memory[embeddings] sqlite-vec
+pip install mnemosyne-memory[embeddings]
 
 # If your venv was created with uv venv (pip is not included)
-uv pip install mnemosyne-memory[embeddings] sqlite-vec`} language="bash" />
+uv pip install mnemosyne-memory[embeddings]`} language="bash" />
 
 <Callout type="warning" title="uv venv does not include pip">
 If you created the Hermes venv with `uv venv`, running `pip install` will fail with "command not found." This is by design — uv replaces pip with `uv pip`. Always use `uv pip install` in uv-created environments.
 </Callout>
 
-<Callout type="danger" title="Both fastembed AND sqlite-vec are required for semantic search">
-To get semantic vector search and hybrid retrieval, you need **both**:
+<Callout type="info" title="What [embeddings] gives you">
+The `[embeddings]` extra installs **fastembed**, which powers semantic vector search. With it, Mnemosyne can:
 
-1. **`[embeddings]`** — installs fastembed, which converts text into semantic vectors
-2. **`sqlite-vec`** — stores those vectors in SQLite for efficient similarity search
+- Match memories by **meaning**, not just keywords
+- Find "Italian food" when you search "pizza" (semantic similarity)
+- Combine vector + text scores for **hybrid retrieval**
 
-Without sqlite-vec, fastembed generates vectors but they are discarded — you still get FTS5 keyword search only. Without `[embeddings]`, there are no vectors at all. Both are required for:
-
-- Semantic similarity search
-- Context-aware retrieval
-- Meaning-based memory matching
-- Hybrid search (vector + text combined)
+Without `[embeddings]`, you get FTS5 keyword search only.
 </Callout>
 
 Or with uv (recommended for speed):
 
-<CodeBlock code={`uv pip install mnemosyne-memory[embeddings] sqlite-vec`} language="bash" />
+<CodeBlock code={`uv pip install mnemosyne-memory[embeddings]`} language="bash" />
+
+## Optional: sqlite-vec for Performance
+
+`sqlite-vec` is an **optional performance boost** for large datasets (100K+ memories). It moves vector similarity search into native C code inside SQLite. Without it, Mnemosyne uses an in-memory numpy fallback that works fine for most use cases.
+
+<CodeBlock code={`pip install sqlite-vec`} language="bash" />
 
 ## Initialize the Database
 
 Run the built-in installer to set up the SQLite database and schema:
 
 <CodeBlock code={`python -m mnemosyne.install`} language="bash" />
-
-> **Note:** Mnemosyne uses SQLite with FTS5 for full-text search by default. With `[embeddings]` + `sqlite-vec` installed, semantic vector search and hybrid retrieval are available.
 
 ## Verify Installation
 
