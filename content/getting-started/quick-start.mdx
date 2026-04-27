@@ -46,7 +46,7 @@ Run the built-in installer to set up the SQLite database and schema:
 
 <CodeBlock code={`python -m mnemosyne.install`} language="bash" />
 
-> **Note:** Mnemosyne uses SQLite with FTS5 for full-text search by default. If `sqlite-vec` is available, vector search is enabled automatically — but it is entirely optional.
+> **Note:** Mnemosyne uses SQLite with FTS5 for full-text search by default. With `[embeddings]` installed, semantic vector search is available. An optional `sqlite-vec` package can further optimize vector storage — install it only if you need maximum query performance on large datasets.
 
 ## Verify Installation
 

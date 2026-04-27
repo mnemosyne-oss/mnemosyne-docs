@@ -121,14 +121,18 @@ Once installed, these are the Mnemosyne commands available through Hermes:
 Do **not** use `hermes plugin install mnemosyne` — that command doesn't exist. The correct Hermes plugin commands are `hermes plugins install <git-url>` (note the plural *plugins*), which expects a Git repository URL. Mnemosyne is installed via `pip` and registered with `python -m mnemosyne.install`, not through the plugin manager.
 </Callout>
 
-## Optional: sqlite-vec for Vector Search
+## Optional: sqlite-vec for Vector Performance
 
-Mnemosyne uses **FTS5** (full-text search) by default, which works out of the box with no extra dependencies. If you want **semantic vector search**, you can optionally install sqlite-vec:
+Mnemosyne uses **fastembed** (installed via `[embeddings]`) to generate semantic vectors and stores them directly in SQLite. This works out of the box with no extra dependencies.
+
+If you have **very large datasets** (100K+ memories) and want maximum vector query performance, you can optionally install `sqlite-vec`:
 
 <CodeBlock code={`pip install sqlite-vec`} language="bash" />
 
-<Callout type="success" title="FTS5 works great on its own">
-sqlite-vec is entirely optional. Without it, Mnemosyne gracefully falls back to FTS5-only mode — all `remember` and `recall` operations still work. Add sqlite-vec only if you need vector similarity in addition to text search.
+<Callout type="info" title="sqlite-vec is an optimization, not a requirement">
+- **Without sqlite-vec:** Semantic search still works via fastembed + in-memory vector comparison. Slightly slower on huge datasets.
+- **With sqlite-vec:** Vector storage and similarity search happen inside SQLite with native C performance. Faster on large datasets.
+- **Either way:** You need `[embeddings]` installed for semantic search to work at all. sqlite-vec alone does nothing.
 </Callout>
 
 ## Development Install (from Source)
