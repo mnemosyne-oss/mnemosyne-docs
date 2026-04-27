@@ -11,28 +11,47 @@ export const metadata = {
 
 # Episodic Memory
 
-Long-term storage for experiences, conversations, and events. Organized chronologically with rich metadata and hybrid retrieval.
+Long-term storage for experiences, conversations, and events. Organized chronologically with rich metadata and hybrid retrieval. Entries are promoted from Working Memory during sleep consolidation.
 
-## Dual-Key Schema
+## Schema
 
-Episodic Memory uses a dual-key design for flexible access patterns:
+Episodic Memory uses an auto-incrementing `rowid` with a unique text `id`:
 
-| Column | Type | Description |
+|| Column | Type | Description |
 |--------|------|-------------|
-| `id` | TEXT | UUIDv4 primary key |
+| `rowid` | INTEGER | Auto-increment primary key |
+| `id` | TEXT | UUIDv4 unique identifier |
 | `content` | TEXT | Full experience record |
-| `embedding` | BLOB | Vector embedding |
-| `summary` | TEXT | AAAK-compressed summary |
-| `tags` | TEXT | JSON array |
-| `importance` | REAL | 0.0–1.0 |
-| `source` | TEXT | Origin |
-| `session_id` | TEXT | Grouping key |
-| `created_at` | INTEGER | Unix timestamp |
-| `consolidated_at` | INTEGER | When promoted from Working |
+| `source` | TEXT | Origin (user, tool, observation) |
+| `timestamp` | TEXT | Application-level timestamp |
+| `session_id` | TEXT | Session grouping key (default: `'default'`) |
+| `importance` | REAL | 0.0–1.0 importance score (default: `0.5`) |
+| `metadata_json` | TEXT | Arbitrary JSON metadata blob |
+| `summary_of` | TEXT | IDs of original Working Memory entries this summarizes |
+| `created_at` | TIMESTAMP | Row creation time |
+| `recall_count` | INTEGER | Number of times recalled (default: `0`) |
+| `last_recalled` | TIMESTAMP | Last recall time (default: `NULL`) |
+| `valid_until` | TIMESTAMP | TTL expiry time |
+| `superseded_by` | TEXT | ID of newer version |
+| `scope` | TEXT | Visibility scope (default: `'global'`) |
+
+### Indexes
+
+- `idx_episodic_session` on `session_id`
+- `idx_episodic_timestamp` on `timestamp`
+- `idx_episodic_source` on `source`
+
+### FTS5
+
+Full-text search via `fts_episodes` (content synced from `episodic_memory`), maintained by INSERT/UPDATE/DELETE triggers.
+
+### Vector Search
+
+Embeddings stored in `vec_episodes` (sqlite-vec, int8\[384\]), generated at recall time.
 
 ## Hybrid Scoring
 
-Retrieval combines three signals:
+Retrieval combines text and vector signals:
 
 <CodeBlock code={`score = (vector_similarity * 0.5) + 
         (fts_rank * 0.3) + 
@@ -41,43 +60,37 @@ Retrieval combines three signals:
 
 | Signal | Weight | Description |
 |--------|--------|-------------|
-| Vector similarity | 0.5 | Semantic closeness to query |
-| FTS5 rank | 0.3 | Full-text match quality |
+| Vector similarity | 0.5 | Semantic closeness to query embedding |
+| FTS5 rank | 0.3 | Full-text match quality via BM25 |
 | Temporal proximity | 0.2 | Recency of the memory |
-
-Weights are configurable per-query:
-
-<CodeBlock code={`results = mem.recall(
-    "project deadline",
-    vector_weight=0.7,
-    text_weight=0.2,
-    temporal_weight=0.1,
-)`} language="python" />
 
 ## Consolidation Pipeline
 
+Episodic entries are created during sleep consolidation, not directly by the agent:
+
 <MermaidDiagram chart={`
 flowchart TD
-    WM[Working Memory] -->|candidate| S{Scoring}
-    S -->|importance > 0.7| C[Compress with AAAK]
-    S -->|importance < 0.3| E[Evict]
-    C -->|store| EM[Episodic Memory]
-    C -->|extract| SM[Semantic Memory]
+    WM[Working Memory] -->|age > TTL/2| C{Consolidation}
+    C -->|group by source| G[Group entries]
+    G -->|summarize| S[LLM or AAAK summary]
+    S -->|promote| EM[Episodic Memory]
+    C -->|evict originals| DEL[Evict from Working]
 `} />
+
+The `summary_of` column in the episodic record tracks which Working Memory entries were consolidated to produce it.
 
 ## Session Grouping
 
-Episodic entries can be grouped by session for chronological recall:
+Episodic entries are grouped by `session_id` for chronological recall:
 
-<CodeBlock code={`# Store with session
+<CodeBlock code={`# Store with session (goes to Working Memory first)
 mem.remember(
     content="User approved the design mockup.",
     session_id="design-review-2026-04-25",
-    tags=["design", "approval"],
 )
 
-# Recall entire session
-session = mem.recall_session("design-review-2026-04-25")
+# Recall with session filter
+results = mem.recall("design mockup", session_id="design-review-2026-04-25")
 `} language="python" />
 
 ## Performance
@@ -86,8 +99,8 @@ session = mem.recall_session("design-review-2026-04-25")
 |--------|-------|
 | Median retrieval | 85ms |
 | Storage per entry | ~2KB (compressed) |
-| Queryable fields | content, tags, source, session_id, date range |
+| Queryable fields | content, source, session_id, timestamp, date range |
 
 <Callout type="success" title="Best Practice">
-Tag episodic memories with descriptive labels. Tags are indexed via FTS5 and heavily weighted in retrieval scoring. Good tags: `["api-design", "decision", "user-feedback"]`. Bad tags: `["misc", "stuff"]`.
+Use descriptive `source` values and meaningful `metadata_json` fields for episodic memories. These are indexed and used in retrieval scoring. Good sources: `"user-feedback"`, `"tool-result"`, `"agent-decision"`.
 </Callout>

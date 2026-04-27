@@ -1,6 +1,6 @@
 export const metadata = {
   title: 'Configuration — Mnemosyne Settings & Environment',
-  description: 'Configure Mnemosyne with environment variables, config files, and runtime options. Covers database paths, embedding models, memory tier sizes, and more.',
+  description: 'Configure Mnemosyne with environment variables and runtime options. Covers database paths, memory tier sizes, sleep consolidation, embedding settings, and local LLM configuration.',
   openGraph: {
     images: ['/og-image.svg'],
   },
@@ -11,50 +11,63 @@ export const metadata = {
 
 # Configuration
 
-Mnemosyne is configured via environment variables or a `mnemosyne.yaml` file.
+Mnemosyne is configured via environment variables. All settings have sensible defaults so you can get started with zero configuration.
 
-## Environment Variables
+## Constructor Parameters
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `MNEMOSYNE_DB_PATH` | `./mnemosyne.db` | SQLite database file path |
-| `MNEMOSYNE_EMBEDDING_MODEL` | `text-embedding-3-small` | OpenAI embedding model |
-| `MNEMOSYNE_API_KEY` | — | OpenAI API key |
-| `MNEMOSYNE_MAX_WORKING` | `1000` | Working memory entry limit |
-| `MNEMOSYNE_CONSOLIDATION_INTERVAL` | `3600` | Sleep cycle interval (seconds) |
-| `MNEMOSYNE_ENCRYPTION_KEY` | — | AES-256 encryption key (hex) |
+The only runtime parameters are passed directly to the constructor:
 
-## YAML Configuration
+<CodeBlock code={`from mnemosyne import Mnemosyne
 
-Create `mnemosyne.yaml` in your project root:
-
-<CodeBlock code={`db_path: ./memory.db
-embedding:
-  model: text-embedding-3-small
-  api_key: your-openai-api-key
-
-memory:
-  working_max: 1000
-  consolidation_interval: 3600
-
-retrieval:
-  vector_weight: 0.7
-  text_weight: 0.3
-  top_k: 10
-`} language="yaml" />
-
-## Programmatic Configuration
-
-<CodeBlock code={`from mnemosyne import Memory
-
-mem = Memory(
-    db_path="./my-memory.db",
-    embedding_model="text-embedding-3-large",
-    max_working=500,
-    consolidation_interval=1800,
+mem = Mnemosyne(
+    session_id="my-agent",   # Scope working memories to this session
+    db_path="./data/mem.db", # Custom database path (optional)
 )
 `} language="python" />
 
-<Callout type="info" title="Tip">
-Use `text-embedding-3-small` for development and `text-embedding-3-large` for production workloads requiring higher accuracy.
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `session_id` | `str` | `"default"` | Session identifier for scoping working memories |
+| `db_path` | `str \| None` | `None` | Path to the SQLite database file |
+
+## Environment Variables
+
+### Storage & Memory Tiers
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `MNEMOSYNE_DATA_DIR` | — | Root data directory for database files |
+| `MNEMOSYNE_WM_MAX_ITEMS` | `10000` | Maximum items in Working Memory |
+| `MNEMOSYNE_WM_TTL_HOURS` | `24` | Time-to-live for Working Memory entries (hours) |
+| `MNEMOSYNE_EP_LIMIT` | `50000` | Maximum items in Episodic Memory |
+| `MNEMOSYNE_SLEEP_BATCH` | `5000` | Number of items to process per sleep cycle |
+| `MNEMOSYNE_SP_MAX` | `1000` | Maximum scratchpad entries |
+| `MNEMOSYNE_RECENCY_HALFLIFE` | `168.0` | Recency decay half-life in hours (default = 1 week) |
+
+### Embeddings
+
+Mnemosyne uses **BAAI/bge-small-en-v1.5** via fastembed (384 dimensions) for local embedding generation. No external API key is needed.
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `MNEMOSYNE_VEC_TYPE` | `int8` | Vector quantization type (e.g. `int8`, `float32`) |
+
+### Local LLM (for Sleep Summarization)
+
+The sleep cycle can use a local LLM to summarize grouped working memories before promoting them to episodic memory.
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `MNEMOSYNE_LLM_ENABLED` | `true` | Enable/disable LLM-based summarization |
+| `MNEMOSYNE_LLM_MAX_TOKENS` | `256` | Maximum tokens for generated summaries |
+| `MNEMOSYNE_LLM_N_THREADS` | `4` | Number of CPU threads for inference |
+| `MNEMOSYNE_LLM_N_CTX` | `2048` | Context window size for the local model |
+| `MNEMOSYNE_LLM_REPO` | — | Hugging Face repository for the local LLM |
+| `MNEMOSYNE_LLM_FILE` | — | GGUF model filename within the repo |
+| `MNEMOSYNE_LLM_BASE_URL` | — | External OpenAI-compatible API base URL (alternative to local LLM) |
+| `MNEMOSYNE_LLM_API_KEY` | — | API key for the external LLM endpoint |
+| `MNEMOSYNE_LLM_MODEL` | — | Model name for the external LLM endpoint |
+
+<Callout type="info" title="No External Dependencies Required">
+Mnemosyne runs entirely locally. Embeddings use fastembed with **BAAI/bge-small-en-v1.5** (384 dims), and the sleep cycle uses a local LLM via llamafile or an optional external OpenAI-compatible endpoint. No OpenAI API key is required for basic usage.
 </Callout>

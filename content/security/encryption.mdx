@@ -1,69 +1,47 @@
 # Encryption
 
-Protect memory data at rest with AES-256-GCM encryption.
+Data encryption at rest for Mnemosyne memory stores.
 
-## Enabling Encryption
+<Callout type="warning" title="Not Yet Implemented">
+Encryption at rest (AES-256-GCM or equivalent) is not yet implemented in the Mnemosyne constructor. The `Memory()` class does not accept an `encryption_key` parameter. This page documents the planned feature. Use filesystem-level encryption in the meantime.
+</Callout>
 
-<CodeBlock code={`from mnemosyne import Memory
+## Current Recommendations
 
-# Generate a key (store this securely!)
-import secrets
-key = secrets.token_hex(32)  # 256-bit key
+Since application-level encryption is not yet available, protect data at rest using:
 
-# Initialize with encryption
-mem = Memory(encryption_key=key)
-`} language="python" />
+### Filesystem Encryption
 
-## Key Management
+<CodeBlock code={`# LUKS full-disk encryption (Linux)
+cryptsetup luksFormat /dev/sdb1
+cryptsetup luksOpen /dev/sdb1 mnemosyne-data
 
-### Environment Variable
-
-<CodeBlock code={`export MNEMOSYNE_ENCRYPTION_KEY=your-256-bit-hex-key
+# Mount encrypted volume
+mount /dev/mapper/mnemosyne-data /data
 `} language="bash" />
 
-### Key File
+### Database File Permissions
 
-<CodeBlock code={`# Store key in file with restricted permissions
-echo "your-key" > /etc/mnemosyne/key
-chmod 600 /etc/mnemosyne/key
-
-# Reference in config
-export MNEMOSYNE_ENCRYPTION_KEY_FILE=/etc/mnemosyne/key
+<CodeBlock code={`# Restrict access to database file
+chmod 600 /data/mnemosyne.db
+chown mnemosyne:mnemosyne /data/mnemosyne.db
 `} language="bash" />
 
-## Encryption Scope
+### Environment Isolation
 
-| Data | Encrypted | Notes |
-|------|-----------|-------|
+Run Mnemosyne in isolated environments (containers, VMs) with encrypted storage volumes to prevent unauthorized access to the SQLite database file.
+
+## Planned Features
+
+When implemented, encryption is expected to cover:
+
+| Data | Planned | Notes |
+|------|---------|-------|
 | Memory content | Yes | All text content |
-| Embeddings | No | Vectors are not encrypted (performance) |
-| Metadata | Partial | Tags, source encrypted; timestamps not |
-| Facts | Yes | Subject, predicate, object |
+| Embeddings | No | Vectors not encrypted (performance) |
+| Metadata | Partial | Tags, source; timestamps not |
+| Semantic triples | Yes | Subject, predicate, object |
 
-## Performance Impact
-
-| Operation | Unencrypted | Encrypted | Overhead |
-|-----------|-------------|-----------|----------|
-| Write | 12ms | 18ms | +50% |
-| Read | 8ms | 12ms | +50% |
-| Query | 65ms | 75ms | +15% |
-
-## Rotation
-
-To rotate encryption keys:
-
-<CodeBlock code={`# 1. Export with old key
-mem = Memory(encryption_key=old_key)
-mem.export("export.json")
-
-# 2. Import with new key
-mem2 = Memory(encryption_key=new_key)
-mem2.import_("export.json")
-
-# 3. Verify
-assert mem2.stats().working_count == mem.stats().working_count
-`} language="python" />
-
-<Callout type="danger" title="Key Loss">
-If you lose your encryption key, your data is unrecoverable. Store keys in a password manager, HSM, or secure key management service. There is no backdoor.
+<Callout type="danger" title="Data Security">
+Even without application-level encryption, always use filesystem encryption and proper file permissions for production deployments. Memory databases contain sensitive user data and conversation history.
 </Callout>

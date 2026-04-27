@@ -1,6 +1,6 @@
 export const metadata = {
   title: 'Semantic Memory — Long-Term Knowledge & Facts Store',
-  description: 'Discover Mnemosyne\'s Semantic Memory: the long-term knowledge store for facts, concepts, and relationships that agents accumulate and query over time.',
+  description: 'Discover Mnemosyne\'s Semantic Memory: the long-term knowledge store for facts, concepts, and relationships stored as temporal triples via the TripleStore class.',
   openGraph: {
     images: ['/og-image.svg'],
   },
@@ -11,21 +11,75 @@ export const metadata = {
 
 # Semantic Memory
 
-Structured knowledge storage using a temporal knowledge graph. Stores facts, relationships, and concepts as subject-predicate-object triples with temporal metadata.
+Structured knowledge storage using a temporal knowledge graph. Stores facts, relationships, and concepts as subject-predicate-object triples with temporal validity.
+
+## TripleStore Class
+
+Semantic Memory is managed by the `TripleStore` class, which is **separate** from the main `Memory` class. It is not accessed via `mem.add_fact()` or `mem.query_facts()`.
+
+### Module-Level Functions
+
+<CodeBlock code={`from mnemosyne.semantic import add_triple, query_triples
+
+# Add a triple
+add_triple(
+    subject="Project Alpha",
+    predicate="has_deadline",
+    object="2026-05-01",
+    confidence=0.90,
+    source="user",
+    valid_from="2026-04-25",
+)
+
+# Query triples
+results = query_triples(
+    subject="Project Alpha",
+    predicate="has_deadline",
+)
+`} language="python" />
+
+### TripleStore Instance
+
+<CodeBlock code={`from mnemosyne.semantic import TripleStore
+
+ts = TripleStore(db_path="mnemosyne.db")
+
+# Add a triple
+ts.add(
+    subject="Alice",
+    predicate="prefers_language",
+    object="Go",
+    confidence=0.95,
+    source="user",
+    valid_from="2026-04-20",
+)
+
+# Query triples
+results = ts.query(
+    subject="Alice",
+    predicate="prefers_language",
+)
+
+# Temporal query — what was true as of a specific date?
+results = ts.query(
+    subject="Alice",
+    predicate="prefers_language",
+    as_of="2026-03-01",
+)
+`} language="python" />
 
 ## Triple Schema
 
-| Column | Type | Description |
-|--------|------|-------------|
-| `id` | TEXT | UUIDv4 |
-| `subject` | TEXT | Entity (e.g., "Alice") |
-| `predicate` | TEXT | Relationship (e.g., "knows") |
+Each triple has the following fields:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `subject` | TEXT | Entity (e.g., `"Alice"`) |
+| `predicate` | TEXT | Relationship (e.g., `"knows"`) |
 | `object` | TEXT | Target entity or value |
 | `confidence` | REAL | 0.0–1.0 fact confidence |
-| `source_mem_id` | TEXT | Originating Working Memory entry |
-| `valid_from` | INTEGER | When fact became true |
-| `valid_until` | INTEGER | When fact expired (NULL = current) |
-| `created_at` | INTEGER | Record timestamp |
+| `source` | TEXT | Origin of this triple |
+| `valid_from` | TEXT/ISO date | When the fact became true |
 
 ## Example Triples
 
@@ -38,59 +92,24 @@ Structured knowledge storage using a temporal knowledge graph. Stores facts, rel
 
 ## Temporal Validity
 
-Facts can expire or be superseded:
+The `as_of` parameter in `query()` enables point-in-time queries. Only triples whose `valid_from` is on or before the specified date are returned. This lets you ask "what did we know at time X?"
 
-<CodeBlock code={`# Add a fact
-mem.add_fact(
+<CodeBlock code={`# What did we know about Project Alpha's deadline on April 1?
+results = ts.query(
     subject="Project Alpha",
     predicate="has_deadline",
-    object="2026-05-01",
-    confidence=0.90,
-)
-
-# Update with new information (old fact auto-expires)
-mem.add_fact(
-    subject="Project Alpha",
-    predicate="has_deadline",
-    object="2026-05-15",
-    confidence=0.95,
-)
-
-# Query current facts only
-facts = mem.query_facts(
-    subject="Project Alpha",
-    current_only=True,
+    as_of="2026-04-01",
 )
 `} language="python" />
 
-## Graph Queries
+## Storage
 
-<CodeBlock code={`# Direct lookup
-facts = mem.query_facts(subject="Alice")
-
-# Relationship traversal
-related = mem.traverse(subject="Alice", depth=2)
-
-# Pattern matching
-matches = mem.query_facts(
-    predicate="reports_to",
-    object="Carol",
-)
-`} language="python" />
-
-## Extraction from Working Memory
-
-Mnemosyne automatically extracts triples during consolidation:
-
-<MermaidDiagram chart={`
-flowchart LR
-    WM[Working Memory Entry] -->|NLP extraction| T[Candidate Triples]
-    T -->|confidence > 0.7| SM[Semantic Memory]
-    T -->|confidence < 0.7| DISCARD[Discard]
-`} />
-
-Extraction uses a lightweight local model (no API calls) and runs during sleep cycles.
+The TripleStore is backed by SQLite. No external graph database is required.
 
 <Callout type="info" title="Schema Flexibility">
 Semantic Memory has no predefined ontology. Predicates are free-form strings. This allows dynamic knowledge domains without schema migrations.
+</Callout>
+
+<Callout type="warning" title="No Auto-Extraction">
+Triple extraction from Working Memory during consolidation is **not** currently implemented. Triples must be added explicitly via `add_triple()` or `TripleStore.add()`.
 </Callout>

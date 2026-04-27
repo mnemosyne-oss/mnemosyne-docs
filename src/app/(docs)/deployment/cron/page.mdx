@@ -1,6 +1,6 @@
 export const metadata = {
   title: 'Cron Jobs — Scheduled Mnemosyne Tasks',
-  description: 'Configure cron jobs for Mnemosyne: scheduled memory consolidation, cleanup tasks, backup routines, and automated maintenance using crontab and systemd timers.',
+  description: 'Configure cron jobs for Mnemosyne: scheduled memory consolidation and automated maintenance using crontab and hermes mnemosyne sleep.',
   openGraph: {
     images: ['/og-image.svg'],
   },
@@ -11,55 +11,43 @@ export const metadata = {
 
 # Cron Deployment
 
-Run Mnemosyne as a scheduled batch process for periodic memory tasks.
+Run Mnemosyne consolidation and maintenance as scheduled batch processes.
 
 ## Use Cases
 
 - Daily consolidation jobs
-- Scheduled memory imports
-- Periodic backups
-- Report generation
+- Periodic backups via disaster recovery module
+- Database maintenance
 
 ## Crontab Example
 
 <CodeBlock code={`# Edit crontab
 crontab -e
 
-# Daily consolidation at 3 AM
-0 3 * * * /usr/local/bin/mnemosyne-consolidate --db /data/mnemosyne.db
+# Daily consolidation at 3 AM via Hermes
+0 3 * * * cd /path/to/project && hermes mnemosyne sleep >> /var/log/mnemosyne/consolidate.log 2>&1
 
-# Hourly backup
-0 * * * * /usr/local/bin/mnemosyne-backup --db /data/mnemosyne.db --dest /backups
-
-# Weekly report (Mondays at 9 AM)
-0 9 * * 1 /usr/local/bin/mnemosyne-report --db /data/mnemosyne.db --email admin@example.com
+# Daily backup at 4 AM via Python script
+0 4 * * * /usr/local/bin/mnemosyne-backup --db /data/mnemosyne.db --dest /backups >> /var/log/mnemosyne/backup.log 2>&1
 `} language="bash" />
 
-## Consolidation Script
+## Consolidation via Hermes
 
-<CodeBlock code={`#!/usr/bin/env python3
-# /usr/local/bin/mnemosyne-consolidate
+Consolidation runs through the Hermes plugin command:
 
-import argparse
+<CodeBlock code={`# Run consolidation manually
+hermes mnemosyne sleep
+
+# Or programmatically in Python
 from mnemosyne import Memory
 
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--db", required=True)
-    args = parser.parse_args()
-
-    mem = Memory(db_path=args.db)
-    stats_before = mem.stats()
-
-    mem.sleep()  # Run consolidation
-
-    stats_after = mem.stats()
-    print(f"Consolidated: {stats_after.consolidated_count - stats_before.consolidated_count}")
-    print(f"Evicted: {stats_after.evicted_count - stats_before.evicted_count}")
-
-if __name__ == "__main__":
-    main()
+mem = Memory(db_path="/data/mnemosyne.db")
+mem.sleep()  # Run consolidation
 `} language="python" />
+
+<Callout type="warning" title="No Standalone Consolidate Command">
+There is no `mnemosyne-consolidate` CLI tool. Consolidation is only available via `hermes mnemosyne sleep` or by calling `mem.sleep()` programmatically.
+</Callout>
 
 ## Backup Script
 
@@ -67,9 +55,7 @@ if __name__ == "__main__":
 # /usr/local/bin/mnemosyne-backup
 
 import argparse
-import shutil
-from datetime import datetime
-from pathlib import Path
+from mnemosyne.dr.recovery import create_backup
 
 def main():
     parser = argparse.ArgumentParser()
@@ -77,12 +63,8 @@ def main():
     parser.add_argument("--dest", required=True)
     args = parser.parse_args()
 
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    backup_name = f"mnemosyne_{timestamp}.db"
-    dest = Path(args.dest) / backup_name
-
-    shutil.copy2(args.db, dest)
-    print(f"Backup created: {dest}")
+    backup_path = create_backup(args.db, args.dest)
+    print(f"Backup created: {backup_path}")
 
 if __name__ == "__main__":
     main()
@@ -93,8 +75,8 @@ if __name__ == "__main__":
 <CodeBlock code={`# Add to crontab
 MAILTO=admin@example.com
 
-# Or log to file
-0 3 * * * /usr/local/bin/mnemosyne-consolidate --db /data/mnemosyne.db >> /var/log/mnemosyne/consolidate.log 2>&1
+# Log to file
+0 3 * * * cd /path/to/project && hermes mnemosyne sleep >> /var/log/mnemosyne/consolidate.log 2>&1
 `} language="bash" />
 
 <Callout type="success" title="Cron Best Practice">

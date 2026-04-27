@@ -1,6 +1,6 @@
 export const metadata = {
   title: 'First Steps — Building with Mnemosyne Memories',
-  description: 'Learn the fundamentals of Mnemosyne after installation: storing memories, querying, understanding the BEAM tiers, and integrating with your AI agent workflow.',
+  description: 'Learn the fundamentals of Mnemosyne after installation: storing memories, querying, understanding the memory tiers, and integrating with your AI agent workflow.',
   openGraph: {
     images: ['/og-image.svg'],
   },
@@ -15,10 +15,11 @@ A hands-on walkthrough of Mnemosyne's core operations.
 
 ## 1. Initialize Memory
 
-<CodeBlock code={`from mnemosyne import Memory
+<CodeBlock code={`from mnemosyne import Mnemosyne
 
-mem = Memory()
-print(f"Initialized: {mem.db_path}")
+mem = Mnemosyne()
+# Or with a named session:
+mem = Mnemosyne(session_id="agent-42")
 `} language="python" />
 
 ## 2. Store Information
@@ -26,12 +27,12 @@ print(f"Initialized: {mem.db_path}")
 <CodeBlock code={`# Simple memory
 mem.remember("Alice is a backend engineer who prefers Go over Python.")
 
-# Structured memory with metadata
+# With metadata and importance
 mem.remember(
     content="Project deadline moved to Friday.",
-    tags=["project-alpha", "deadline"],
-    importance=0.8,
     source="slack",
+    importance=0.8,
+    metadata={"project": "alpha"},
 )
 `} language="python" />
 
@@ -40,38 +41,46 @@ mem.remember(
 <CodeBlock code={`# Semantic search
 results = mem.recall("What programming language does Alice prefer?")
 
-# Filtered search
-results = mem.recall(
-    query="deadline",
-    tags=["project-alpha"],
-    since="2026-04-01",
-)
+# Limit the number of results
+results = mem.recall("deadline", top_k=3)
 
-# Access a specific memory by ID
-memory = mem.get("mem_abc123")
+# Get recent context for a prompt
+context = mem.get_context(limit=5)
 `} language="python" />
 
 ## 4. Update and Delete
 
-<CodeBlock code={`# Update a memory
+<CodeBlock code={`# Update a memory's content or importance
 mem.update("mem_abc123", content="Deadline moved to Monday.")
 
-# Delete a memory
+# Delete a single memory
 mem.forget("mem_abc123")
 
-# Bulk delete by tag
-mem.forget_all(tags=["temp"])
+# Mark a memory as superseded by a newer one
+mem.invalidate("mem_old456", replacement_id="mem_new789")
 `} language="python" />
 
 ## 5. Inspect Memory State
 
-<CodeBlock code={`# Statistics
-stats = mem.stats()
-print(f"Working: {stats.working_count}")
-print(f"Episodic: {stats.episodic_count}")
-print(f"Database size: {stats.db_size_mb:.1f} MB")
+<CodeBlock code={`# Get statistics
+stats = mem.get_stats()
+print(f"Working: {stats['working_count']}")
+print(f"Episodic: {stats['episodic_count']}")
+print(f"Database size: {stats['db_size_mb']:.1f} MB")
+`} language="python" />
+
+## 6. Use the Scratchpad
+
+<CodeBlock code={`# Jot down transient notes
+note_id = mem.scratchpad_write("Remember to check the API logs tomorrow.")
+
+# Read scratchpad entries
+notes = mem.scratchpad_read()
+
+# Clear when done
+mem.scratchpad_clear()
 `} language="python" />
 
 <Callout type="success" title="You're Ready">
-You've learned the core CRUD operations. Next, explore the [BEAM Architecture](https://docs.mnemosyne.site/architecture/beam-overview) to understand how Mnemosyne organizes memory.
+You've learned the core operations. Next, explore [Configuration](/getting-started/configuration) to fine-tune Mnemosyne for your workload, or the [Python SDK Reference](/api/python-sdk) for the complete API.
 </Callout>

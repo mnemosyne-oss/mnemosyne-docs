@@ -11,7 +11,7 @@ export const metadata = {
 
 # Temporal Knowledge Graph
 
-The graph structure underlying Semantic Memory, enabling relationship traversal and time-aware queries.
+The graph structure underlying Semantic Memory, enabling time-aware queries over subject-predicate-object triples.
 
 ## Graph Structure
 
@@ -26,58 +26,60 @@ graph LR
 
 ## Temporal Dimensions
 
-Every edge has temporal metadata:
+Every triple has temporal metadata:
 
 - **`valid_from`**: When the relationship became true
-- **`valid_until`**: When it ceased being true (NULL = current)
 - **`confidence`**: How certain we are about this fact
-- **`source`**: Which memory entry this was extracted from
+- **`source`**: Which source this triple was added from
 
 ## Query Patterns
 
-### Direct Neighbors
+The `TripleStore.query()` method supports filtering by subject, predicate, object, and point-in-time via `as_of`.
 
-<CodeBlock code={`# Who works on Project Alpha?
-mem.query_facts(predicate="works_on", object="Project Alpha")
+### Direct Lookup
+
+<CodeBlock code={`from mnemosyne.semantic import TripleStore
+
+ts = TripleStore(db_path="mnemosyne.db")
+
+# Who works on Project Alpha?
+results = ts.query(predicate="works_on", object="Project Alpha")
 # > Alice
 `} language="python" />
 
-### Path Traversal
+### Pattern Matching
 
-<CodeBlock code={`# What services does Project Alpha depend on (2 hops)?
-mem.traverse(subject="Project Alpha", depth=2)
-# > Auth Service > Bob (maintainer)
+<CodeBlock code={`# All relationships involving Alice
+results = ts.query(subject="Alice")
+
+# All reports_to relationships
+results = ts.query(predicate="reports_to")
+
+# Specific triple
+results = ts.query(subject="Alice", predicate="prefers_language", object="Go")
 `} language="python" />
 
 ### Temporal Filtering
 
 <CodeBlock code={`# What were Alice's preferences as of March 1?
-mem.query_facts(
+results = ts.query(
     subject="Alice",
     predicate="prefers_language",
-    at_time="2026-03-01",
+    as_of="2026-03-01",
 )
 `} language="python" />
 
-## Graph Statistics
-
-<CodeBlock code={`stats = mem.graph_stats()
-print(f"Entities: {stats.entity_count}")
-print(f"Relationships: {stats.edge_count}")
-print(f"Predicates: {stats.predicate_count}")
-print(f"Coverage: {stats.temporal_coverage}")
-`} language="python" />
+The `as_of` parameter filters to only triples whose `valid_from` is on or before the given date.
 
 ## Implementation
 
 The graph is stored in SQLite with:
 
-- **Nodes table**: Entity lookup and deduplication
-- **Edges table**: Triples with temporal validity
+- **Triples table**: Subject, predicate, object with temporal validity and confidence
 - **Indices**: Subject, predicate, object, and time-range indexes
 
-No external graph database required.
+No external graph database is required.
 
-<Callout type="success" title="Performance Tip">
-Graph queries are fast for shallow traversals (1–3 hops). Deep traversals (5+ hops) may require optimization. Consider materializing common paths if your use case requires deep graph walks.
+<Callout type="info" title="Note">
+The TripleStore does not currently support multi-hop graph traversal or graph statistics queries. Use `query()` with specific subject/predicate/object filters to retrieve relationships.
 </Callout>

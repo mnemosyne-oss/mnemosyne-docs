@@ -12,20 +12,24 @@ A temporary workspace for reasoning, planning, and intermediate computations. Se
 ## API
 
 <CodeBlock code={`# Write to scratchpad
-mem.scratchpad.write(
-    content="Step 1: Parse the user's request...",
-    category="reasoning",
-)
+mem.scratchpad_write(content="Step 1: Parse the user's request...")
 
-# Read current scratchpad
-entries = mem.scratchpad.read()
+# Read current scratchpad entries
+entries = mem.scratchpad_read()
 
 # Clear scratchpad
-mem.scratchpad.clear()
-
-# Flush insights to Working Memory
-mem.scratchpad.flush_to_working(tags=["insight"])
+mem.scratchpad_clear()
 `} language="python" />
+
+## Schema
+
+|| Column | Type | Description |
+|--------|------|-------------|
+| `id` | TEXT | UUIDv4 primary key |
+| `content` | TEXT | Scratchpad entry content |
+| `session_id` | TEXT | Session binding (default: `'default'`) |
+| `created_at` | TIMESTAMP | Row creation time |
+| `updated_at` | TIMESTAMP | Last update time |
 
 ## Lifecycle
 
@@ -34,9 +38,8 @@ mem.scratchpad.flush_to_working(tags=["insight"])
 flowchart LR
     A[Agent Start] -->|create| SP[Scratchpad]
     SP -->|write/read| SP
-    SP -->|flush| WM[Working Memory]
-    WM -->|agent uses| A
-    A -->|shutdown| DEL[Discard Scratchpad]
+    SP -->|clear| DEL[Discard]
+    A -->|shutdown| DEL
 
 </MermaidDiagram>
 
@@ -44,10 +47,8 @@ flowchart LR
 
 | Parameter | Default | Description |
 |-----------|---------|-------------|
-| `scratchpad_max` | `100` | Maximum entries |
-| `scratchpad_auto_flush` | `True` | Auto-flush on shutdown |
-| `scratchpad_flush_threshold` | `0.7` | Importance threshold for flush |
+| `MNEMOSYNE_SP_MAX` | `1000` | Maximum entries per session |
 
 <Callout type="warning" title="Not Persistent">
-Scratchpad contents are lost on agent restart. Only explicitly flushed insights survive. Do not store critical information solely in the scratchpad.
+Scratchpad contents are session-bound and lost on agent restart. Do not store critical information solely in the scratchpad. Move important data to Working Memory via `mem.remember()` before shutting down.
 </Callout>

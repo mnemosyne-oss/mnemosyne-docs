@@ -1,6 +1,6 @@
 export const metadata = {
   title: 'REST API — Mnemosyne HTTP Endpoints Reference',
-  description: 'REST API reference for Mnemosyne: HTTP endpoints for memory CRUD, search, health checks, and batch operations. Includes authentication, request formats, and examples.',
+  description: 'REST API reference for Mnemosyne legacy FastAPI server: HTTP endpoints for memory CRUD, search, session context, and consolidation. Includes request formats and examples.',
   openGraph: {
     images: ['/og-image.svg'],
   },
@@ -11,54 +11,46 @@ export const metadata = {
 
 # REST API
 
-HTTP interface for remote access and service integration.
+Legacy FastAPI HTTP interface for remote access and service integration.
+
+<Callout type="warning" title="Legacy Interface">
+The REST API server is a legacy FastAPI application embedded in `mnemosyne/cli.py`. It is not part of the BEAM architecture. For new integrations, prefer the Python SDK or Hermes plugin.
+</Callout>
 
 ## Starting the Server
 
-<CodeBlock code={`python -m mnemosyne.server \
+<CodeBlock code={`python -m mnemosyne \
     --host 0.0.0.0 \
-    --port 8080 \
+    --port 8090 \
     --db-path ./memory.db
 `} language="bash" />
 
 Or via Docker:
 
-<CodeBlock code={`docker run -p 8080:8080 \
+<CodeBlock code={`docker run -p 8090:8090 \
     -v $(pwd)/memory.db:/data/memory.db \
     mnemosyne/server:latest
 `} language="bash" />
 
-## Authentication
-
-All endpoints require an API key via the `X-API-Key` header:
-
-<CodeBlock code={`curl -H "X-API-Key: your-key" http://localhost:8080/health
-`} language="bash" />
-
-Configure keys via environment variable:
-
-<CodeBlock code={`export MNEMOSYNE_API_KEYS=key1,key2,key3
-`} language="bash" />
-
 ## Endpoints
 
-### Health Check
+### Status
 
-<CodeBlock code={`GET /health
+<CodeBlock code={`GET /
 
 # Response:
 {
-  "status": "healthy",
+  "status": "ok",
   "version": "2.0.0",
-  "db_connected": true,
   "working_count": 42,
   "episodic_count": 128,
+  "semantic_count": 64
 }
 `} language="bash" />
 
-### Remember
+### Store Memory
 
-<CodeBlock code={`POST /remember
+<CodeBlock code={`POST /store
 Content-Type: application/json
 
 {
@@ -75,16 +67,9 @@ Content-Type: application/json
 }
 `} language="bash" />
 
-### Recall
+### Recall (Search)
 
-<CodeBlock code={`POST /recall
-Content-Type: application/json
-
-{
-  "query": "user preferences",
-  "top_k": 5,
-  "tags": ["preferences"]
-}
+<CodeBlock code={`GET /recall?query=user+preferences&top_k=5
 
 # Response:
 {
@@ -100,72 +85,23 @@ Content-Type: application/json
 }
 `} language="bash" />
 
-### Get Memory
+### Session Context
 
-<CodeBlock code={`GET /memory/{id}
-
-# Response:
-{
-  "id": "mem_abc123",
-  "content": "User prefers dark mode.",
-  "tags": ["preferences", "ui"],
-  "importance": 0.8,
-  "created_at": "2026-04-25T14:30:00Z"
-}
-`} language="bash" />
-
-### Update Memory
-
-<CodeBlock code={`PUT /memory/{id}
-Content-Type: application/json
-
-{
-  "content": "User prefers dark mode and large fonts.",
-  "importance": 0.9
-}
-`} language="bash" />
-
-### Delete Memory
-
-<CodeBlock code={`DELETE /memory/{id}
-
-# Response: 204 No Content
-`} language="bash" />
-
-### Add Fact
-
-<CodeBlock code={`POST /facts
-Content-Type: application/json
-
-{
-  "subject": "Alice",
-  "predicate": "prefers_language",
-  "object": "Go",
-  "confidence": 0.95
-}
+<CodeBlock code={`GET /session/{session_id}
 
 # Response:
 {
-  "id": "fact_xyz789",
-  "status": "stored"
-}
-`} language="bash" />
-
-### Query Facts
-
-<CodeBlock code={`GET /facts?subject=Alice&current_only=true
-
-# Response:
-{
-  "facts": [
+  "session_id": "sess_123",
+  "memories": [
     {
-      "id": "fact_xyz789",
-      "subject": "Alice",
-      "predicate": "prefers_language",
-      "object": "Go",
-      "confidence": 0.95
+      "id": "mem_abc123",
+      "content": "User prefers dark mode.",
+      "tags": ["preferences", "ui"],
+      "importance": 0.8,
+      "created_at": "2026-04-25T14:30:00Z"
     }
-  ]
+  ],
+  "total": 1
 }
 `} language="bash" />
 
@@ -183,23 +119,55 @@ Content-Type: application/json
 }
 `} language="bash" />
 
+### Forget (Delete Memory)
+
+<CodeBlock code={`DELETE /forget/{memory_id}
+
+# Response:
+{
+  "status": "forgotten",
+  "id": "mem_abc123"
+}
+`} language="bash" />
+
+### Update Memory
+
+<CodeBlock code={`PUT /update/{memory_id}
+Content-Type: application/json
+
+{
+  "content": "User prefers dark mode and large fonts.",
+  "importance": 0.9
+}
+`} language="bash" />
+
+### Consolidate
+
+<CodeBlock code={`POST /consolidate
+
+# Response:
+{
+  "status": "consolidated",
+  "consolidated_count": 15,
+  "evicted_count": 3
+}
+`} language="bash" />
+
 ## Error Responses
 
 | Status | Code | Description |
 |--------|------|-------------|
 | 400 | `INVALID_REQUEST` | Malformed request body |
-| 401 | `UNAUTHORIZED` | Missing or invalid API key |
-| 404 | `NOT_FOUND` | Memory or fact not found |
-| 429 | `RATE_LIMITED` | Too many requests |
+| 404 | `NOT_FOUND` | Memory not found |
 | 500 | `INTERNAL_ERROR` | Server error |
 
 ## OpenAPI Spec
 
 The server exposes OpenAPI documentation at:
 
-- Swagger UI: `http://localhost:8080/docs`
-- ReDoc: `http://localhost:8080/redoc`
-- OpenAPI JSON: `http://localhost:8080/openapi.json`
+- Swagger UI: `http://localhost:8090/docs`
+- ReDoc: `http://localhost:8090/redoc`
+- OpenAPI JSON: `http://localhost:8090/openapi.json`
 
 <Callout type="info" title="CORS">
 The REST server enables CORS by default for all origins in development. In production, configure allowed origins via `MNEMOSYNE_CORS_ORIGINS`.

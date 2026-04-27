@@ -4,38 +4,44 @@ The agent's immediate context — recent observations, active conversations, and
 
 ## Schema
 
-| Column | Type | Description |
+|| Column | Type | Description |
 |--------|------|-------------|
 | `id` | TEXT | UUIDv4 primary key |
 | `content` | TEXT | Raw memory content |
-| `embedding` | BLOB | Vector embedding (1536 dims) |
-| `tags` | TEXT | JSON array of tags |
-| `importance` | REAL | 0.0–1.0 importance score |
 | `source` | TEXT | Origin (user, tool, observation) |
-| `created_at` | INTEGER | Unix timestamp |
-| `accessed_at` | INTEGER | Last access timestamp |
-| `access_count` | INTEGER | Read frequency |
+| `timestamp` | TEXT | Application-level timestamp |
+| `session_id` | TEXT | Session grouping key (default: `'default'`) |
+| `importance` | REAL | 0.0–1.0 importance score (default: `0.5`) |
+| `metadata_json` | TEXT | Arbitrary JSON metadata blob |
+| `created_at` | TIMESTAMP | Row creation time (SQLite `CURRENT_TIMESTAMP`) |
+| `recall_count` | INTEGER | Number of times recalled (default: `0`) |
+| `last_recalled` | TIMESTAMP | Last recall time (default: `NULL`) |
+| `valid_until` | TIMESTAMP | TTL expiry time |
+| `superseded_by` | TEXT | ID of newer version that replaces this entry |
+| `scope` | TEXT | Visibility scope (default: `'global'`) |
 
-## FTS5 Triggers
+### Indexes
 
-SQLite FTS5 indices are maintained automatically via triggers:
+- `idx_working_session` on `session_id`
+- `idx_working_timestamp` on `timestamp`
+- `idx_working_source` on `source`
 
-<CodeBlock code={`CREATE TRIGGER working_fts_insert
-AFTER INSERT ON working_memory
-BEGIN
-    INSERT INTO working_fts(rowid, content, tags)
-    VALUES (NEW.rowid, NEW.content, json_extract(NEW.tags, '$'));
-END;
-`} language="sql" />
+### FTS5
+
+Full-text search is maintained via `fts_working` (content-column FTS5) with automatic triggers for INSERT, UPDATE, and DELETE.
+
+### Vector Search
+
+Embeddings are stored separately in `vec_episodes` (sqlite-vec, int8\[384\]). They are generated at recall time and are **not** a column in the `working_memory` table.
 
 ## Eviction Policy
 
-When Working Memory reaches capacity, entries are evicted by:
+When Working Memory reaches capacity, entries are evicted by a composite score:
 
 1. **Importance weighting**: Higher importance = lower eviction priority
-2. **Recency**: Recently accessed entries are protected
-3. **Access frequency**: Frequently read entries are protected
-4. **Composite score**: `score = importance * recency * frequency`
+2. **Recency**: Recently created or recalled entries are protected
+3. **Recall frequency**: Entries with higher `recall_count` are protected
+4. **Composite score**: `score = importance * recency_factor * recall_factor`
 
 ## Consolidation Path
 
@@ -43,30 +49,26 @@ When Working Memory reaches capacity, entries are evicted by:
 
 flowchart LR
     A[New Entry] -->|insert| WM[Working Memory]
-    WM -->|sleep cycle| C{Consolidation}
-    C -->|importance > 0.7| EM[Episodic Memory]
-    C -->|extractable facts| SM[Semantic Memory]
-    C -->|low score| DEL[Evicted]
+    WM -->|TTL/2 age trigger| C{Consolidation}
+    C -->|group by source| S[Summarize via LLM/AAAK]
+    S -->|promote| EM[Episodic Memory]
+    C -->|evict originals| DEL[Evicted]
 
 </MermaidDiagram>
 
 ## API Reference
 
-<CodeBlock code={`# Store
-mem.remember(content, tags=[], importance=0.5, source="user")
+<CodeBlock code={`# Store a memory
+mem.remember(content, importance=0.5, source="user")
 
-# Recall
-results = mem.recall(query, top_k=10, tags=None, since=None)
+# Recall memories (FTS5 + vector hybrid)
+results = mem.recall(query, top_k=10)
 
-# Get by ID
-entry = mem.get(id)
+# Update a memory
+mem.update(id, content=None, importance=None)
 
-# Update
-mem.update(id, content=None, importance=None, tags=None)
-
-# Delete
+# Delete a single memory
 mem.forget(id)
-mem.forget_all(tags=None, since=None)
 `} language="python" />
 
 ## Performance
@@ -76,7 +78,7 @@ mem.forget_all(tags=None, since=None)
 | Median write | 15ms |
 | Median read | 8ms |
 | Median recall | 45ms |
-| Max capacity | 1,000 entries (default) |
+| Max capacity | 10,000 entries (configurable via `MNEMOSYNE_WM_MAX`) |
 | Memory footprint | ~50MB per 1K entries |
 
 <Callout type="info" title="Tip">

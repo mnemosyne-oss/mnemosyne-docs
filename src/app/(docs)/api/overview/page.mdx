@@ -1,6 +1,6 @@
 export const metadata = {
   title: 'API Overview — Mnemosyne Integration Interfaces',
-  description: 'Overview of all Mnemosyne API interfaces: Python SDK, REST API, Hermes plugin, and tool schema. Choose the right integration method for your AI agent project.',
+  description: 'Overview of all Mnemosyne API interfaces: Python SDK, Hermes plugin, and legacy REST API. Choose the right integration method for your AI agent project.',
   openGraph: {
     images: ['/og-image.svg'],
   },
@@ -11,7 +11,7 @@ export const metadata = {
 
 # API Overview
 
-Mnemosyne exposes multiple interfaces: Python SDK, Hermes plugin tools, and REST API.
+Mnemosyne exposes multiple interfaces: Python SDK, Hermes plugin tools, and a legacy REST API.
 
 ## Interface Comparison
 
@@ -19,7 +19,7 @@ Mnemosyne exposes multiple interfaces: Python SDK, Hermes plugin tools, and REST
 |-----------|----------|---------|-------|
 | Python SDK | Direct integration, scripts | Lowest | `pip install` |
 | Hermes Plugin | Agent frameworks | Low | Plugin config |
-| REST API | Remote services, microservices | Medium | Server start |
+| REST API (Legacy) | Remote services, microservices | Medium | `python -m mnemosyne` |
 
 ## Python SDK
 
@@ -38,54 +38,31 @@ First-class integration with the Hermes agent framework:
 
 <CodeBlock code={`# hermes.yaml
 plugins:
-  - name: mnemosyne
+  - name: mnemosyne-memory
+    source: pip
     config:
       db_path: ./memory.db
+      embedding_model: text-embedding-3-small
       auto_context: true
+      context_injection:
+        enabled: true
+        max_memories: 5
+        min_relevance: 0.7
 `} language="yaml" />
 
-## REST API
+## REST API (Legacy)
 
-Start the server:
+The legacy FastAPI server embedded in `mnemosyne/cli.py`:
 
-<CodeBlock code={`python -m mnemosyne.server --port 8080
+<CodeBlock code={`python -m mnemosyne --port 8090
 `} language="bash" />
 
 Example request:
 
-<CodeBlock code={`curl -X POST http://localhost:8080/remember \
+<CodeBlock code={`curl -X POST http://localhost:8090/store \
   -H "Content-Type: application/json" \
   -d '{"content": "User prefers dark mode.", "tags": ["preferences"]}'
 `} language="bash" />
-
-## Authentication
-
-| Interface | Auth Method |
-|-----------|-------------|
-| Python SDK | None (local) |
-| Hermes Plugin | Via Hermes auth |
-| REST API | API key header (`X-API-Key`) |
-
-## Rate Limits
-
-| Interface | Default Limit |
-|-----------|---------------|
-| Python SDK | Unlimited (local) |
-| Hermes Plugin | Unlimited |
-| REST API | 1000 req/min |
-
-## Error Handling
-
-All interfaces return consistent error structures:
-
-<CodeBlock code={`{
-    "error": {
-        "code": "MEMORY_NOT_FOUND",
-        "message": "Memory ID mem_abc123 does not exist.",
-        "status": 404,
-    }
-}
-`} language="json" />
 
 <Callout type="info" title="SDK Version Compatibility">
 Python SDK, Hermes plugin, and REST API share the same core version. Ensure all components use matching versions for full compatibility.

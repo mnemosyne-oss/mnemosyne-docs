@@ -1,6 +1,6 @@
 export const metadata = {
   title: 'Python SDK — Mnemosyne Python API Reference',
-  description: 'Complete reference for the Mnemosyne Python SDK: Memory class, store/query/delete operations, configuration, and code examples for building AI agents with memory.',
+  description: 'Complete reference for the Mnemosyne Python SDK: Mnemosyne class, store/query/delete operations, scratchpad, sleep consolidation, and code examples for building AI agents with memory.',
   openGraph: {
     images: ['/og-image.svg'],
   },
@@ -13,147 +13,273 @@ export const metadata = {
 
 Complete reference for the Mnemosyne Python API.
 
-## Memory Class
+## Mnemosyne Class
+
+The main interface for interacting with Mnemosyne's memory system.
 
 ### Constructor
 
-<CodeBlock code={`Memory(
-    db_path: str = "./mnemosyne.db",
-    embedding_model: str = "text-embedding-3-small",
-    api_key: str | None = None,
-    max_working: int = 1000,
-    consolidation_interval: int = 3600,
-    encryption_key: str | None = None,
-    config_path: str | None = None,
-) -> Memory
+<CodeBlock code={`Mnemosyne(
+    session_id: str = "default",
+    db_path: str | None = None,
+) -> Mnemosyne
+`} language="python" />
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `session_id` | `str` | `"default"` | Session identifier for scoping working memories |
+| `db_path` | `str \| None` | `None` | Path to the SQLite database file. Uses default location if `None` |
+
+<CodeBlock code={`from mnemosyne import Mnemosyne
+
+# Default session
+mem = Mnemosyne()
+
+# Named session
+mem = Mnemosyne(session_id="agent-42")
+
+# Custom database path
+mem = Mnemosyne(session_id="agent-42", db_path="./data/memories.db")
 `} language="python" />
 
 ### remember
 
-Store a memory in Working Memory.
+Store a memory in Working Memory. Returns the generated memory ID.
 
 <CodeBlock code={`remember(
     content: str,
-    tags: list[str] = [],
+    source: str = "conversation",
     importance: float = 0.5,
-    source: str = "user",
-    session_id: str | None = None,
-) -> str  # Returns memory ID
+    metadata: dict | None = None,
+    valid_until: str | None = None,
+    scope: str = "session",
+) -> str
 `} language="python" />
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `content` | `str` | — | The text content to store |
+| `source` | `str` | `"conversation"` | Origin of the memory (e.g. `"user"`, `"system"`, `"inferred"`) |
+| `importance` | `float` | `0.5` | Importance score from 0.0 to 1.0, affects retrieval ranking |
+| `metadata` | `dict \| None` | `None` | Optional arbitrary metadata dictionary |
+| `valid_until` | `str \| None` | `None` | Optional expiry timestamp (ISO 8601) |
+| `scope` | `str` | `"session"` | Scope for the memory (e.g. `"session"`, `"global"`) |
 
 ### recall
 
-Retrieve relevant memories using hybrid search.
+Retrieve relevant memories using hybrid vector + full-text search with recency decay.
 
 <CodeBlock code={`recall(
     query: str,
-    top_k: int = 10,
-    tags: list[str] | None = None,
-    since: str | None = None,
-    vector_weight: float = 0.5,
-    text_weight: float = 0.3,
-    temporal_weight: float = 0.2,
-) -> list[MemoryResult]
+    top_k: int = 5,
+) -> list[dict]
 `} language="python" />
 
-### get
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `query` | `str` | — | Natural language query to match against stored memories |
+| `top_k` | `int` | `5` | Maximum number of results to return |
 
-Retrieve a specific memory by ID.
+Each result dict includes keys like `id`, `content`, `source`, `importance`, `timestamp`, `score`, and `tier` (indicating working vs. episodic).
 
-<CodeBlock code={`get(id: str) -> MemoryEntry | None
+### get_context
+
+Retrieve recent memories for context building, useful for injecting into prompts.
+
+<CodeBlock code={`get_context(
+    limit: int = 10,
+) -> list[dict]
 `} language="python" />
 
-### update
+Returns the most recent memories across working and episodic tiers, ordered by recency.
 
-Update an existing memory.
+### get_stats
 
-<CodeBlock code={`update(
-    id: str,
-    content: str | None = None,
-    importance: float | None = None,
-    tags: list[str] | None = None,
-) -> bool
+Return statistics about the memory store.
+
+<CodeBlock code={`get_stats() -> dict
 `} language="python" />
+
+Returns a dictionary with keys such as `working_count`, `episodic_count`, `scratchpad_count`, `db_size_mb`, and `last_sleep_at`.
 
 ### forget
 
-Delete a memory.
+Delete a specific memory by ID.
 
-<CodeBlock code={`forget(id: str) -> bool
+<CodeBlock code={`forget(memory_id: str) -> bool
 `} language="python" />
 
-### forget_all
+Returns `True` if the memory was found and deleted, `False` otherwise.
 
-Bulk delete by criteria.
+### update
 
-<CodeBlock code={`forget_all(
-    tags: list[str] | None = None,
-    since: str | None = None,
-    before: str | None = None,
-) -> int  # Returns count deleted
+Update an existing memory's content or importance.
+
+<CodeBlock code={`update(
+    memory_id: str,
+    content: str | None = None,
+    importance: float | None = None,
+) -> bool
 `} language="python" />
 
-## Semantic Memory API
+Only the fields you provide will be changed. Returns `True` on success.
 
-### add_fact
+### invalidate
 
-Store a structured fact.
+Mark a memory as superseded by another.
 
-<CodeBlock code={`add_fact(
+<CodeBlock code={`invalidate(
+    memory_id: str,
+    replacement_id: str | None = None,
+) -> bool
+`} language="python" />
+
+Sets the `superseded_by` field on the target memory, signalling that it is no longer the canonical version. Pass a `replacement_id` to link to the new memory.
+
+### sleep
+
+Run the sleep/consolidation cycle — groups working memories by source, summarizes them, promotes to episodic memory, and evicts originals.
+
+<CodeBlock code={`sleep(dry_run: bool = False) -> dict
+`} language="python" />
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `dry_run` | `bool` | `False` | If `True`, reports what would happen without making changes |
+
+Returns a summary dict of consolidation actions performed.
+
+## Scratchpad
+
+A lightweight temporary scratchpad for transient notes that don't belong in the memory hierarchy.
+
+### scratchpad_write
+
+<CodeBlock code={`scratchpad_write(content: str) -> str
+`} language="python" />
+
+Appends a note to the scratchpad. Returns the note ID.
+
+### scratchpad_read
+
+<CodeBlock code={`scratchpad_read() -> list[dict]
+`} language="python" />
+
+Returns all scratchpad entries for the current session.
+
+### scratchpad_clear
+
+<CodeBlock code={`scratchpad_clear() -> None
+`} language="python" />
+
+Clears all scratchpad entries for the current session.
+
+## Maintenance & Export
+
+### consolidation_log
+
+View recent consolidation activity.
+
+<CodeBlock code={`consolidation_log(limit: int = 10) -> list[dict]
+`} language="python" />
+
+Returns the most recent consolidation log entries, describing which memories were grouped, summarized, and promoted.
+
+### export_to_file
+
+Export the entire memory database to a file.
+
+<CodeBlock code={`export_to_file(output_path: str) -> dict
+`} language="python" />
+
+Returns a dict with export metadata (e.g. item counts, file size).
+
+### import_from_file
+
+Import memories from a previously exported file.
+
+<CodeBlock code={`import_from_file(
+    input_path: str,
+    force: bool = False,
+) -> dict
+`} language="python" />
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `input_path` | `str` | — | Path to the export file |
+| `force` | `bool` | `False` | If `True`, overwrite existing entries on conflict |
+
+Returns a dict with import statistics.
+
+## TripleStore Class
+
+A separate class for managing structured subject-predicate-object triples (temporal knowledge graph).
+
+<CodeBlock code={`from mnemosyne import TripleStore
+
+ts = TripleStore()
+`} language="python" />
+
+### add
+
+<CodeBlock code={`add(
     subject: str,
     predicate: str,
     object: str,
-    confidence: float = 1.0,
     valid_from: str | None = None,
-) -> str  # Returns fact ID
+    source: str = "inferred",
+    confidence: float = 1.0,
+) -> int
 `} language="python" />
 
-### query_facts
+Adds a triple and returns its ID.
 
-Query the temporal knowledge graph.
+### query
 
-<CodeBlock code={`query_facts(
+<CodeBlock code={`query(
     subject: str | None = None,
     predicate: str | None = None,
     object: str | None = None,
-    current_only: bool = True,
-) -> list[Fact]
+    as_of: str | None = None,
+) -> list[dict]
 `} language="python" />
 
-### traverse
+Query triples by any combination of subject, predicate, or object. Pass `as_of` for temporal point-in-time queries.
 
-Graph traversal from a starting entity.
+### export_all / import_all
 
-<CodeBlock code={`traverse(
-    subject: str,
-    predicate: str | None = None,
-    depth: int = 1,
-) -> list[FactPath]
+<CodeBlock code={`export_all() -> list[dict]
+import_all(triples: list[dict], force: bool = False) -> dict
 `} language="python" />
 
-## Statistics
+Bulk export and import of triples.
 
-<CodeBlock code={`stats() -> MemoryStats
+## Module-Level Convenience Functions
 
-# MemoryStats fields:
-# - working_count: int
-# - episodic_count: int
-# - semantic_count: int
-# - db_size_mb: float
-# - last_sleep_at: datetime | None
-# - consolidated_count: int
-# - evicted_count: int
+Mnemosyne provides module-level functions that operate on a default instance:
+
+<CodeBlock code={`from mnemosyne import remember, recall, get_context, get_stats
+from mnemosyne import forget, update, sleep
+from mnemosyne import scratchpad_write, scratchpad_read, scratchpad_clear
+
+# These are equivalent to using Mnemosyne() with session_id="default"
+remember("Some important fact")
+results = recall("important fact")
 `} language="python" />
 
-## Exceptions
+## Hermes Plugin Tools
 
-| Exception | Raised When |
-|-----------|-------------|
-| `MemoryNotFoundError` | ID does not exist |
-| `DatabaseError` | SQLite operation fails |
-| `EmbeddingError` | Embedding generation fails |
-| `ConfigurationError` | Invalid config or env vars |
-| `EncryptionError` | Encryption/decryption fails |
+When using Mnemosyne as a Hermes plugin, the following tools are exposed:
+
+| Tool | Description |
+|------|-------------|
+| `mnemosyne_remember` | Store a new memory |
+| `mnemosyne_recall` | Retrieve relevant memories |
+| `mnemosyne_sleep` | Run the consolidation cycle |
+| `mnemosyne_stats` | Get memory statistics |
+| `mnemosyne_invalidate` | Mark a memory as superseded |
+| `mnemosyne_triple_add` | Add a structured triple |
+| `mnemosyne_triple_query` | Query the knowledge graph |
 
 <Callout type="success" title="Type Hints">
 The Python SDK includes full type hints. Use a type checker (mypy, pyright) for static analysis and IDE autocomplete.

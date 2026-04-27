@@ -6,7 +6,8 @@ Upgrade Mnemosyne versions and migrate data between instances.
 
 ### Check Current Version
 
-<CodeBlock code={`python -c "import mnemosyne; print(mnemosyne.__version__)"`} language="bash" />
+<CodeBlock code={`python -c "import mnemosyne; print(mnemosyne.__version__)"
+`} language="bash" />
 
 ### Upgrade Steps
 
@@ -16,12 +17,13 @@ cp mnemosyne.db mnemosyne-pre-upgrade.db
 # 2. Upgrade package
 pip install --upgrade mnemosyne-memory
 
-# 3. Run migrations
-python -m mnemosyne.migrate --db mnemosyne.db
-
-# 4. Verify
+# 3. Verify (schema migrations run automatically on first connection)
 python -c "from mnemosyne import Memory; m = Memory(); print(m.stats())"
 `} language="bash" />
+
+<Callout type="info" title="Automatic Migrations">
+Mnemosyne uses automatic schema migrations that run on first connection after an upgrade. There is no `python -m mnemosyne.migrate` command. If migration fails, check logs with `MNEMOSYNE_LOG_LEVEL=debug`.
+</Callout>
 
 ## Schema Migrations
 
@@ -29,22 +31,29 @@ Mnemosyne uses automatic schema migrations:
 
 | Version | Migration | Description |
 |---------|-----------|-------------|
-| 1.0 to 2.0 | `m_1_0_to_2_0` | Add semantic memory, FTS5 indices |
-| 2.0 to 2.1 | `m_2_0_to_2_1` | Add session_id to episodic |
-| 2.1 to 2.2 | `m_2_1_to_2_2` | Add temporal graph indexes |
+| 1.0 → 2.0 | `m_1_0_to_2_0` | Add semantic memory, FTS5 indices |
+| 2.0 → 2.1 | `m_2_0_to_2_1` | Add session_id to episodic |
+| 2.1 → 2.2 | `m_2_1_to_2_2` | Add temporal graph indexes |
 
 Migrations run automatically on first connection. No manual intervention needed.
 
 ## Cross-Instance Migration
 
-Export from old instance, import to new:
+Export from old instance, import to new using the Python SDK:
 
-<CodeBlock code={`# Export
-python -m mnemosyne.export --db old.db --format json --output export.json
+<CodeBlock code={`from mnemosyne import Memory
 
-# Import
-python -m mnemosyne.import --db new.db --format json --input export.json
-`} language="bash" />
+# Export from old database
+old_mem = Memory(db_path="old.db")
+old_mem.export_to_file("export.json")
+
+# Import into new database
+new_mem = Memory(db_path="new.db")
+new_mem.import_from_file("export.json")
+
+# Verify
+print(new_mem.stats())
+`} language="python" />
 
 ### Export Formats
 
@@ -52,7 +61,13 @@ python -m mnemosyne.import --db new.db --format json --input export.json
 |--------|----------|------|
 | JSON | Human-readable, version control | Large |
 | SQLite | Fast, preserves all metadata | Compact |
-| CSV | Spreadsheet analysis | Medium |
+
+## Legacy Migration
+
+For migrating from pre-2.0 data formats, use the migration script:
+
+<CodeBlock code={`python scripts/migrate_from_legacy.py --db mnemosyne.db
+`} language="bash" />
 
 ## Rollback
 
@@ -69,5 +84,5 @@ pip install mnemosyne-memory==1.0.0
 `} language="bash" />
 
 <Callout type="warning" title="Breaking Changes">
-Major version upgrades (1.x to 2.x) may include breaking changes. Always read the changelog and test in staging before production deployment.
+Major version upgrades (1.x → 2.x) may include breaking changes. Always read the changelog and test in staging before production deployment.
 </Callout>
