@@ -39,7 +39,17 @@ You *must* activate the venv before running pip. Without it, the package install
 
 **Step 2 — Install the package:**
 
-<CodeBlock code={`pip install mnemosyne-memory`} language="bash" />
+Use the command that matches how your virtual environment was created:
+
+<CodeBlock code={`# If your venv was created with python -m venv or virtualenv
+pip install mnemosyne-memory
+
+# If your venv was created with uv venv (pip is not included)
+uv pip install mnemosyne-memory`} language="bash" />
+
+<Callout type="warning" title="uv venv does not include pip">
+If you created the Hermes venv with `uv venv`, running `pip install` will fail with "command not found." This is by design — uv replaces pip with `uv pip`. Always use `uv pip install` in uv-created environments.
+</Callout>
 
 **Step 3 — Register with Hermes:**
 
@@ -51,12 +61,18 @@ This creates the plugin symlink and updates `config.yaml` so Hermes knows about 
 
 ### pip vs uv
 
-Both work. `uv` is faster:
+Both work. `uv` is faster, but only if you use the matching install command:
 
-<CodeBlock code={`# Standard pip
+| Venv created with | Install command |
+|-------------------|-----------------|
+| `python -m venv`  | `pip install mnemosyne-memory` |
+| `virtualenv`      | `pip install mnemosyne-memory` |
+| `uv venv`         | `uv pip install mnemosyne-memory` |
+
+<CodeBlock code={`# Standard pip (venv created with python -m venv)
 pip install mnemosyne-memory
 
-# uv (recommended for speed)
+# uv (venv created with uv venv)
 uv pip install mnemosyne-memory`} language="bash" />
 
 ### Extras

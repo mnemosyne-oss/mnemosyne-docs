@@ -27,7 +27,15 @@ First, activate the Hermes agent virtual environment:
 
 Then install the Mnemosyne package:
 
-<CodeBlock code={`pip install mnemosyne-memory`} language="bash" />
+<CodeBlock code={`# If your venv was created with python -m venv or virtualenv
+pip install mnemosyne-memory
+
+# If your venv was created with uv venv (pip is not included)
+uv pip install mnemosyne-memory`} language="bash" />
+
+<Callout type="warning" title="uv venv does not include pip">
+If you created the Hermes venv with `uv venv`, running `pip install` will fail with "command not found." This is by design — uv replaces pip with `uv pip`. Always use `uv pip install` in uv-created environments.
+</Callout>
 
 Or with uv (recommended for speed):
 
