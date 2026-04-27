@@ -36,15 +36,22 @@ uv pip install mnemosyne-memory[embeddings]`} language="bash" />
 If you created the Hermes venv with `uv venv`, running `pip install` will fail with "command not found." This is by design — uv replaces pip with `uv pip`. Always use `uv pip install` in uv-created environments.
 </Callout>
 
-<Callout type="danger" title="fastembed is required for semantic memory">
-The `[embeddings]` extra installs **fastembed**, which powers semantic vector search. Without it, Mnemosyne falls back to primitive FTS5 keyword search only. You will **not** get:
+<Callout type="danger" title="fastembed + sqlite-vec are both needed for semantic search">
+To get semantic vector search and hybrid retrieval, you need **both**:
+
+1. **`[embeddings]`** — installs fastembed, which converts text into semantic vectors
+2. **`sqlite-vec`** — stores those vectors in SQLite for efficient similarity search
+
+Install both:
+
+<CodeBlock code={`pip install mnemosyne-memory[embeddings] sqlite-vec`} language="bash" />
+
+Without sqlite-vec, fastembed generates vectors but they are discarded — you still get FTS5 keyword search only. Without `[embeddings]`, there are no vectors at all. Both are required for:
 
 - Semantic similarity search
 - Context-aware retrieval
 - Meaning-based memory matching
 - Hybrid search (vector + text combined)
-
-Always install with `[embeddings]` unless you are explicitly running a keyword-only deployment.
 </Callout>
 
 Or with uv (recommended for speed):
