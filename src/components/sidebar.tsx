@@ -4,11 +4,12 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronRight, BookOpen, Layers, Brain, Search, Code, Rocket, Shield, Briefcase, Settings, Menu, X } from "lucide-react";
+import { ChevronRight, BookOpen, Layers, Brain, Search, Code, Rocket, Shield, Briefcase, Settings, Menu, X, Scale } from "lucide-react";
 
 interface NavItem {
   title: string;
   href: string;
+  badge?: string;
   items?: { title: string; href: string; badge?: string }[];
 }
 
@@ -112,6 +113,13 @@ const navigation: NavSection[] = [
       { title: "Multi-Agent", href: "/use-cases/multi-agent" },
       { title: "Long-Running", href: "/use-cases/long-running" },
       { title: "Knowledge Base", href: "/use-cases/knowledge-base" },
+    ],
+  },
+  {
+    title: "Comparisons",
+    icon: <Scale size={16} />,
+    items: [
+      { title: "vs Hindsight", href: "/comparisons/hindsight", badge: "new" },
     ],
   },
 ];

@@ -2,6 +2,10 @@
 
 Use separate Mnemosyne instances to coordinate memory across a team of agents.
 
+<Callout type="warning" title="Same-Machine Only">
+Mnemosyne's multi-agent sharing works via the same SQLite database file on the same filesystem. Cross-machine sharing requires manual export/import or a future MCP server. If you need HTTP-based memory sharing across machines, consider Hindsight self-hosted instead.
+</Callout>
+
 ## Architecture
 
 <MermaidDiagram>
@@ -59,7 +63,7 @@ results = agent_b.recall("API rate limit")  # Returns nothing from agent-a's DB
 
 ## Shared Memory Pattern
 
-To share knowledge between agents, point them at the same database file with different `session_id` values:
+To share knowledge between agents on the same machine, point them at the same database file with different `session_id` values:
 
 <CodeBlock code={`from mnemosyne import Mnemosyne
 
@@ -108,6 +112,21 @@ agent_a.remember(
     importance=0.8,
 )
 `} language="python" />
+
+## Cross-Machine Sharing
+
+For sharing memory across different machines, use export/import:
+
+<CodeBlock code={`# On machine A: export shared memories
+agent_a.export_to_file("/shared/team-memory-export.json")
+
+# On machine B: import
+agent_b.import_from_file("/shared/team-memory-export.json")
+`} language="python" />
+
+<Callout type="info" title="Future: MCP Server">
+A lightweight MCP (Model Context Protocol) server for Mnemosyne BEAM is planned. This will enable cross-machine memory sharing without manual export/import.
+</Callout>
 
 ## Deployment
 

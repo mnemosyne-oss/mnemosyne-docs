@@ -1,5 +1,5 @@
 export const metadata = {
-  title: 'Python SDK — Mnemosyne Python API Reference',
+  title: 'Python SDK \u2014 Mnemosyne Python API Reference',
   description: 'Complete reference for the Mnemosyne Python SDK: Mnemosyne class, store/query/delete operations, scratchpad, sleep consolidation, and code examples for building AI agents with memory.',
   openGraph: {
     images: ['/og-image.svg'],
@@ -28,7 +28,7 @@ The main interface for interacting with Mnemosyne's memory system.
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
 | `session_id` | `str` | `"default"` | Session identifier for scoping working memories |
-| `db_path` | `str \| None` | `None` | Path to the SQLite database file. Uses default location if `None` |
+| `db_path` | `str \| None` | `None` | Path to the SQLite database file. Uses `~/.hermes/mnemosyne/data/mnemosyne.db` if `None` |
 
 <CodeBlock code={`from mnemosyne import Mnemosyne
 
@@ -63,7 +63,7 @@ Store a memory in Working Memory. Returns the generated memory ID.
 | `importance` | `float` | `0.5` | Importance score from 0.0 to 1.0, affects retrieval ranking |
 | `metadata` | `dict \| None` | `None` | Optional arbitrary metadata dictionary |
 | `valid_until` | `str \| None` | `None` | Optional expiry timestamp (ISO 8601) |
-| `scope` | `str` | `"session"` | Scope for the memory (e.g. `"session"`, `"global"`) |
+| `scope` | `str` | `"session"` | Scope for the memory: `"session"` or `"global"` |
 
 ### recall
 
@@ -100,7 +100,7 @@ Return statistics about the memory store.
 <CodeBlock code={`get_stats() -> dict
 `} language="python" />
 
-Returns a dictionary with keys such as `working_count`, `episodic_count`, `scratchpad_count`, `db_size_mb`, and `last_sleep_at`.
+Returns a dictionary with keys such as `total_memories`, `total_sessions`, `sources`, `last_memory`, `database`, `mode`, and `beam` (with `working_memory` and `episodic_memory` sub-stats).
 
 ### forget
 
@@ -187,7 +187,7 @@ Returns the most recent consolidation log entries, describing which memories wer
 
 ### export_to_file
 
-Export the entire memory database to a file.
+Export the entire memory database to a JSON file.
 
 <CodeBlock code={`export_to_file(output_path: str) -> dict
 `} language="python" />
@@ -196,7 +196,7 @@ Returns a dict with export metadata (e.g. item counts, file size).
 
 ### import_from_file
 
-Import memories from a previously exported file.
+Import memories from a previously exported JSON file.
 
 <CodeBlock code={`import_from_file(
     input_path: str,
@@ -232,7 +232,7 @@ ts = TripleStore()
 ) -> int
 `} language="python" />
 
-Adds a triple and returns its ID.
+Adds a triple and returns its ID. Auto-invalidates previous triples with the same (subject, predicate) pair.
 
 ### query
 
