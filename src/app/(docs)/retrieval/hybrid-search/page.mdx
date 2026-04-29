@@ -1,14 +1,3 @@
-export const metadata = {
-  title: 'Hybrid Search — Vector + Full-Text Retrieval Combined',
-  description: 'Learn how Mnemosyne\'s hybrid search combines dense vector similarity with SQLite FTS5 full-text search for retrieval that is both semantically relevant and precise.',
-  openGraph: {
-    images: ['/og-image.svg'],
-  },
-  twitter: {
-    card: 'summary_large_image',
-  },
-};
-
 # Hybrid Search
 
 Mnemosyne's flagship retrieval capability — combining dense vector similarity with SQLite FTS5 full-text search for results that are both semantically relevant and precisely matched.
@@ -23,23 +12,27 @@ Mnemosyne's flagship retrieval capability — combining dense vector similarity 
 
 ## Fusion Algorithm
 
-The `recall()` method performs hybrid search internally using a fixed scoring formula:
+The `recall()` method performs hybrid search using a **configurable** scoring formula with tunable weights:
 
-<CodeBlock code={`# Step 1: Weighted combination of scores
-base_score = (vector_score * 0.5) +
-             (fts_score * 0.3) +
-             (importance * 0.2)
+<CodeBlock code={`# Step 1: Weighted combination of scores (weights default to 50/30/20)
+base_score = (vector_score * vec_weight +
+             fts_score * fts_weight +
+             importance * importance_weight) / (vec_weight + fts_weight + importance_weight)
 
-# Step 2: Apply recency decay
-final_score = base_score * (0.7 + 0.3 * recency_decay)
+# Step 2: Apply temporal recency decay
+final_score = base_score * (1.0 - temporal_weight + temporal_weight * recency_decay)
 `} language="python" />
 
-The weights are fixed:
-- **Vector**: 0.5 (semantic similarity via BAAI/bge-small-en-v1.5, 384 dims)
-- **FTS5**: 0.3 (BM25 text relevance)
-- **Importance**: 0.2 (memory importance rating, 0.0–1.0)
+### Default weights:
 
-The recency decay uses an exponential half-life (default 168 hours / 7 days, configurable via `MNEMOSYNE_RECENCY_HALFLIFE`).
+- **Vector** (`vec_weight`): 50.0 — semantic similarity via BAAI/bge-small-en-v1.5, 384 dims
+- **FTS5** (`fts_weight`): 30.0 — BM25 text relevance
+- **Importance** (`importance_weight`): 20.0 — memory importance rating, 0.0–1.0
+- **Temporal** (`temporal_weight`): 0.3 — controls how much recency decay influences the final score
+
+The recency decay uses an exponential half-life (`temporal_halflife`, default 168 hours / 7 days).
+
+All weights are configurable per-query — see usage examples below.
 
 ## Usage
 
@@ -47,14 +40,48 @@ The recency decay uses an exponential half-life (default 168 hours / 7 days, con
 
 mem = Mnemosyne()
 
-# recall() performs hybrid search by default
-# It accepts only query and top_k — no weight overrides
+# Default hybrid search — balanced 50/30/20 weights
 results = mem.recall("What database does the project use?", top_k=5)
 
 for r in results:
     print(f"Score: {r['score']:.3f}")
     print(f"  Content: {r['content'][:100]}")
     print(f"  Source: {r['source']}")
+`} language="python" />
+
+### Tuning Retrieval Weights
+
+Override the default weights per query to match your use case:
+
+<CodeBlock code={`# Boost exact text matching for error codes, identifiers
+results = mem.recall(
+    "error code E501 in linter",
+    vec_weight=20.0,
+    fts_weight=60.0,
+    importance_weight=20.0,
+)
+
+# Maximize semantic similarity for conceptual queries
+results = mem.recall(
+    "how does authentication work?",
+    vec_weight=70.0,
+    fts_weight=20.0,
+    importance_weight=10.0,
+)
+
+# Emphasize recency for "what happened lately" queries
+results = mem.recall(
+    "what did we discuss this week?",
+    temporal_weight=0.6,
+    temporal_halflife=48.0,  # 48-hour half-life
+)
+
+# Point-in-time temporal query
+results = mem.recall(
+    "decisions from January",
+    query_time="2026-01-31T23:59:59Z",
+    temporal_weight=0.1,  # minimal recency bias
+)
 `} language="python" />
 
 ## Result Format

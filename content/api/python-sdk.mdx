@@ -9,15 +9,17 @@ The main interface for interacting with Mnemosyne's memory system.
 ### Constructor
 
 <CodeBlock code={`Mnemosyne(
+    data_dir: str | None = None,
     session_id: str = "default",
-    db_path: str | None = None,
+    bank: str | None = None,
 ) -> Mnemosyne
 `} language="python" />
 
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
+| `data_dir` | `str \| None` | `None` | Root data directory. Defaults to `~/.hermes/mnemosyne/data/` |
 | `session_id` | `str` | `"default"` | Session identifier for scoping working memories |
-| `db_path` | `str \| None` | `None` | Path to the SQLite database file. Uses `~/.hermes/mnemosyne/data/mnemosyne.db` if `None` |
+| `bank` | `str \| None` | `None` | Named memory bank. Each bank gets its own SQLite file under `data_dir/banks/<name>/` |
 
 <CodeBlock code={`from mnemosyne import Mnemosyne
 
@@ -27,8 +29,11 @@ mem = Mnemosyne()
 # Named session
 mem = Mnemosyne(session_id="agent-42")
 
-# Custom database path
-mem = Mnemosyne(session_id="agent-42", db_path="./data/memories.db")
+# Custom data directory
+mem = Mnemosyne(data_dir="./my-data", session_id="agent-42")
+
+# Named memory bank (isolated SQLite)
+mem = Mnemosyne(bank="work")
 `} language="python" />
 
 ### remember
@@ -42,6 +47,8 @@ Store a memory in Working Memory. Returns the generated memory ID.
     metadata: dict | None = None,
     valid_until: str | None = None,
     scope: str = "session",
+    extract_entities: bool = False,
+    extract: bool = False,
 ) -> str
 `} language="python" />
 
@@ -53,14 +60,40 @@ Store a memory in Working Memory. Returns the generated memory ID.
 | `metadata` | `dict \| None` | `None` | Optional arbitrary metadata dictionary |
 | `valid_until` | `str \| None` | `None` | Optional expiry timestamp (ISO 8601) |
 | `scope` | `str` | `"session"` | Scope for the memory: `"session"` or `"global"` |
+| `extract_entities` | `bool` | `False` | If `True`, extract named entities (mentions, hashtags, proper nouns) via regex + Levenshtein matching and store as TripleStore triples |
+| `extract` | `bool` | `False` | If `True`, extract 2–5 factual statements via LLM and store as TripleStore triples |
+
+<CodeBlock code={`from mnemosyne import Mnemosyne
+
+mem = Mnemosyne()
+
+# Basic storage
+mem.remember("User prefers dark mode.")
+
+# With entity extraction — captures "PostgreSQL" as a triple
+mem.remember("We decided to use PostgreSQL.", extract_entities=True)
+
+# With fact extraction — LLM pulls structured facts
+mem.remember(
+    "The project deadline moved to June 15th. Alice is the lead.",
+    extract=True,
+    importance=0.8,
+)
+`} language="python" />
 
 ### recall
 
-Retrieve relevant memories using hybrid vector + full-text search with recency decay.
+Retrieve relevant memories using hybrid vector + full-text search with configurable scoring weights and temporal decay.
 
 <CodeBlock code={`recall(
     query: str,
     top_k: int = 5,
+    temporal_weight: float = 0.3,
+    query_time: str | None = None,
+    temporal_halflife: float = 168.0,
+    vec_weight: float = 50.0,
+    fts_weight: float = 30.0,
+    importance_weight: float = 20.0,
 ) -> list[dict]
 `} language="python" />
 
@@ -68,6 +101,12 @@ Retrieve relevant memories using hybrid vector + full-text search with recency d
 |-----------|------|---------|-------------|
 | `query` | `str` | — | Natural language query to match against stored memories |
 | `top_k` | `int` | `5` | Maximum number of results to return |
+| `temporal_weight` | `float` | `0.3` | How much recency decay influences the final score (0.0–1.0) |
+| `query_time` | `str \| None` | `None` | ISO 8601 timestamp to use as "now" for temporal decay calculations |
+| `temporal_halflife` | `float` | `168.0` | Half-life in hours for the exponential recency decay (default 168h = 7 days) |
+| `vec_weight` | `float` | `50.0` | Weight for vector similarity score |
+| `fts_weight` | `float` | `30.0` | Weight for FTS5 text relevance score |
+| `importance_weight` | `float` | `20.0` | Weight for the memory's importance rating |
 
 Each result dict includes keys like `id`, `content`, `source`, `importance`, `timestamp`, `score`, and `tier` (indicating working vs. episodic).
 
@@ -137,6 +176,32 @@ Run the sleep/consolidation cycle — groups working memories by source, summari
 | `dry_run` | `bool` | `False` | If `True`, reports what would happen without making changes |
 
 Returns a summary dict of consolidation actions performed.
+
+## V2 Properties
+
+The `Mnemosyne` instance exposes several v2 subsystems as properties:
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `stream` | `MemoryStream` | Thread-safe event stream with push (callbacks) and pull (iterator) patterns for real-time memory notifications |
+| `compressor` | `MemoryCompressor` | Dictionary-based, RLE, and semantic compression strategies for reducing memory footprint |
+| `patterns` | `PatternDetector` | Detects temporal (hour/weekday), content (keyword frequency, co-occurrence), and sequence patterns across memories |
+| `delta_sync` | `DeltaSync` | Incremental synchronization between Mnemosyne instances with checkpointed resume support |
+| `plugin_manager` | `PluginManager` | Discovers and manages plugins from `~/.hermes/mnemosyne/plugins/`. Built-in: `LoggingPlugin`, `MetricsPlugin`, `FilterPlugin` |
+
+<CodeBlock code={`from mnemosyne import Mnemosyne
+
+mem = Mnemosyne()
+
+# Access the stream for real-time notifications
+mem.stream.subscribe(lambda event: print(f"New memory: {event}"))
+
+# Detect patterns across stored memories
+patterns = mem.patterns.detect_temporal(session_id="agent-42")
+
+# Incremental sync to another instance
+mem.delta_sync.push(remote_instance)
+`} language="python" />
 
 ## Scratchpad
 

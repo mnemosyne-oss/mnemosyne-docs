@@ -1,5 +1,5 @@
 export const metadata = {
-  title: 'Mnemosyne vs Hindsight \u2014 Honest Technical Comparison',
+  title: 'Mnemosyne vs Hindsight — Honest Technical Comparison',
   description: 'Apples-to-apples comparison of Mnemosyne and Hindsight self-hosted for local Hermes Agent and OpenClaw deployments. No marketing fluff.',
   openGraph: {
     images: ['/og-image.svg'],
@@ -13,193 +13,223 @@ export const metadata = {
 
 An honest, technical comparison for users running memory systems locally with Hermes Agent and OpenClaw.
 
-## The Distinction That Matters
+**Last updated:** 2026-04-29 · Mnemosyne v2.0.0
 
-Hindsight has two products:
-
-| Product | Hosting | What You Get |
-|---------|---------|--------------|
-| **Hindsight Cloud** | Managed by Vectorize.io | Dashboard, cloud sync, managed inference |
-| **Hindsight Self-Hosted** | Your own Docker container | Full control, no cloud dependency, local PostgreSQL |
-
-Mnemosyne's previous comparison page conflated these. This page fixes that.
+> **TL;DR:** They are not direct competitors. Hindsight is a **memory engine** with sophisticated NLP and multi-signal retrieval. Mnemosyne is a **memory layer** optimized for simplicity, speed, and single-machine deployments. Choose based on what you actually need.
 
 ---
 
-## Architecture at a Glance
+## Architecture
 
 | Dimension | Mnemosyne | Hindsight Self-Hosted |
 |-----------|-----------|----------------------|
-| **Process model** | In-process Python library | Separate Docker container (FastAPI + PostgreSQL) |
-| **IPC overhead** | Zero (function calls) | HTTP + JSON serialization |
-| **Database** | SQLite (file-based) | PostgreSQL + pgvector (server-based) |
-| **Embedding engine** | fastembed ONNX (67MB BGE-small) | sentence-transformers PyTorch (~500MB) |
-| **Vector search** | sqlite-vec or numpy fallback | pgvector HNSW (mature, optimized) |
-| **Cold start** | Instant (if models cached) | ~5-10s (container boot) |
-| **Memory per query** | ~10-20MB | ~100-300MB (connection pool + PyTorch) |
+| **Process model** | In-process Python library | Separate Docker containers (FastAPI + PostgreSQL) |
+| **IPC overhead** | Zero (direct function calls) | HTTP + JSON serialization to localhost:8888 |
+| **Database** | SQLite (single file, WAL mode) | PostgreSQL + pgvector extension |
+| **Embedding model** | fastembed ONNX — BAAI/bge-small-en-v1.5 (~67MB) | sentence-transformers PyTorch (~500MB) |
+| **Vector search** | sqlite-vec (int8/bit/float32) or numpy fallback | pgvector HNSW (mature, optimized) |
+| **Cold start** | Instant (if models cached locally) | ~5–10s (Docker container boot + model loading) |
+| **Runtime memory** | ~10–20MB per session (SQLite + ONNX) | ~100–300MB (PostgreSQL pool + PyTorch) |
 
 ---
 
-## Memory Model Comparison
+## Memory Model
 
 ### Mnemosyne: BEAM (Bilevel Episodic-Associative Memory)
 
-Three tiers:
+Three SQLite tables:
 
-| Tier | Purpose | Eviction |
+| Tier | Purpose | Behavior |
 |------|---------|----------|
-| **Working Memory** | Hot context, auto-injected into prompts | TTL (default 24h) + max 10,000 items |
-| **Episodic Memory** | Long-term consolidated storage | None (append-only with invalidation) |
-| **Scratchpad** | Temporary agent reasoning | Max 1,000 items, explicit clear |
+| **Working memory** | Hot, recent context | Auto-injected into prompts. TTL-based eviction (default 24h). Max 10,000 items. FTS5 indexed. |
+| **Episodic memory** | Long-term consolidated storage | Populated by `sleep()` consolidation. Hybrid vector + FTS5 search. |
+| **Scratchpad** | Temporary agent workspace | Not searchable, not consolidated. Cleared explicitly. Max 1,000 items. |
 
-**Retrieval:** Single-pass hybrid scoring: `0.5 * vector + 0.3 * FTS + 0.2 * importance`, multiplied by recency decay.
+Additional: **TripleStore** — temporal knowledge graph with `valid_from`/`valid_until` for point-in-time queries.
+
+**Core operations:** `remember()`, `recall()`, `sleep()` — intentionally simple.
 
 ### Hindsight: Retain / Recall / Reflect
 
-| Stage | What It Does |
-|-------|--------------|
-| **Retain** | LLM extracts 2-5 structured facts per chunk, normalizes entities, stores with provenance |
-| **Recall** | 4-way parallel retrieval (semantic + BM25 + graph + temporal), fused via RRF, reranked by cross-encoder |
-| **Reflect** | Agentic loop with tool calling, mental models, disposition traits |
+| Operation | Mnemosyne equivalent | Gap? |
+|-----------|---------------------|------|
+| **Retain** — LLM-driven fact extraction, entity normalization, 2–5 structured facts per chunk | `remember()` stores raw text + optional embedding. `extract=True` enables LLM fact extraction. | **Partial gap.** Mnemosyne can extract facts via LLM but has no automatic entity normalization. |
+| **Recall** — 4-way parallel (semantic + BM25 + graph + temporal), RRF fusion, cross-encoder rerank | `recall()` — hybrid (vector + FTS5 + importance) × recency decay. Single-pass. | **Design difference.** Mnemosyne is simpler by choice. |
+| **Reflect** — Agentic loop with tool calling, mental models, disposition traits | `sleep()` — LLM summarization of working → episodic. No agentic loop, no mental models. | **Gap.** Mnemosyne does consolidation, not reasoning about knowledge. |
 
 ---
 
-## Feature Matrix
+## Retrieval
 
-| Capability | Mnemosyne | Hindsight Self-Hosted |
-|------------|-----------|----------------------|
-| **Entity resolution** | \u274c No \u2014 exact string dedup only | \u2705 Yes \u2014 spaCy + LLM + trigram matching |
-| **Automatic fact extraction** | \u274c No \u2014 stores raw text | \u2705 Yes \u2014 LLM-driven structured facts |
-| **Temporal memory** | \u26a0\ufe0f Manual \u2014 `valid_until` + `superseded_by` | \u2705 Automatic \u2014 native date parsing, temporal recall strategy |
-| **Conflict detection** | \u274c No \u2014 mark old facts expired | \u2705 Yes \u2014 background consolidation with evidence tracking |
-| **Cross-machine sharing** | \u274c No \u2014 same-machine SQLite only | \u2705 Yes \u2014 HTTP API on port 8888 |
-| **Multi-tenancy** | \u274c No \u2014 session/global binary scope | \u2705 Yes \u2014 HindClaw adds JWT/API key auth + per-tenant schemas |
-| **Mental models** | \u274c No | \u2705 Yes \u2014 user-curated summaries with delta updates |
-| **Graph traversal** | \u26a0\ufe0f TripleStore only (S-P-O queries) | \u2705 Yes \u2014 entity link expansion + co-occurrence tracking |
-| **OpenClaw integration** | \u274c Not yet built | \u2705 Native \u2014 `openclaw-hindsight` plugin exists |
-| **Hermes integration** | \u2705 Native in-process | \u2705 Via HTTP client |
+| Feature | Mnemosyne | Hindsight Self-Hosted |
+|---------|-----------|----------------------|
+| **Vector search** | sqlite-vec (cosine distance) | pgvector HNSW |
+| **Keyword search** | SQLite FTS5 | PostgreSQL full-text + BM25 |
+| **Graph search** | TripleStore (subject-predicate-object, temporal) | Native knowledge graph with co-occurrence tracking |
+| **Temporal search** | `temporal_weight` + `temporal_halflife` params on `recall()` | Native date parsing, `occurred_start/end`, temporal recall strategy |
+| **Scoring formula** | `vec_weight × vec + fts_weight × fts + importance_weight × importance`, then × recency decay | 4-way parallel retrieval → RRF fusion → cross-encoder rerank |
+| **Default weights** | 50% vector, 30% FTS, 20% importance | Learned fusion weights |
+| **Configurable?** | Yes — per-query `vec_weight`, `fts_weight`, `importance_weight` params | Yes — configurable strategies |
+| **Reranking** | None (single-pass) | Cross-encoder rerank |
 
 ---
 
-## The Honest Trade-Off
+## Entity Extraction (v2)
 
-**Mnemosyne is simpler, faster, lighter. Hindsight is smarter, more sophisticated, more complete.**
+| Feature | Mnemosyne | Hindsight Self-Hosted |
+|---------|-----------|----------------------|
+| **Method** | Regex patterns + pure Python Levenshtein distance | spaCy NLP pipeline + LLM extraction |
+| **Patterns** | `@mentions`, `#hashtags`, `"quoted phrases"`, capitalized sequences (2–5 words) | Full NLP: named entities, noun phrases, coreference |
+| **Fuzzy matching** | Levenshtein distance with prefix/substring bonuses | Trigram/full resolution strategies. Entity co-occurrence tracking. |
+| **Storage** | TripleStore triples: `(memory_id, "mentions", "entity_name")` | Structured entity table with normalization |
+| **Speed** | ~0.01ms per extraction | Heavier (spaCy model loading + inference) |
+| **Opt-in?** | `extract_entities=True` on `remember()` | Always on |
 
-### Use Mnemosyne if you want:
-
-- The simplest possible deployment: `pip install mnemosyne-memory`
-- Fastest recall latency (no HTTP, no PyTorch overhead)
-- Raw-text storage without structured fact extraction
-- Single-machine, single-user operation
-- Something that "just works" without containers
-- Full control over the memory model
-
-### Use Hindsight Self-Hosted if you want:
-
-- Entity resolution ("this person is the same as that person")
-- Automatic fact extraction from raw text
-- Cross-machine memory sharing
-- Multi-tenant memory banks
-- Temporal reasoning ("what happened last week?")
-- Sophisticated retrieval with reranking
-- Docker + PostgreSQL complexity is acceptable
+**Verdict:** Mnemosyne's regex approach is fast and dependency-free but misses many entity types that spaCy catches. This is a deliberate trade-off: speed and simplicity over NLP accuracy.
 
 ---
 
-## Concrete Scenario: 100-Turn Chat
+## Fact Extraction (v2)
 
-**At turn 90, the agent needs to recall a fact from turn 10.**
-
-**Hindsight path:**
-1. HTTP POST to `localhost:8888`
-2. 4-way parallel recall with RRF fusion
-3. Cross-encoder reranks results
-4. Returns structured facts with confidence
-5. **Latency:** ~50-200ms
-
-**Mnemosyne path:**
-1. Direct Python function call
-2. sqlite-vec vector similarity + FTS5 keyword match
-3. Hybrid score with recency decay
-4. Returns raw text memories
-5. **Latency:** ~2-10ms for 10K corpus
-
-**Where Mnemosyne wins:** 5-20\u00d7 faster, ~100MB total footprint vs ~500MB+, no container orchestration.
-
-**Where Hindsight wins:** Better recall quality, structured facts with provenance, entity-aware retrieval.
+| Feature | Mnemosyne | Hindsight Self-Hosted |
+|---------|-----------|----------------------|
+| **Method** | LLM-driven: sends text to LLM, parses 2–5 factual statements | LLM-driven Retain pipeline with provenance tracking |
+| **Fallback chain** | Remote OpenAI-compatible API → local ctransformers GGUF → skip (graceful) | N/A (runs inside container) |
+| **Storage** | TripleStore: `(memory_id, "fact", fact_text)` | Structured fact table with evidence tracking |
+| **Opt-in?** | `extract=True` on `remember()` | Always on via Retain |
 
 ---
 
-## Dependency Reality Check
+## Integrations
 
-### Mnemosyne
+### MCP (Model Context Protocol) — v2
 
-| Mode | Dependencies | Network Calls |
-|------|-------------|-------------|
-| Minimal (keyword only) | Python stdlib + SQLite | **None** |
-| Semantic search | + fastembed (ONNX, ~50MB) | One-time model download |
-| Vector search | + sqlite-vec (pip installable) | None |
-| LLM consolidation | + ctransformers + ~600MB GGUF | One-time model download, or remote API |
+Mnemosyne provides an MCP server with **6 tools** and **2 transports**:
 
-### Hindsight Self-Hosted
+| Tool | Description |
+|------|-------------|
+| `mnemosyne_remember` | Store a memory (supports entity extraction, fact extraction, bank selection) |
+| `mnemosyne_recall` | Search memories with hybrid scoring and configurable weights |
+| `mnemosyne_sleep` | Run consolidation cycle |
+| `mnemosyne_scratchpad_read` | Read agent scratchpad |
+| `mnemosyne_scratchpad_write` | Write to scratchpad |
+| `mnemosyne_get_stats` | Get memory statistics |
 
-| Component | Requirement |
-|-----------|-------------|
-| API server | Docker + FastAPI + uvicorn |
-| Database | PostgreSQL + pgvector |
-| Embeddings | sentence-transformers or TEI container |
-| LLM | Your own API key (OpenAI, Groq, Ollama, etc.) |
-| Control plane | Next.js UI on port 9999 |
-
----
-
-## Benchmarks: The Truth
-
-Mnemosyne's published "0.076ms vs 38ms" comparison compares **in-process SQLite** to **HTTP API roundtrips**. That is not apples-to-apples for semantic retrieval.
-
-**Fairer framing:**
-
-| Metric | Mnemosyne (in-process) | Hindsight Self-Hosted (local HTTP) |
-|--------|------------------------|-----------------------------------|
-| Raw SQLite SELECT | ~0.1ms | N/A (PostgreSQL over IPC) |
-| Semantic recall (10K corpus) | ~2-10ms | ~50-200ms |
-| Memory footprint | ~100MB | ~500MB+ |
-| Deployment complexity | `pip install` | Docker Compose |
-
----
-
-## Migration Path
-
-**From Hindsight Self-Hosted to Mnemosyne:**
-
-Not a drop-in replacement. Mnemosyne lacks:
-- Entity resolution
-- Automatic fact extraction
-- Cross-machine API
-- Multi-tenancy
-
-**From Mnemosyne to Hindsight Self-Hosted:**
-
-Export Mnemosyne data:
-
-```python
-from mnemosyne import Mnemosyne
-mem = Mnemosyne()
-mem.export_to_file("mnemosyne-backup.json")
+```
+mnemosyne mcp                          # stdio transport (Claude Desktop, etc.)
+mnemosyne mcp --transport sse --port 8080  # SSE transport (web clients)
+mnemosyne mcp --bank project_a            # scoped to a specific bank
 ```
 
-Then adapt to Hindsight's retain API. Structured fact extraction will need to be re-run.
+### Hermes Agent Integration
+
+**15 tools** and **3 hooks** via `plugin.yaml`.
+
+**Hooks:** `pre_llm_call` (context injection), `on_session_start` (session init), `post_tool_call` (memory capture)
+
+### Hindsight Integration
+
+Custom HTTP API on port 8888. Native `openclaw-hindsight` plugin exists for OpenClaw. Hermes integration via HTTP client.
+
+| | Mnemosyne | Hindsight |
+|--|-----------|-----------|
+| **Hermes** | Native (in-process, no serialization) | HTTP client |
+| **OpenClaw** | Planned (adapter not yet built) | Native plugin exists |
+| **MCP** | 6 tools, stdio + SSE | Custom HTTP API |
+| **Cross-machine** | Export/import JSON only | Any agent with HTTP access to port 8888 |
 
 ---
 
-## Summary
+## Memory Banks (v2)
 
-| | Mnemosyne | Hindsight Self-Hosted |
-|--|-----------|----------------------|
-| **What it is** | A memory layer | A memory engine |
-| **Complexity** | Low | High |
-| **Magic level** | Low (you control everything) | High (LLM extracts, resolves, consolidates) |
-| **Best for** | Builders who want control | Users who want sophistication |
-| **Honest verdict** | Reliable and dumb | Smart and complex |
+| Feature | Mnemosyne | Hindsight |
+|---------|-----------|-----------|
+| **Named banks** | `BankManager` — create, list, delete, rename banks | `banks` table with strict isolation |
+| **Isolation** | Per-bank SQLite file under `data_dir/banks/<name>/` | PostgreSQL schema-level isolation |
+| **Usage** | `Mnemosyne(bank="work")` or `mnemosyne mcp --bank work` | API-level bank selection |
+| **Multi-tenancy** | No access control | HindClaw extension (JWT/API key multi-tenancy) |
 
-They are different points on the simplicity-sophistication spectrum. Choose based on which trade-offs you prefer.
+---
+
+## Additional Features (v2)
+
+### Mnemosyne-specific
+
+| Feature | Module | Description |
+|---------|--------|-------------|
+| **Streaming** | `core/streaming.py` | `MemoryStream` with push (callbacks) and pull (iterator) patterns. Thread-safe event buffer. |
+| **Delta sync** | `core/streaming.py` | `DeltaSync` — incremental synchronization between Mnemosyne instances with checkpointed resume. |
+| **Pattern detection** | `core/patterns.py` | `PatternDetector` — temporal (hour/weekday), content (keyword frequency, co-occurrence), sequence patterns. |
+| **Memory compression** | `core/patterns.py` | `MemoryCompressor` — dictionary-based, RLE, and semantic compression strategies. |
+| **Plugin system** | `core/plugins.py` | `MnemosynePlugin` base class with 4 lifecycle hooks. Discovers plugins from `~/.hermes/mnemosyne/plugins/`. |
+| **Diagnostics** | `diagnose.py` | PII-safe health check — dependencies, database state, vector readiness. No memory content or API keys. |
+
+### Hindsight-specific (not in Mnemosyne)
+
+| Feature | Description |
+|---------|-------------|
+| **Automatic entity normalization** | "Abdias" and "Abdias J" resolved to same entity automatically |
+| **Cross-encoder reranking** | Second-pass neural reranking of retrieval results |
+| **Mental models** | Agent reasoning about user preferences and traits |
+| **Agentic reflection** | Tool-calling loop during Reflect phase |
+| **Conflict detection** | Automatic contradiction detection and merging |
+| **Multi-machine sharing** | Network API for distributed agents |
+| **Multi-tenancy** | Per-user isolation with access control via HindClaw |
+
+---
+
+## Performance Characteristics
+
+| Metric | Mnemosyne | Hindsight Self-Hosted |
+|--------|-----------|----------------------|
+| **Recall latency (10K corpus)** | ~2–10ms — in-process SQLite + sqlite-vec, no HTTP overhead | ~50–200ms — HTTP round-trip + PostgreSQL + 4-way retrieval + rerank |
+| **IPC model** | Direct Python function call | HTTP POST to localhost:8888 → JSON serialization → response parsing |
+| **Storage footprint** | ~50–100MB SQLite file per 10K memories | ~200–500MB PostgreSQL + WAL per 10K memories |
+| **Model download** | One-time ~67MB (fastembed ONNX) | One-time ~500MB (sentence-transformers PyTorch) |
+| **Runtime memory** | ~10–20MB per session | ~100–300MB (PostgreSQL pool + PyTorch runtime) |
+
+> **Important caveat on latency numbers:** Mnemosyne's latency advantage comes from being an in-process library calling SQLite directly, compared to HTTP round-trips to a local Docker container. This is an architectural advantage, not a retrieval-quality advantage.
+
+---
+
+## When to Choose What
+
+### Choose Mnemosyne if:
+
+- You want `pip install` with zero containers
+- You need the fastest possible recall latency for interactive agent loops
+- You're running on a resource-constrained environment (VPS, ephemeral VM, CI)
+- You're building a single-user, single-machine agent (Hermes, Claude Desktop, etc.)
+- You want an MCP-compatible memory layer (stdio + SSE)
+- You want full control over the memory model and don't need automatic "magic"
+- You want memory banks with per-bank SQLite isolation without standing up PostgreSQL
+
+### Choose Hindsight Self-Hosted if:
+
+- You need entity resolution ("Abdias" and "Abdias J" are the same person)
+- You need automatic structured fact extraction from raw text
+- You need cross-machine memory sharing via network API
+- You need multi-tenant memory banks with access control
+- You need temporal reasoning with automatic date extraction
+- You need the highest recall quality (4-way retrieval + cross-encoder rerank)
+- You're okay with Docker + PostgreSQL complexity as a trade-off for richer capabilities
+
+### Neither is "better." They serve different points on the simplicity-sophistication spectrum.
+
+---
+
+## Known Gaps in Mnemosyne (honest list)
+
+| Gap | Severity | Workaround |
+|-----|----------|------------|
+| No automatic entity normalization | Medium | `extract_entities=True` captures entities; fuzzy matching helps but doesn't resolve coreference |
+| No cross-machine network API | Medium for multi-agent setups | Export/import JSON; same-machine sharing via shared SQLite file |
+| No cross-encoder reranking | Low for most queries | Hybrid scoring with configurable weights covers common cases |
+| No automatic conflict detection | Medium | Manual `invalidate(memory_id, replacement_id=new_id)` |
+| No multi-tenancy / access control | High for SaaS use cases | Use per-bank SQLite isolation for domain separation |
+| No mental models / agentic reflection | Low | `sleep()` does consolidation; reasoning about knowledge is the caller's job |
+| OpenClaw adapter not yet built | Medium for OpenClaw users | Hermes integration is native; OpenClaw requires MCP adapter work |
+
+---
+
+*This page was rewritten for v2.0.0 after community feedback about inaccurate comparisons. Every feature listed for Mnemosyne has been verified against the source code. If anything here is wrong, please open an issue — we'll fix it.*

@@ -1,0 +1,54 @@
+export const metadata = {
+  title: 'Streaming & Delta Sync',
+  description: 'Real-time event streaming and incremental synchronization.',
+  openGraph: { images: ['/og-image.svg'] },
+  twitter: { card: 'summary_large_image' },
+};
+
+# Streaming & Delta Sync
+
+Real-time memory event streaming and incremental synchronization for distributed agent setups.
+
+## MemoryStream
+
+Thread-safe event stream with push (callbacks) and pull (iterator) patterns.
+
+<CodeBlock code={`from mnemosyne import Mnemosyne
+
+mem = Mnemosyne()
+stream = mem.stream
+
+mem.remember("test memory")
+
+# Pull via callback
+stream.on_event(lambda event: print(f"Event: {event.type}"))
+
+# Pull via iterator
+for event in stream:
+    process(event)
+`} language="python" />
+
+## DeltaSync
+
+Checkpoint-based incremental synchronization.
+
+<CodeBlock code={`mem_a = Mnemosyne(session_id="agent-a")
+mem_b = Mnemosyne(session_id="agent-b")
+
+# Compute and apply delta
+delta = mem_a.delta_sync.compute_delta()
+mem_b.delta_sync.apply_delta(delta)
+
+# Bidirectional sync
+mem_a.delta_sync.sync_to(mem_b)
+mem_a.delta_sync.sync_from(mem_b)
+`} language="python" />
+
+<Callout type="info">
+DeltaSync uses memory IDs and timestamps for minimal change sets. Only new or modified memories transfer.
+</Callout>
+
+## Related
+
+- [Architecture: Pattern Detection](/architecture/pattern-detection)
+- [Architecture: Plugin System](/architecture/plugin-system)

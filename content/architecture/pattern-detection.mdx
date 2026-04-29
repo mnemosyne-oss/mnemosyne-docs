@@ -1,0 +1,47 @@
+export const metadata = {
+  title: 'Pattern Detection & Compression',
+  description: 'Detect temporal, content, and sequence patterns with dictionary-based compression.',
+  openGraph: { images: ['/og-image.svg'] },
+  twitter: { card: 'summary_large_image' },
+};
+
+# Pattern Detection & Compression
+
+Pattern detection and memory compression for analyzing usage and reducing storage.
+
+## PatternDetector
+
+| Category | Patterns |
+|----------|----------|
+| Temporal | Hour-of-day, day-of-week |
+| Content | Keyword frequency, co-occurrence |
+| Sequence | Sequential patterns |
+
+<CodeBlock code={`from mnemosyne import Mnemosyne
+mem = Mnemosyne()
+detector = mem.patterns
+
+temporal = detector.detect_temporal_patterns(memories)
+content = detector.detect_content_patterns(memories)
+sequences = detector.detect_sequence_patterns(memories)
+`} language="python" />
+
+## MemoryCompressor
+
+| Strategy | Description |
+|----------|-------------|
+| Dictionary | Replaces repeated strings with tokens |
+| RLE | Run-length encoding |
+| Semantic | Groups similar memories |
+
+<CodeBlock code={`compressor = mem.compressor
+
+compressed = compressor.compress(memories)
+decompressed = compressor.decompress(compressed)
+batch = compressor.compress_batch(memory_list)
+`} language="python" />
+
+## Related
+
+- [Architecture: Streaming](/architecture/streaming)
+- [Architecture: Plugin System](/architecture/plugin-system)

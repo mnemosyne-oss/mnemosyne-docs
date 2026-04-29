@@ -57,7 +57,8 @@ Long-term storage for experiences, conversations, and events. Organized chronolo
 
 **Key characteristics:**
 - **Retention**: Permanent (until explicit deletion)
-- **Retrieval**: Hybrid (vector + FTS5) with fixed scoring weights
+- **Retrieval**: Hybrid (vector + FTS5) with **configurable scoring weights** (`vec_weight`, `fts_weight`, `importance_weight`, defaulting to 50/30/20)
+- **Temporal decay**: Tunable via `temporal_weight` and `temporal_halflife` parameters on `recall()`
 - **Consolidation**: Promoted from Working Memory via `sleep()`
 
 ### Semantic Memory
@@ -115,6 +116,38 @@ Call `mem.sleep()` to run a consolidation cycle that:
 5. **Evict** the original Working Memory entries
 
 Sleep is triggered explicitly — it does not run automatically on a timer.
+
+## V2 Features
+
+Mnemosyne v2.0.0 adds several capabilities on top of the core BEAM architecture:
+
+### Entity Extraction
+
+`remember()` accepts `extract_entities=True` to automatically detect named entities (mentions, hashtags, proper nouns) using regex patterns and Levenshtein fuzzy matching. Extracted entities are stored as TripleStore triples.
+
+### Fact Extraction
+
+`remember()` accepts `extract=True` to send content through an LLM pipeline that extracts 2–5 structured factual statements, stored as TripleStore triples. The extraction pipeline gracefully falls back through remote API → local GGUF → skip.
+
+### Temporal Recall
+
+`recall()` now supports `temporal_weight`, `query_time`, and `temporal_halflife` parameters for fine-grained control over how recency influences retrieval. Point-in-time queries allow retrieving memories as they existed at a specific timestamp.
+
+### Configurable Scoring
+
+The hybrid scoring weights (`vec_weight`, `fts_weight`, `importance_weight`) are now configurable per-query instead of fixed at compile time. Default: 50/30/20.
+
+### Memory Banks
+
+Named banks provide isolated SQLite databases per project or context. Create via `Mnemosyne(bank="project-a")` or `mnemosyne mcp --bank project-a`.
+
+### Streaming & Patterns
+
+`MemoryStream` provides push/pull event patterns for real-time notifications. `PatternDetector` discovers temporal, content, and sequence patterns across stored memories. `DeltaSync` enables incremental synchronization between instances.
+
+### Plugin System
+
+A plugin base class (`MnemosynePlugin`) with 4 lifecycle hooks. Built-in plugins: `LoggingPlugin`, `MetricsPlugin`, `FilterPlugin`. Discovers plugins from `~/.hermes/mnemosyne/plugins/`.
 
 ## Design Philosophy
 

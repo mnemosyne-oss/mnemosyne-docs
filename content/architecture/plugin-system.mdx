@@ -1,0 +1,58 @@
+export const metadata = {
+  title: 'Plugin System',
+  description: 'Extensible plugin architecture with lifecycle hooks and auto-discovery.',
+  openGraph: { images: ['/og-image.svg'] },
+  twitter: { card: 'summary_large_image' },
+};
+
+# Plugin System
+
+Extensible plugin architecture for custom memory behavior.
+
+## Creating a Plugin
+
+<CodeBlock code={`from mnemosyne.core.plugins import MnemosynePlugin
+
+class AuditPlugin(MnemosynePlugin):
+    name = "audit-logger"
+    
+    def on_remember(self, memory_id, content, **kwargs):
+        print(f"[AUDIT] Stored: {memory_id}")
+    
+    def on_recall(self, query, results, **kwargs):
+        print(f"[AUDIT] Recall: {query} -> {len(results)} results")
+        return results
+    
+    def on_consolidate(self, count, **kwargs):
+        print(f"[AUDIT] Consolidated: {count}")
+    
+    def on_invalidate(self, memory_id, **kwargs):
+        print(f"[AUDIT] Invalidated: {memory_id}")
+`} language="python" />
+
+## Registering
+
+<CodeBlock code={`mem = Mnemosyne()
+
+mem.plugin_manager.register(AuditPlugin())
+mem.plugin_manager.discover("~/.hermes/mnemosyne/plugins/")
+plugins = mem.plugin_manager.list_plugins()
+mem.plugin_manager.unregister("audit-logger")
+`} language="python" />
+
+## Built-in Plugins
+
+| Plugin | Description |
+|--------|-------------|
+| LoggingPlugin | Logs all operations |
+| MetricsPlugin | Tracks counts and latencies |
+| FilterPlugin | Filters by custom criteria |
+
+## Auto-Discovery
+
+Drop Python files into `~/.hermes/mnemosyne/plugins/`. Any `MnemosynePlugin` subclass is auto-loaded.
+
+## Related
+
+- [Architecture: Streaming](/architecture/streaming)
+- [Architecture: Pattern Detection](/architecture/pattern-detection)

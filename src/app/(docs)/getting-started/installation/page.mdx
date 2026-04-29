@@ -1,89 +1,47 @@
-export const metadata = {
-  title: 'Installation — Mnemosyne Setup & Dependencies',
-  description: 'Complete installation instructions for Mnemosyne including prerequisites, pip install, Hermes agent registration, optional extras, and development setup from source.',
-  openGraph: {
-    images: ['/og-image.svg'],
-  },
-  twitter: {
-    card: 'summary_large_image',
-  },
-};
-
 # Installation
 
-Mnemosyne is installed as a Python package and registered with your Hermes agent. This page walks through every step — from prerequisites to verification.
+Mnemosyne v2.0.0 is a standalone Python package — no agent framework required. This page walks through every step from prerequisites to verification.
 
 ## Prerequisites
 
 Before installing Mnemosyne, make sure you have:
 
 - **Python 3.10 or higher** — check with `python --version`
-- **Hermes Agent** already installed and initialized at `~/.hermes/hermes-agent/`
 - **pip** or **uv** package manager available in your shell
-
-<Callout type="info" title="Don't have Hermes yet?">
-If you haven't set up Hermes Agent, do that first. Mnemosyne is a plugin that runs *inside* the Hermes ecosystem — it won't work as a standalone tool without it.
-</Callout>
 
 ## Quick Install
 
-Three commands. That's all it takes.
+Two commands. That's all it takes.
 
-**Step 1 — Activate the Hermes virtual environment:**
+**Step 1 — Install the package:**
 
-<CodeBlock code={`source ~/.hermes/hermes-agent/venv/bin/activate`} language="bash" />
-
-<Callout type="warning" title="Required step">
-You *must* activate the venv before running pip. Without it, the package installs into the wrong Python environment and Hermes won't find it.
-</Callout>
-
-**Step 2 — Install the package:**
-
-Use the command that matches how your virtual environment was created:
-
-<CodeBlock code={`# If your venv was created with python -m venv or virtualenv
+```bash
+# Using pip
 pip install mnemosyne-memory[embeddings]
 
-# If your venv was created with uv venv (pip is not included)
-uv pip install mnemosyne-memory[embeddings]`} language="bash" />
+# Using uv (faster)
+uv pip install mnemosyne-memory[embeddings]
+```
 
-<Callout type="warning" title="uv venv does not include pip">
-If you created the Hermes venv with `uv venv`, running `pip install` will fail with "command not found." This is by design — uv replaces pip with `uv pip`. Always use `uv pip install` in uv-created environments.
-</Callout>
+**Step 2 — Verify:**
 
-<Callout type="info" title="What [embeddings] gives you">
-The `[embeddings]` extra installs **fastembed**, which powers semantic vector search. With it, Mnemosyne can:
+```bash
+python -c "import mnemosyne; print(mnemosyne.__version__)"
+# Should print: 2.0.0
+```
 
-- Match memories by **meaning**, not just keywords
-- Find "Italian food" when you search "pizza" (semantic similarity)
-- Combine vector + text scores for **hybrid retrieval**
-
-Without `[embeddings]`, you get FTS5 keyword search only.
-</Callout>
-
-**Step 3 — Register with Hermes:**
-
-<CodeBlock code={`python -m mnemosyne.install`} language="bash" />
-
-This creates the plugin symlink and updates `config.yaml` so Hermes knows about Mnemosyne.
+That's it. No database setup, no container orchestration, no config files. Mnemosyne creates its SQLite database automatically on first use.
 
 ## Install Options
 
 ### pip vs uv
 
-Both work. `uv` is faster, but only if you use the matching install command:
+Both work. `uv` is faster, but use the matching command:
 
-| Venv created with | Install command |
-|-------------------|-----------------|
-| `python -m venv`  | `pip install mnemosyne-memory[embeddings]` |
-| `virtualenv`      | `pip install mnemosyne-memory[embeddings]` |
-| `uv venv`         | `uv pip install mnemosyne-memory[embeddings]` |
-
-<CodeBlock code={`# Standard pip (venv created with python -m venv)
-pip install mnemosyne-memory[embeddings]
-
-# uv (venv created with uv venv)
-uv pip install mnemosyne-memory[embeddings]`} language="bash" />
+| Tool | Install command |
+|------|-----------------|
+| `pip` | `pip install mnemosyne-memory[embeddings]` |
+| `uv` | `uv pip install mnemosyne-memory[embeddings]` |
 
 ### Extras
 
@@ -96,72 +54,95 @@ Mnemosyne ships optional dependency groups you can install as needed:
 | LLM consolidation | `pip install mnemosyne-memory[llm]` | + ctransformers for local LLM sleep consolidation |
 | Everything | `pip install mnemosyne-memory[all]` | All optional dependencies |
 
-<Callout type="danger">
-The **core install without `[embeddings]` is strongly discouraged** for production use. You get primitive keyword matching only. Install with `[embeddings]` to unlock semantic search, hybrid retrieval, and context-aware memory matching.
-</Callout>
-
 ## Optional: sqlite-vec for Performance
 
 `sqlite-vec` is an **optional performance boost** for large datasets (100K+ memories). It moves vector similarity search into native C code inside SQLite. Without it, Mnemosyne uses an in-memory numpy fallback that works fine for most use cases.
 
-<CodeBlock code={`pip install sqlite-vec`} language="bash" />
+```bash
+pip install sqlite-vec
+```
 
-<Callout type="info" title="sqlite-vec is optional">
 - **With `[embeddings]` only:** Full semantic search + hybrid retrieval via in-memory numpy cosine similarity. Works great for most deployments.
 - **With `[embeddings]` + `sqlite-vec`:** Same semantic search, but vector queries run in native C inside SQLite. Faster on very large datasets.
 - **Without `[embeddings]`:** FTS5 keyword search only, regardless of sqlite-vec.
 
 Install sqlite-vec only if you need maximum performance on huge datasets.
-</Callout>
 
 ## Verify Installation
 
-Run the stats command through Hermes to confirm everything is wired up:
+Check the installed version directly:
 
-<CodeBlock code={`hermes mnemosyne stats`} language="bash" />
+```bash
+python -c "import mnemosyne; print(mnemosyne.__version__)"
+```
 
-You should see a summary of memory tiers and database status. If the command is not found, the registration step may have failed — re-run `python -m mnemosyne.install`.
+You can also run a quick smoke test:
 
-You can also verify the Python package directly:
+```python
+from mnemosyne import Mnemosyne
 
-<CodeBlock code={`python -c "import mnemosyne; print(mnemosyne.__version__)"`} language="bash" />
+mem = Mnemosyne()
+mem.remember("Installation test", importance=0.1)
+results = mem.recall("test")
+print(f"Stored and retrieved {len(results)} memory")
+```
 
-### Useful Hermes Commands
+## MCP Server Setup
 
-Once installed, these are the Mnemosyne commands available through Hermes:
+Mnemosyne v2 includes a built-in MCP server for Claude Desktop and other MCP clients:
 
-| Command | Description |
-|---------|-------------|
-| `hermes mnemosyne stats` | Show memory statistics |
-| `hermes mnemosyne version` | Show installed version |
-| `hermes mnemosyne inspect [query]` | Search memories interactively |
-| `hermes mnemosyne sleep` | Run consolidation (sleep cycle) |
-| `hermes mnemosyne export --output <path>` | Export memories to JSON |
-| `hermes mnemosyne import --input <path>` | Import memories from JSON |
-| `hermes memory setup` | Interactive provider picker (curses UI) |
-| `hermes memory status` | Show current memory provider config |
+```bash
+# Add to your Claude Desktop config (claude_desktop_config.json):
+{
+  "mcpServers": {
+    "mnemosyne": {
+      "command": "mnemosyne",
+      "args": ["mcp"]
+    }
+  }
+}
+```
 
-<Callout type="danger" title="Common mistake">
-Do **not** use `hermes plugin install mnemosyne` — that command doesn't exist. The correct Hermes plugin commands are `hermes plugins install <git-url>` (note the plural *plugins*), which expects a Git repository URL. Mnemosyne is installed via `pip` and registered with `python -m mnemosyne.install`, not through the plugin manager.
-</Callout>
+For SSE transport (web clients):
+
+```bash
+mnemosyne mcp --transport sse --port 8080
+```
+
+## Hermes Agent Integration
+
+If you're using Mnemosyne as a Hermes plugin:
+
+```yaml
+# hermes.yaml
+plugins:
+  - name: mnemosyne-memory
+    source: pip
+    config:
+      data_dir: ~/.hermes/mnemosyne/data
+      embedding_model: text-embedding-3-small
+      auto_context: true
+      context_injection:
+        enabled: true
+        max_memories: 5
+        min_relevance: 0.7
+```
 
 ## Development Install (from Source)
 
 If you're contributing or want to run the latest unreleased changes:
 
-<CodeBlock code={`# Activate the Hermes venv first
-source ~/.hermes/hermes-agent/venv/bin/activate
-
+```bash
 # Clone the repo
 git clone https://github.com/axdsan/mnemosyne.git
 cd mnemosyne
 
+# Create a virtual environment
+python -m venv .venv
+source .venv/bin/activate
+
 # Install in editable mode with dev dependencies
 pip install -e ".[dev]"
+```
 
-# Register with Hermes
-python -m mnemosyne.install`} language="bash" />
-
-<Callout type="info" title="Editable mode">
 The `-e` flag installs in "editable" mode — changes to the source code take effect immediately without re-installing. Perfect for development and debugging.
-</Callout>

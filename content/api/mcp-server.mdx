@@ -1,0 +1,56 @@
+export const metadata = {
+  title: 'MCP Server',
+  description: 'Model Context Protocol server with 6 tools and dual transports.',
+  openGraph: { images: ['/og-image.svg'] },
+  twitter: { card: 'summary_large_image' },
+};
+
+# MCP Server
+
+MCP (Model Context Protocol) server exposing memory operations as tools for Claude Desktop, Hermes, and any MCP-compatible agent.
+
+## Quick Start
+
+<CodeBlock code={`# stdio transport (Claude Desktop, etc.)
+mnemosyne mcp
+
+# SSE transport (web clients)
+mnemosyne mcp --transport sse --port 8080
+
+# Scoped to a bank
+mnemosyne mcp --bank project_a
+`} language="bash" />
+
+## Tools
+
+| Tool | Description |
+|------|-------------|
+| `mnemosyne_remember` | Store a memory |
+| `mnemosyne_recall` | Search memories |
+| `mnemosyne_sleep` | Run consolidation |
+| `mnemosyne_scratchpad_read` | Read scratchpad |
+| `mnemosyne_scratchpad_write` | Write to scratchpad |
+| `mnemosyne_get_stats` | Get statistics |
+
+## Claude Desktop Config
+
+```json
+{
+  "mcpServers": {
+    "mnemosyne": {
+      "command": "mnemosyne",
+      "args": ["mcp"]
+    }
+  }
+}
+```
+
+<Callout type="info">
+MCP is an open standard. Any MCP-compatible agent can connect without custom integration code.
+</Callout>
+
+## Related
+
+- [API: Python SDK](/api/python-sdk)
+- [API: Hermes Plugin](/api/hermes-plugin)
+- [Memory Systems: Memory Banks](/memory-systems/memory-banks)
