@@ -111,21 +111,59 @@ mnemosyne mcp --transport sse --port 8080
 
 ## Hermes Agent Integration
 
-If you're using Mnemosyne as a Hermes plugin:
+Mnemosyne is the native memory backend for [Hermes Agent](https://github.com/NousResearch/hermes-agent).
+
+### One-Liner Deploy (fastest)
+
+No pip, no venv — just a symlink:
+
+```bash
+curl -sSL https://raw.githubusercontent.com/AxDSan/mnemosyne/main/deploy_hermes_provider.sh | bash
+```
+
+Then configure Hermes:
+
+```bash
+hermes config set memory.provider mnemosyne
+```
+
+And add to `plugins.enabled` in `~/.hermes/config.yaml`:
 
 ```yaml
-# hermes.yaml
 plugins:
-  - name: mnemosyne-memory
-    source: pip
-    config:
-      data_dir: ~/.hermes/mnemosyne/data
-      embedding_model: text-embedding-3-small
-      auto_context: true
-      context_injection:
-        enabled: true
-        max_memories: 5
-        min_relevance: 0.7
+  enabled:
+    - mnemosyne
+```
+
+Restart and verify:
+
+```bash
+hermes gateway restart
+hermes memory status
+hermes mnemosyne stats
+```
+
+### pip + Register
+
+If you prefer the PyPI package:
+
+```bash
+pip install mnemosyne-memory[embeddings]
+python -m mnemosyne.install
+hermes gateway restart
+```
+
+### Manual Config
+
+Alternatively, configure manually in `~/.hermes/config.yaml`:
+
+```yaml
+memory:
+  provider: mnemosyne
+
+plugins:
+  enabled:
+    - mnemosyne
 ```
 
 ## Development Install (from Source)
