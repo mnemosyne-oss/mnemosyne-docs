@@ -31,6 +31,10 @@ const searchIndex: SearchResult[] = [
   { title: "Security", href: "/security/overview", excerpt: "Encryption, access control, and privacy", section: "Security" },
   { title: "Use Cases", href: "/use-cases/overview", excerpt: "Real-world patterns and case studies", section: "Use Cases" },
   { title: "vs Hindsight", href: "/comparisons/hindsight", excerpt: "Honest technical comparison with Hindsight self-hosted", section: "Comparisons" },
+  { title: "Cross-Provider Migration", href: "/migration/overview", excerpt: "Import memories from Mem0, Letta, Zep, and more", section: "Migration" },
+  { title: "From Mem0", href: "/migration/from-mem0", excerpt: "Migrate memories from Mem0 cloud or self-hosted", section: "Migration" },
+  { title: "From Letta (MemGPT)", href: "/migration/from-letta", excerpt: "Import AgentFile (.af) or API memories from Letta", section: "Migration" },
+  { title: "From Zep", href: "/migration/from-zep", excerpt: "Session-by-session extraction from Zep temporal graph", section: "Migration" },
 ];
 
 export function Search() {

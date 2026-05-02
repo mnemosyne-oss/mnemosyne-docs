@@ -1,6 +1,6 @@
 export const metadata = {
-  title: 'Cross-Provider Migration — Import from Other Memory Providers',
-  description: 'Migrate your AI agent memories from Mem0, Letta, Zep, Cognee, MemGPT, and LangMem into Mnemosyne v2.2 with the cross-provider importer.',
+  title: 'Cross-Provider Migration — Import from Any Memory Provider',
+  description: 'Migrate from Mem0, Letta, Zep, Cognee, Honcho, or SuperMemory into Mnemosyne with one command. No manual export scripts, no field mapping headaches.',
   openGraph: {
     images: ['/og-image.svg'],
   },
@@ -11,132 +11,83 @@ export const metadata = {
 
 # Cross-Provider Migration
 
-Mnemosyne v2.2 introduces **Cross-Provider Importers** — a unified migration system that imports memory data from six popular AI memory providers. Whether you're moving from a cloud service or another open-source library, Mnemosyne makes the transition seamless.
+Move your memories out of other providers and into Mnemosyne with a single command.
+
+Mnemosyne v2.2 ships importers for 6 major memory providers. Each importer handles extraction, field mapping, and data import end to end. You don't need to write export scripts or manually map fields.
 
 ## Supported Providers
 
-Mnemosyne v2.2 supports importing from **six** external memory providers:
+| Provider | Import Via | CLI Flag |
+|----------|-----------|----------|
+| **Mem0** | SDK or REST API | `--from mem0 --api-key sk-xxx` |
+| **Letta** | SDK, `.af` file, or REST | `--from letta --agent-file-path ./agent.af` |
+| **Zep** | SDK (per-session extraction) | `--from zep --api-key sk-xxx` |
+| **Cognee** | SDK (Kuzu graph export) | `--from cognee` |
+| **Honcho** | SDK (Workspace/Peer/Session/Message model) | `--from honcho` |
+| **SuperMemory** | REST API | `--from supermemory --api-key sk-xxx` |
 
-| Provider | Import Method | Notes |
-|----------|-------------|-------|
-| **Mem0** | `mnemosyne import mem0` | Full conversation history + metadata |
-| **Letta** | `mnemosyne import letta` | Agents, blocks, and archival memory |
-| **Zep** | `mnemosyne import zep` | User sessions, facts, and summaries |
-| **Cognee** | `mnemosyne import cognee` | Graph memory with relationship triples |
-| **MemGPT** | `mnemosyne import memgpt` | Legacy MemGPT conversations and recall |
-| **LangMem** | `mnemosyne import langmem` | LangChain memory checkpoints and state |
+For providers that do not expose a clean API, there is an agentic fallback. Mnemosyne generates the exact migration script or AI agent prompt you need.
+
+## Quick Start
+
+```bash
+# Import from Mem0
+hermes mnemosyne import --from mem0 --api-key sk-xxx
+
+# Dry run first (validate but don't write)
+hermes mnemosyne import --from mem0 --api-key sk-xxx --dry-run
+
+# Import from a JSON export file
+hermes mnemosyne import --file ./export.json
+
+# List all supported providers
+hermes mnemosyne import --list-providers
+```
 
 ## How It Works
 
-Each importer follows a consistent pattern:
+Every importer follows the same pipeline:
 
-1. **Connect** — authenticate with the source provider (API key, local DB path, etc.)
-2. **Extract** — read memories, metadata, and relationships
-3. **Transform** — map source schemas to Mnemosyne's BEAM architecture (Working → Episodic → Semantic)
-4. **Import** — write into your Mnemosyne SQLite database with full fidelity
+1. **Extract** — Pull all memories from the source provider (SDK, REST API, or file)
+2. **Validate** — Check that extracted data has the required fields
+3. **Transform** — Map provider-specific fields to Mnemosyne's format
+4. **Import** — Write into working memory with identity metadata preserved
 
-### Quick Start
+All metadata, timestamps, user/agent identity, and original IDs are preserved in the import.
 
-```bash
-# Install with cross-provider import support
-pip install mnemosyne-memory[importers]
+## Identity Preservation
 
-# Import from your existing provider
-mnemosyne import mem0 --api-key $MEM0_API_KEY
-```
+Imported memories keep their original author identity:
 
-### Programmatic Import
+- **Mem0**: `user_id` and `agent_id` become `author_id`
+- **Letta**: agent identity from `.af` metadata
+- **Zep**: `user_id` from session owner
+- **Cognee**: node labels and relationships map to triples
 
-```python
-from mnemosyne import Mnemosyne
-from mnemosyne.importers import Mem0Importer
-
-mem = Mnemosyne()
-importer = Mem0Importer(api_key="...")
-importer.import_to(mem)
-
-print(f"Imported {mem.stats()['total_memories']} memories")
-```
-
-## Choosing a Provider Guide
-
-Detailed migration guides for major providers:
-
-- **[From Mem0 → Mnemosyne](/migration/from-mem0)** — Cloud-to-local migration
-- **[From Letta → Mnemosyne](/migration/from-letta)** — Agent memory portability
-- **[From Zep → Mnemosyne](/migration/from-zep)** — Session and fact migration
-
-For Cognee, MemGPT, and LangMem, the import pattern is identical to the guides above — just substitute the provider name in the CLI command.
-
-## Data Mapping Reference
-
-Each provider has its own data model. Mnemosyne maps them to BEAM tiers:
-
-```mermaid
-graph LR
-    subgraph Source["Source Provider"]
-        S1[Conversations]
-        S2[Facts]
-        S3[Metadata]
-    end
-
-    subgraph Mnemosyne["Mnemosyne BEAM"]
-        M1[Working Memory]
-        M2[Episodic Memory]
-        M3[Semantic Memory]
-    end
-
-    S1 -->|recent messages| M1
-    S1 -->|full history| M2
-    S2 -->|extracted knowledge| M3
-    S3 -->|tags + context| M2
-```
-
-## After Migration
-
-Once your data is imported:
-
-1. **Verify** — run `hermes mnemosyne stats` to confirm all memories landed
-2. **Search** — test vector + FTS5 hybrid retrieval on your old data
-3. **Sleep** — trigger sleep consolidation to optimize your imported memories
-4. **Backup** — create a snapshot of your migrated database
+You can override the session or assign everything to a channel:
 
 ```bash
-# Verify import
-hermes mnemosyne stats
-
-# Trigger consolidation
-python -c "from mnemosyne import Mnemosyne; Mnemosyne().sleep()"
-
-# Backup the migrated DB
-cp ~/.hermes/mnemosyne/data/mnemosyne.db ~/migration-backup.db
+hermes mnemosyne import --from mem0 --api-key sk-xxx \
+  --channel-id my-team-channel
 ```
 
-## Troubleshooting
+## Agentic Fallback
 
-### API Authentication Errors
-
-Most providers require API keys. Set them via environment variables:
+For providers without a clean API, or when you cannot install the source SDK:
 
 ```bash
-export MEM0_API_KEY="m0-..."
-export ZEP_API_KEY="z_..."
-export LETTA_API_KEY="lt-..."
+# Generate a migration script
+hermes mnemosyne import --from zep --generate-script
+
+# Generate AI agent instructions (give these to your AI)
+hermes mnemosyne import --from zep --agentic
+
+# Generate documentation for writing your own importer
+hermes mnemosyne import --from zep --generate-docs
 ```
 
-### Large Dataset Imports
+## Per-Provider Guides
 
-For providers with >100K memories, use batch mode:
-
-```bash
-mnemosyne import mem0 --batch-size 1000 --api-key $MEM0_API_KEY
-```
-
-### Schema Conflicts
-
-If source memories conflict with existing Mnemosyne data, use `--skip-existing` or `--overwrite`:
-
-```bash
-mnemosyne import zep --skip-existing  # Skip duplicates
-mnemosyne import zep --overwrite       # Replace conflicting records
-```
+- [From Mem0](/migration/from-mem0) — Cloud + self-hosted, SDK pagination
+- [From Letta](/migration/from-letta) — AgentFile, SDK, offline
+- [From Zep](/migration/from-zep) — Session-by-session, temporal graph

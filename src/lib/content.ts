@@ -56,6 +56,10 @@ export const pageOrder: string[] = [
   "use-cases/multi-agent",
   "use-cases/long-running",
   "use-cases/knowledge-base",
+  "migration/overview",
+  "migration/from-mem0",
+  "migration/from-letta",
+  "migration/from-zep",
 ];
 
 const sectionMap: Record<string, string> = {
@@ -68,6 +72,7 @@ const sectionMap: Record<string, string> = {
   operations: "Operations",
   security: "Security",
   "use-cases": "Use Cases",
+  "migration": "Migration",
 };
 
 export function pageExists(path: string): boolean {

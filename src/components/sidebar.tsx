@@ -90,7 +90,7 @@ const navigation: NavSection[] = [
     items: [
       { title: "Monitoring", href: "/operations/monitoring" },
       { title: "Backups", href: "/operations/backups" },
-      { title: "Migration", href: "/operations/migration" },
+      { title: "Upgrades", href: "/operations/migration" },
       { title: "Performance", href: "/operations/performance" },
       { title: "Troubleshooting", href: "/operations/troubleshooting" },
     ],
