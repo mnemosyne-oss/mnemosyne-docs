@@ -1,3 +1,14 @@
+export const metadata = {
+  title: 'REST API — Mnemosyne HTTP Endpoints Reference',
+  description: 'REST API reference for Mnemosyne legacy FastAPI server: HTTP endpoints for memory CRUD, search, session context, and consolidation. Includes request formats and examples.',
+  openGraph: {
+    images: ['/og-image.svg'],
+  },
+  twitter: {
+    card: 'summary_large_image',
+  },
+};
+
 # REST API
 
 Legacy FastAPI HTTP interface for remote access and service integration.
@@ -30,7 +41,7 @@ Or via Docker:
 # Response:
 {
   "status": "ok",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "working_count": 42,
   "episodic_count": 128,
   "semantic_count": 64
