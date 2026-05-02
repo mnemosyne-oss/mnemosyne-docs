@@ -1,0 +1,141 @@
+export const metadata = {
+  title: 'Migrate from Mem0 to Mnemosyne — Cross-Provider Import Guide',
+  description: 'Step-by-step guide to migrate your AI memory data from Mem0 to Mnemosyne v2.2. Covers API export, schema mapping, bulk import, and post-migration verification.',
+  openGraph: {
+    images: ['/og-image.svg'],
+  },
+  twitter: {
+    card: 'summary_large_image',
+  },
+};
+
+# From Mem0 → Mnemosyne
+
+Migrate your Mem0 conversation history and user memories into Mnemosyne's persistent SQLite-backed storage.
+
+## Prerequisites
+
+- Mnemosyne v2.2+ installed: `pip install mnemosyne-memory[importers]`
+- Your Mem0 API key (from [Mem0 Dashboard](https://app.mem0.ai))
+- Python 3.10+
+
+## Step 1: Export from Mem0
+
+First, retrieve your data from Mem0's API:
+
+```python
+from mem0 import Memory
+
+mem0 = Memory(api_key="m0-...")
+
+# Export all memories for a user
+memories = mem0.get_all(user_id="your-user-id")
+
+# Save to JSON for safe keeping
+import json
+with open("mem0-export.json", "w") as f:
+    json.dump(memories, f, indent=2)
+```
+
+<Callout type="info" title="Bulk Export">
+For multiple users, loop through user IDs or use Mem0's organization-level export if available on your plan.
+</Callout>
+
+## Step 2: Import into Mnemosyne
+
+### CLI Method (Recommended)
+
+```bash
+# Direct API import
+mnemosyne import mem0 --api-key $MEM0_API_KEY --user-id your-user-id
+
+# Or from a JSON export file
+mnemosyne import mem0 --file mem0-export.json
+```
+
+### Programmatic Method
+
+```python
+from mnemosyne import Mnemosyne
+from mnemosyne.importers import Mem0Importer
+
+mem = Mnemosyne()
+
+# Option A: Import via API
+importer = Mem0Importer(api_key="m0-...")
+importer.import_to(mem, user_id="your-user-id")
+
+# Option B: Import from JSON file
+importer = Mem0Importer()
+importer.import_from_file(mem, "mem0-export.json")
+
+# Verify
+print(mem.stats())
+```
+
+## Step 3: Schema Mapping
+
+Mem0's data model maps to Mnemosyne's BEAM tiers as follows:
+
+| Mem0 Field | Mnemosyne BEAM Tier | Notes |
+|-----------|-------------------|-------|
+| `memory` (content) | Working Memory | Immediate recall |
+| `memory` + context | Episodic Memory | Full conversation history |
+| `metadata` tags | Semantic Memory | Structured knowledge |
+| `user_id` | `session_id` | Preserved for multi-agent |
+| `created_at` | `timestamp` | Temporal recall support |
+| `importance` score | `importance` | Preserved as-is |
+
+## Step 4: Verify Migration
+
+```bash
+# Check import stats
+hermes mnemosyne stats
+
+# Search your old Mem0 memories via Mnemosyne
+python -c "
+from mnemosyne import Mnemosyne
+mem = Mnemosyne()
+results = mem.recall('your old query', top_k=5)
+for r in results:
+    print(f\"[{r['score']:.3f}] {r['content'][:100]}...\")
+"
+```
+
+## Step 5: Post-Migration Cleanup
+
+After confirming everything migrated correctly:
+
+```bash
+# Trigger sleep consolidation to optimize indices
+python -c "from mnemosyne import Mnemosyne; Mnemosyne().sleep()"
+
+# Backup your migrated database
+cp ~/.hermes/mnemosyne/data/mnemosyne.db ~/mnemosyne-post-mem0.db
+```
+
+<Callout type="warning" title="Decommission Mem0">
+Once you've verified the migration, consider deleting your Mem0 data to avoid maintaining two systems. Keep your JSON export as an archive.
+</Callout>
+
+## Troubleshooting
+
+### "API key invalid"
+
+Ensure your Mem0 API key has read access. Create a new key in the Mem0 Dashboard if needed.
+
+### Missing Memories After Import
+
+Some Mem0 memories may have been filtered by minimum importance. Adjust the threshold:
+
+```bash
+mnemosyne import mem0 --api-key $MEM0_API_KEY --min-importance 0.0
+```
+
+### Rate Limiting
+
+For large accounts, Mem0 may rate-limit API calls. Use the `--batch-size` flag and the importer will automatically handle retries:
+
+```bash
+mnemosyne import mem0 --api-key $MEM0_API_KEY --batch-size 500
+```

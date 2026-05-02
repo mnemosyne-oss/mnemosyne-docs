@@ -1,0 +1,226 @@
+export const metadata = {
+  title: 'Migrate from Zep to Mnemosyne — Cross-Provider Import Guide',
+  description: 'Step-by-step guide to migrate user sessions, facts, and summaries from Zep to Mnemosyne v2.2. Covers API export, session mapping, fact extraction, and verification.',
+  openGraph: {
+    images: ['/og-image.svg'],
+  },
+  twitter: {
+    card: 'summary_large_image',
+  },
+};
+
+# From Zep → Mnemosyne
+
+Migrate your Zep user sessions, facts, and conversation summaries into Mnemosyne's persistent memory.
+
+## Prerequisites
+
+- Mnemosyne v2.2+ installed: `pip install mnemosyne-memory[importers]`
+- Zep API key (from [Zep Dashboard](https://app.getzep.com) or your self-hosted instance)
+- Zep project URL (for cloud) or server URL (for self-hosted)
+
+## Step 1: Export from Zep
+
+### Cloud (Zep Platform)
+
+```python
+from zep_python import ZepClient
+
+client = ZepClient(
+    api_key="z_...",
+    base_url="https://api.getzep.com"
+)
+
+# Export all users
+users = client.user.list()
+all_data = []
+
+for user in users:
+    # Get user sessions
+    sessions = client.memory.get_sessions(user.user_id)
+
+    # Get facts
+    facts = client.memory.get_facts(user.user_id)
+
+    all_data.append({
+        "user_id": user.user_id,
+        "sessions": [s.dict() for s in sessions],
+        "facts": [f.dict() for f in facts],
+    })
+
+# Save export
+import json
+with open("zep-export.json", "w") as f:
+    json.dump(all_data, f, indent=2)
+```
+
+### Self-Hosted Zep
+
+```bash
+# Direct database dump (PostgreSQL)
+pg_dump zep_db > zep-backup.sql
+
+# Then import using the file-based method
+mnemosyne import zep --file zep-export.json
+```
+
+## Step 2: Import into Mnemosyne
+
+### CLI Method
+
+```bash
+# From Zep Cloud
+mnemosyne import zep --api-key $ZEP_API_KEY --zep-url https://api.getzep.com
+
+# From JSON export file
+mnemosyne import zep --file zep-export.json
+```
+
+### Programmatic Method
+
+```python
+from mnemosyne import Mnemosyne
+from mnemosyne.importers import ZepImporter
+
+mem = Mnemosyne()
+
+# Option A: Cloud API import
+importer = ZepImporter(
+    api_key="z_...",
+    base_url="https://api.getzep.com"
+)
+importer.import_to(mem)
+
+# Option B: File import
+importer = ZepImporter()
+importer.import_from_file(mem, "zep-export.json")
+
+print(mem.stats())
+```
+
+## Step 3: Schema Mapping
+
+Zep's data model maps to Mnemosyne BEAM tiers:
+
+| Zep Concept | Mnemosyne BEAM Tier | Notes |
+|------------|-------------------|-------|
+| Message (recent) | Working Memory | Last N messages per session |
+| Session messages | Episodic Memory | Full conversation history |
+| Facts | Semantic Memory | Extracted knowledge triples |
+| Summaries | Semantic Memory | Session-level summaries |
+| User ID | `session_id` | Multi-user isolation |
+| Message timestamps | `timestamp` | Temporal recall ordering |
+| Message metadata | `metadata` | Preserved as-is |
+
+### Session → Session Mapping
+
+Zep sessions map naturally to Mnemosyne sessions:
+
+```python
+# Zep user
+zep_user_id = "user-123"
+
+# Maps to Mnemosyne
+mem = Mnemosyne(session_id=f"zep:user-123")
+```
+
+## Step 4: Verify Migration
+
+```bash
+# Check stats
+hermes mnemosyne stats
+
+# Search imported Zep memories
+python -c "
+from mnemosyne import Mnemosyne
+
+# Query as a specific user
+mem = Mnemosyne(session_id='zep:user-123')
+
+# Search facts
+facts = mem.recall('user preferences', top_k=10)
+for f in facts:
+    print(f\"[{f['score']:.3f}] {f['content']}\")
+
+# Search conversation history
+history = mem.recall('discussion about deployment', top_k=5)
+for h in history:
+    print(f\"[{h['score']:.3f}] {h['content'][:100]}\")
+"
+```
+
+## Step 5: Post-Migration
+
+```bash
+# Consolidate (this will also re-index Zep facts into semantic memory)
+python -c "from mnemosyne import Mnemosyne; Mnemosyne().sleep()"
+
+# Backup
+cp ~/.hermes/mnemosyne/data/mnemosyne.db ~/mnemosyne-post-zep.db
+
+# Test hybrid retrieval on your Zep data
+python -c "
+from mnemosyne import Mnemosyne
+mem = Mnemosyne()
+# Hybrid search: vector similarity + text match
+results = mem.recall(
+    'customer feedback about pricing',
+    top_k=5,
+    vec_weight=50.0,
+    fts_weight=50.0
+)
+for r in results:
+    print(f'[{r[\"score\"]:.3f}] {r[\"content\"][:120]}')
+"
+```
+
+## Zep-Specific Features
+
+### Fact Graph Import
+
+Zep's fact system is particularly well-suited to Mnemosyne's semantic memory. Facts are imported as TripleStore entries with full relationship preservation:
+
+```
+Zep Fact: "User prefers dark mode" (fact_rating: 0.95)
+         ↓
+Mnemosyne Triple: (user-123, prefers, dark_mode, confidence=0.95)
+```
+
+### Summary Import
+
+Zep's conversation summaries are imported as Episodic memories with `type="zep:summary"` metadata, giving you both the raw messages and the condensed summaries.
+
+### Search Preservation
+
+Zep's message search indices are replaced by Mnemosyne's hybrid retrieval (vector + FTS5), which typically provides broader and more accurate recall.
+
+## Troubleshooting
+
+### Zep Cloud API Key Issues
+
+Verify your API key at [app.getzep.com/settings](https://app.getzep.com/settings). The key must have `memory:read` scope.
+
+### Self-Hosted Connection Issues
+
+For self-hosted Zep, ensure the gRPC port is accessible:
+
+```bash
+# Test connection
+grpcurl -plaintext localhost:50051 zep.v1.ZepService/ListUsers
+```
+
+### Large Session Histories
+
+For users with very long conversation histories (1000+ messages per session), use the `--max-messages` flag to cap per-session imports:
+
+```bash
+mnemosyne import zep --api-key $ZEP_API_KEY --max-messages 5000
+```
+
+### Duplicate Facts
+
+If you re-import and get duplicate facts, use `--skip-existing`:
+
+```bash
+mnemosyne import zep --file zep-export.json --skip-existing
+```

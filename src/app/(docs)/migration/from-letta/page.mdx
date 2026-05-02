@@ -1,0 +1,187 @@
+export const metadata = {
+  title: 'Migrate from Letta to Mnemosyne — Cross-Provider Import Guide',
+  description: 'Step-by-step guide to migrate agent memories from Letta to Mnemosyne v2.2. Covers agent export, archival memory mapping, block migration, and verification.',
+  openGraph: {
+    images: ['/og-image.svg'],
+  },
+  twitter: {
+    card: 'summary_large_image',
+  },
+};
+
+# From Letta → Mnemosyne
+
+Migrate your Letta agents, blocks, and archival memory into Mnemosyne's unified BEAM architecture.
+
+## Prerequisites
+
+- Mnemosyne v2.2+ installed: `pip install mnemosyne-memory[importers]`
+- Access to your Letta server (local or cloud)
+- Letta admin password or API key
+
+## Step 1: Export from Letta
+
+### CLI Export
+
+```bash
+# Export a specific agent
+letta export agent --agent-id <AGENT_ID> --output letta-agent.json
+
+# Export all agents
+letta export all --output letta-export/
+```
+
+### Programmatic Export
+
+```python
+from letta import LettaClient
+
+client = LettaClient(base_url="http://localhost:8283")
+
+# List all agents
+agents = client.list_agents()
+
+# Export each agent's memory
+for agent in agents:
+    memory = client.get_agent_memory(agent.id)
+    archival = client.get_archival_memory(agent.id)
+
+    # Save to disk
+    import json
+    with open(f"letta-{agent.name}.json", "w") as f:
+        json.dump({
+            "agent": agent.dict(),
+            "memory": memory,
+            "archival": archival
+        }, f, indent=2)
+```
+
+## Step 2: Import into Mnemosyne
+
+### CLI Method
+
+```bash
+# From local Letta server
+mnemosyne import letta --letta-url http://localhost:8283 --letta-password yourpassword
+
+# From JSON export files
+mnemosyne import letta --file letta-agent.json
+```
+
+### Programmatic Method
+
+```python
+from mnemosyne import Mnemosyne
+from mnemosyne.importers import LettaImporter
+
+mem = Mnemosyne()
+
+# Option A: Connect to live server
+importer = LettaImporter(
+    base_url="http://localhost:8283",
+    password="yourpassword"
+)
+importer.import_to(mem)
+
+# Option B: Import from file
+importer = LettaImporter()
+importer.import_from_file(mem, "letta-agent.json")
+
+print(mem.stats())
+```
+
+## Step 3: Schema Mapping
+
+Letta's data model maps to Mnemosyne BEAM tiers:
+
+| Letta Concept | Mnemosyne BEAM Tier | Notes |
+|--------------|-------------------|-------|
+| Core memory block | Working Memory | Immediate context |
+| Recall memory | Episodic Memory | Conversation history |
+| Archival memory | Semantic Memory | Long-term knowledge |
+| Agent persona | `session_id` metadata | Identity preservation |
+| Memory timestamps | `timestamp` | Temporal recall |
+| Block importance | `importance` | Preserved |
+
+### Multi-Agent Mapping
+
+Each Letta agent becomes a separate `session_id` in Mnemosyne, enabling the same multi-agent isolation you had in Letta:
+
+```python
+# Letta agents map to Mnemosyne sessions
+letta_agent_1 → Mnemosyne(session_id="letta-agent-1")
+letta_agent_2 → Mnemosyne(session_id="letta-agent-2")
+```
+
+## Step 4: Verify Migration
+
+```bash
+# Check stats
+hermes mnemosyne stats
+
+# Verify specific agent data made it
+python -c "
+from mnemosyne import Mnemosyne
+
+# Check agent 1
+mem = Mnemosyne(session_id='letta-agent-1')
+results = mem.recall('your query', top_k=5)
+print(f'Agent 1 memories: {len(results)}')
+
+# Check agent 2
+mem2 = Mnemosyne(session_id='letta-agent-2')
+results2 = mem2.recall('your query', top_k=5)
+print(f'Agent 2 memories: {len(results2)}')
+"
+```
+
+## Step 5: Post-Migration
+
+```bash
+# Consolidate imported memories
+python -c "from mnemosyne import Mnemosyne; Mnemosyne().sleep()"
+
+# Backup
+cp ~/.hermes/mnemosyne/data/mnemosyne.db ~/mnemosyne-post-letta.db
+```
+
+## Letta-Specific Notes
+
+### Human/Assistant Message Roles
+
+Letta's message roles are preserved via Mnemosyne's `source` metadata field. Human messages get `source="letta:human"` and assistant messages get `source="letta:assistant"`.
+
+### Function Call History
+
+Letta function calls are imported as Episodic memories with `type="letta:function_call"` metadata, enabling you to filter them during recall if needed.
+
+### Large Archival Memories
+
+If an agent has extensive archival memory (>10K passages), use batch mode:
+
+```bash
+mnemosyne import letta --batch-size 1000 --letta-url http://localhost:8283
+```
+
+## Troubleshooting
+
+### Connection Refused
+
+Ensure your Letta server is running and accessible:
+
+```bash
+# Check Letta server status
+curl http://localhost:8283/v1/health
+```
+
+### Password Authentication Failed
+
+Use your Letta admin password. If running with default settings, it may be set via the `LETTA_SERVER_PASSWORD` environment variable.
+
+### Missing Archival Memory
+
+Some older Letta versions stored archival memory differently. If data appears missing, export explicitly with the archival flag:
+
+```bash
+letta export agent --agent-id <ID> --include-archival --output full-export.json
+```

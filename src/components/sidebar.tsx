@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronRight, BookOpen, Layers, Brain, Search, Code, Rocket, Shield, Briefcase, Settings, Menu, X, Scale } from "lucide-react";
+import { ChevronRight, BookOpen, Layers, Brain, Search, Code, Rocket, Shield, Briefcase, Settings, Menu, X, Scale, ArrowLeftRight } from "lucide-react";
 
 interface NavItem {
   title: string;
@@ -120,6 +120,16 @@ const navigation: NavSection[] = [
     icon: <Scale size={16} />,
     items: [
       { title: "vs Hindsight", href: "/comparisons/hindsight", badge: "new" },
+    ],
+  },
+  {
+    title: "Migration",
+    icon: <ArrowLeftRight size={16} />,
+    items: [
+      { title: "Overview", href: "/migration/overview", badge: "new" },
+      { title: "From Mem0", href: "/migration/from-mem0" },
+      { title: "From Letta", href: "/migration/from-letta" },
+      { title: "From Zep", href: "/migration/from-zep" },
     ],
   },
 ];
