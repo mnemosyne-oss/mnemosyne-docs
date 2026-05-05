@@ -36,6 +36,16 @@ Complete JSON Schema for Mnemosyne tools exposed to agents.
         "minimum": 0,
         "maximum": 1,
         "description": "0.0 = transient, 1.0 = critical. High importance memories are promoted to Episodic Memory during consolidation."
+      },
+      "scope": {
+        "type": "string",
+        "enum": ["session", "global"],
+        "description": "Session-scoped or globally visible."
+      },
+      "veracity": {
+        "type": "string",
+        "enum": ["stated", "inferred", "tool", "imported", "unknown"],
+        "description": "Confidence level of this memory. Use 'stated' for explicit user statements, 'inferred' for AI deductions, 'tool' for system output. (v2.3)"
       }
     }
   }
@@ -61,6 +71,24 @@ Complete JSON Schema for Mnemosyne tools exposed to agents.
         "maximum": 50,
         "default": 5,
         "description": "Maximum number of memories to retrieve."
+      },
+      "author_id": {
+        "type": "string",
+        "description": "Filter by specific author. (v2.1)"
+      },
+      "author_type": {
+        "type": "string",
+        "enum": ["human", "agent", "system"],
+        "description": "Filter by author category. (v2.1)"
+      },
+      "channel_id": {
+        "type": "string",
+        "description": "Filter by channel for cross-session recall. (v2.1)"
+      },
+      "veracity": {
+        "type": "string",
+        "enum": ["stated", "inferred", "tool", "imported", "unknown"],
+        "description": "Filter by confidence level. Useful for retrieving only explicit user statements. (v2.3)"
       }
     }
   }
@@ -71,7 +99,7 @@ Complete JSON Schema for Mnemosyne tools exposed to agents.
 
 <CodeBlock code={`{
   "name": "mnemosyne_sleep",
-  "description": "Run sleep consolidation to promote Working Memory entries to Episodic and Semantic memory. Triggers summarization and importance-based promotion.",
+  "description": "Run sleep consolidation to promote Working Memory entries to Episodic and Semantic memory. Triggers summarization and importance-based promotion. Also runs tiered degradation after consolidation. (v2.3)",
   "parameters": {
     "type": "object",
     "properties": {}
@@ -87,6 +115,57 @@ Complete JSON Schema for Mnemosyne tools exposed to agents.
   "parameters": {
     "type": "object",
     "properties": {}
+  }
+}
+`} language="json" />
+
+## mnemosyne_forget
+
+<CodeBlock code={`{
+  "name": "mnemosyne_forget",
+  "description": "Delete a specific memory by ID. Use when information is wrong, outdated, or explicitly requested to be removed. Unlike invalidate, this permanently removes the memory.",
+  "parameters": {
+    "type": "object",
+    "required": ["memory_id"],
+    "properties": {
+      "memory_id": {
+        "type": "string",
+        "description": "The memory ID to permanently delete."
+      }
+    }
+  }
+}
+`} language="json" />
+
+## mnemosyne_update
+
+<CodeBlock code={`{
+  "name": "mnemosyne_update",
+  "description": "Update an existing memory's content, importance, or veracity. Only the fields you provide will be changed.",
+  "parameters": {
+    "type": "object",
+    "required": ["memory_id"],
+    "properties": {
+      "memory_id": {
+        "type": "string",
+        "description": "The memory ID to update."
+      },
+      "content": {
+        "type": "string",
+        "description": "New content for the memory."
+      },
+      "importance": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1,
+        "description": "Updated importance score."
+      },
+      "veracity": {
+        "type": "string",
+        "enum": ["stated", "inferred", "tool", "imported", "unknown"],
+        "description": "Update confidence level. Use when promoting an inference to a stated fact. (v2.3)"
+      }
+    }
   }
 }
 `} language="json" />
@@ -165,6 +244,8 @@ Complete JSON Schema for Mnemosyne tools exposed to agents.
 | Consolidate memories | `mnemosyne_sleep` | End-of-session cleanup |
 | Check system health | `mnemosyne_stats` | Memory counts, DB size |
 | Remove bad data | `mnemosyne_invalidate` | Outdated information |
+| Permanently delete memory | `mnemosyne_forget` | Wrong information, retractions |
+| Update existing memory | `mnemosyne_update` | Correct facts, promote inferences |
 | Store relational facts | `mnemosyne_triple_add` | Team structure, dependencies |
 | Precise lookup | `mnemosyne_triple_query` | "Who reports to Carol?" |
 

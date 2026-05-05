@@ -12,6 +12,9 @@ The main interface for interacting with Mnemosyne's memory system.
     data_dir: str | None = None,
     session_id: str = "default",
     bank: str | None = None,
+    author_id: str | None = None,
+    author_type: str | None = None,
+    channel_id: str | None = None,
 ) -> Mnemosyne
 `} language="python" />
 
@@ -20,6 +23,9 @@ The main interface for interacting with Mnemosyne's memory system.
 | `data_dir` | `str \| None` | `None` | Root data directory. Defaults to `~/.hermes/mnemosyne/data/` |
 | `session_id` | `str` | `"default"` | Session identifier for scoping working memories |
 | `bank` | `str \| None` | `None` | Named memory bank. Each bank gets its own SQLite file under `data_dir/banks/<name>/` |
+| `author_id` | `str \| None` | `None` | Author identifier for multi-agent identity (v2.1) |
+| `author_type` | `str \| None` | `None` | Author category: `"human"`, `"agent"`, or `"system"` (v2.1) |
+| `channel_id` | `str \| None` | `None` | Channel for cross-session shared memory (v2.1) |
 
 <CodeBlock code={`from mnemosyne import Mnemosyne
 
@@ -49,6 +55,7 @@ Store a memory in Working Memory. Returns the generated memory ID.
     scope: str = "session",
     extract_entities: bool = False,
     extract: bool = False,
+    veracity: str = "unknown",
 ) -> str
 `} language="python" />
 
@@ -62,6 +69,7 @@ Store a memory in Working Memory. Returns the generated memory ID.
 | `scope` | `str` | `"session"` | Scope for the memory: `"session"` or `"global"` |
 | `extract_entities` | `bool` | `False` | If `True`, extract named entities (mentions, hashtags, proper nouns) via regex + Levenshtein matching and store as TripleStore triples |
 | `extract` | `bool` | `False` | If `True`, extract 2–5 factual statements via LLM and store as TripleStore triples |
+| `veracity` | `str` | `"unknown"` | Confidence level: `"stated"`, `"inferred"`, `"tool"`, `"imported"`, `"unknown"` (v2.3) |
 
 <CodeBlock code={`from mnemosyne import Mnemosyne
 
@@ -94,6 +102,10 @@ Retrieve relevant memories using hybrid vector + full-text search with configura
     vec_weight: float = 50.0,
     fts_weight: float = 30.0,
     importance_weight: float = 20.0,
+    author_id: str | None = None,
+    author_type: str | None = None,
+    channel_id: str | None = None,
+    veracity: str | None = None,
 ) -> list[dict]
 `} language="python" />
 
@@ -107,6 +119,10 @@ Retrieve relevant memories using hybrid vector + full-text search with configura
 | `vec_weight` | `float` | `50.0` | Weight for vector similarity score |
 | `fts_weight` | `float` | `30.0` | Weight for FTS5 text relevance score |
 | `importance_weight` | `float` | `20.0` | Weight for the memory's importance rating |
+| `author_id` | `str \| None` | `None` | Filter by specific author (v2.1) |
+| `author_type` | `str \| None` | `None` | Filter by author category: `"human"`, `"agent"`, `"system"` (v2.1) |
+| `channel_id` | `str \| None` | `None` | Filter by channel for cross-session recall (v2.1) |
+| `veracity` | `str \| None` | `None` | Filter by confidence level: `"stated"`, `"inferred"`, `"tool"`, `"imported"`, `"unknown"` (v2.3) |
 
 Each result dict includes keys like `id`, `content`, `source`, `importance`, `timestamp`, `score`, and `tier` (indicating working vs. episodic).
 
@@ -176,6 +192,33 @@ Run the sleep/consolidation cycle — groups working memories by source, summari
 | `dry_run` | `bool` | `False` | If `True`, reports what would happen without making changes |
 
 Returns a summary dict of consolidation actions performed.
+
+### degrade_episodic
+
+Run the tiered degradation cycle that compresses old episodic memories.
+
+<CodeBlock code={`degrade_episodic(dry_run: bool = False) -> dict
+`} language="python" />
+
+Returns a dict with `tier1_to_tier2` and `tier2_to_tier3` counts. Called automatically during `sleep()`. Configure via `MNEMOSYNE_TIER2_DAYS`, `MNEMOSYNE_TIER3_DAYS`, and tier weight env vars. (v2.3)
+
+### get_contaminated
+
+Surface non-stated memories for audit and review.
+
+<CodeBlock code={`get_contaminated(limit: int = 50, min_importance: float = 0.0) -> list[dict]
+`} language="python" />
+
+Returns episodic memories where veracity is NOT `"stated"`: everything inferred, tool-generated, imported, or unknown. Sorted by importance descending. Use for periodic cleanup of AI-inferred memories. (v2.3)
+
+### sleep_all_sessions
+
+Run consolidation and degradation across all sessions (not just the current one).
+
+<CodeBlock code={`sleep_all_sessions(dry_run: bool = False) -> dict
+`} language="python" />
+
+Returns a dict with per-session consolidation and degradation summaries. (v2.3)
 
 ## V2 Properties
 
