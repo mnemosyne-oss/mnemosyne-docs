@@ -1,3 +1,14 @@
+export const metadata = {
+  title: 'Sleep Consolidation — Automatic Memory Optimization',
+  description: 'Learn how Mnemosyne\'s sleep consolidation process promotes aged Working Memory entries to Episodic Memory via grouping, summarization, and eviction.',
+  openGraph: {
+    images: ['/og-image.svg'],
+  },
+  twitter: {
+    card: 'summary_large_image',
+  },
+};
+
 # Sleep Consolidation
 
 Mnemosyne's background process that promotes aged Working Memory entries to Episodic Memory, inspired by human sleep's role in memory consolidation.
@@ -22,16 +33,14 @@ Consolidation triggers on:
 
 ## Consolidation Pipeline
 
-<MermaidDiagram>
-
+<MermaidDiagram chart={`
 flowchart LR
     A[Working Memory] -->|age > TTL/2| B[Candidate Selection]
     B -->|group by source| C[Group Entries]
     C -->|summarize| D[LLM or AAAK]
     D -->|promote| E[Episodic Memory]
     C -->|evict originals| F[Delete from Working]
-
-</MermaidDiagram>
+`} />
 
 ### Step-by-Step
 
@@ -55,7 +64,7 @@ flowchart LR
 
 Consolidation events are logged to the `consolidation_log` table:
 
-|| Column | Type | Description |
+| Column | Type | Description |
 |--------|------|-------------|
 | `id` | INTEGER | Auto-increment primary key |
 | `session_id` | TEXT | Session that was consolidated |

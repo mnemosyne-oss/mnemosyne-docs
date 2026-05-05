@@ -4,7 +4,7 @@ BEAM (Biological-inspired Episodic-Associative Memory) is the core architecture 
 
 ## The Four Memory Tiers
 
-<MermaidDiagram>
+<MermaidDiagram chart={`
 
 graph TB
     subgraph Input["Agent Input"]
@@ -16,7 +16,7 @@ graph TB
     subgraph BEAM["BEAM Memory System"]
         WM[Working Memory
         Short-term, up to 10K entries
-        {"<"}100ms access]
+        <100ms access]
         EM[Episodic Memory
         Long-term experiences
         Hybrid retrieval]
@@ -39,7 +39,7 @@ graph TB
     style SM fill:#f0fdf4,stroke:#16a34a
     style SP fill:#faf5ff,stroke:#9333ea
 
-</MermaidDiagram>
+`} />
 
 ### Working Memory
 
@@ -83,7 +83,7 @@ A temporary workspace for reasoning, planning, and intermediate computations. An
 
 ## Data Flow
 
-<MermaidDiagram>
+<MermaidDiagram chart={`
 
 sequenceDiagram
     participant Agent
@@ -103,7 +103,7 @@ sequenceDiagram
     Agent->>SM: query_triples(s, p, o)
     SM->>Agent: return triples
 
-</MermaidDiagram>
+`} />
 
 ## Sleep Consolidation
 

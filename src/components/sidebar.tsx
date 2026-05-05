@@ -122,6 +122,12 @@ const navigation: NavSection[] = [
     icon: <Scale size={16} />,
     items: [
       { title: "vs Hindsight", href: "/comparisons/hindsight", badge: "new" },
+      { title: "vs Mem0", href: "/comparisons/mem0", badge: "new" },
+      { title: "vs Letta", href: "/comparisons/letta", badge: "new" },
+      { title: "vs Zep", href: "/comparisons/zep", badge: "new" },
+      { title: "vs Cognee", href: "/comparisons/cognee", badge: "new" },
+      { title: "vs Honcho", href: "/comparisons/honcho", badge: "new" },
+      { title: "vs SuperMemory", href: "/comparisons/supermemory", badge: "new" },
     ],
   },
   {

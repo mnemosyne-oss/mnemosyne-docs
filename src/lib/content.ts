@@ -58,6 +58,13 @@ export const pageOrder: string[] = [
   "use-cases/multi-agent",
   "use-cases/long-running",
   "use-cases/knowledge-base",
+  "comparisons/hindsight",
+  "comparisons/mem0",
+  "comparisons/letta",
+  "comparisons/zep",
+  "comparisons/cognee",
+  "comparisons/honcho",
+  "comparisons/supermemory",
   "migration/overview",
   "migration/from-mem0",
   "migration/from-letta",
@@ -74,6 +81,7 @@ const sectionMap: Record<string, string> = {
   operations: "Operations",
   security: "Security",
   "use-cases": "Use Cases",
+  "comparisons": "Comparisons",
   "migration": "Migration",
 };
 

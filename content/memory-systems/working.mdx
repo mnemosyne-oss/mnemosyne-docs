@@ -1,10 +1,21 @@
+export const metadata = {
+  title: 'Working Memory — Short-Term Agent Context Buffer',
+  description: 'Explore Mnemosyne\'s Working Memory tier: a short-term, high-speed buffer for the most recent agent observations, conversations, and tool results.',
+  openGraph: {
+    images: ['/og-image.svg'],
+  },
+  twitter: {
+    card: 'summary_large_image',
+  },
+};
+
 # Working Memory
 
 The agent's immediate context — recent observations, active conversations, and current tool results. Fastest access, limited capacity, and subject to eviction.
 
 ## Schema
 
-|| Column | Type | Description |
+| Column | Type | Description |
 |--------|------|-------------|
 | `id` | TEXT | UUIDv4 primary key |
 | `content` | TEXT | Raw memory content |
@@ -45,16 +56,14 @@ When Working Memory reaches capacity, entries are evicted by a composite score:
 
 ## Consolidation Path
 
-<MermaidDiagram>
-
+<MermaidDiagram chart={`
 flowchart LR
     A[New Entry] -->|insert| WM[Working Memory]
     WM -->|TTL/2 age trigger| C{Consolidation}
     C -->|group by source| S[Summarize via LLM/AAAK]
     S -->|promote| EM[Episodic Memory]
     C -->|evict originals| DEL[Evicted]
-
-</MermaidDiagram>
+`} />
 
 ## API Reference
 

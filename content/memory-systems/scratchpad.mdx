@@ -1,3 +1,14 @@
+export const metadata = {
+  title: 'Scratchpad Memory — Temporary Agent Workspace',
+  description: 'Understand the Scratchpad tier in Mnemosyne: a temporary workspace for intermediate computations, planning steps, and transient data that agents need during tasks.',
+  openGraph: {
+    images: ['/og-image.svg'],
+  },
+  twitter: {
+    card: 'summary_large_image',
+  },
+};
+
 # Scratchpad
 
 A temporary workspace for reasoning, planning, and intermediate computations. Session-bound and cleared on agent restart.
@@ -23,7 +34,7 @@ mem.scratchpad_clear()
 
 ## Schema
 
-|| Column | Type | Description |
+| Column | Type | Description |
 |--------|------|-------------|
 | `id` | TEXT | UUIDv4 primary key |
 | `content` | TEXT | Scratchpad entry content |
@@ -33,15 +44,13 @@ mem.scratchpad_clear()
 
 ## Lifecycle
 
-<MermaidDiagram>
-
+<MermaidDiagram chart={`
 flowchart LR
     A[Agent Start] -->|create| SP[Scratchpad]
     SP -->|write/read| SP
     SP -->|clear| DEL[Discard]
     A -->|shutdown| DEL
-
-</MermaidDiagram>
+`} />
 
 ## Configuration
 

@@ -1,11 +1,25 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useTheme } from "next-themes";
 
 interface MermaidDiagramProps {
   chart?: string;
-  children?: string;
+  children?: ReactNode;
+}
+
+/** Extract raw text from React children that may be elements (e.g. MDX paragraphs). */
+function extractChildrenText(children: ReactNode): string {
+  if (typeof children === "string") return children;
+  if (Array.isArray(children)) {
+    return children.map(extractChildrenText).join("\n");
+  }
+  if (children && typeof children === "object" && "props" in children) {
+    const props = children.props as Record<string, unknown>;
+    // Recursively extract from children prop (handles <p>, <span>, etc.)
+    if (props.children != null) return extractChildrenText(props.children as ReactNode);
+  }
+  return "";
 }
 
 export function MermaidDiagram({ chart, children }: MermaidDiagramProps) {
@@ -14,7 +28,7 @@ export function MermaidDiagram({ chart, children }: MermaidDiagramProps) {
   const [mounted, setMounted] = useState(false);
   const { resolvedTheme } = useTheme();
 
-  const mermaidSource = chart || children || "";
+  const mermaidSource = chart || extractChildrenText(children) || "";
 
   useEffect(() => {
     setMounted(true);

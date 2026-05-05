@@ -1,3 +1,14 @@
+export const metadata = {
+  title: 'Episodic Memory — Time-Stamped Agent Experiences',
+  description: 'Learn about Episodic Memory in Mnemosyne: time-stamped sequences of events and experiences that let agents recall what happened, when, and in what order.',
+  openGraph: {
+    images: ['/og-image.svg'],
+  },
+  twitter: {
+    card: 'summary_large_image',
+  },
+};
+
 # Episodic Memory
 
 Long-term storage for experiences, conversations, and events. Organized chronologically with rich metadata and hybrid retrieval. Entries are promoted from Working Memory during sleep consolidation.
@@ -6,7 +17,7 @@ Long-term storage for experiences, conversations, and events. Organized chronolo
 
 Episodic Memory uses an auto-incrementing `rowid` with a unique text `id`:
 
-|| Column | Type | Description |
+| Column | Type | Description |
 |--------|------|-------------|
 | `rowid` | INTEGER | Auto-increment primary key |
 | `id` | TEXT | UUIDv4 unique identifier |
@@ -57,16 +68,14 @@ Retrieval combines text and vector signals:
 
 Episodic entries are created during sleep consolidation, not directly by the agent:
 
-<MermaidDiagram>
-
+<MermaidDiagram chart={`
 flowchart TD
     WM[Working Memory] -->|age > TTL/2| C{Consolidation}
     C -->|group by source| G[Group entries]
     G -->|summarize| S[LLM or AAAK summary]
     S -->|promote| EM[Episodic Memory]
     C -->|evict originals| DEL[Evict from Working]
-
-</MermaidDiagram>
+`} />
 
 The `summary_of` column in the episodic record tracks which Working Memory entries were consolidated to produce it.
 
