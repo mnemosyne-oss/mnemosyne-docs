@@ -149,6 +149,22 @@ Named banks provide isolated SQLite databases per project or context. Create via
 
 A plugin base class (`MnemosynePlugin`) with 4 lifecycle hooks. Built-in plugins: `LoggingPlugin`, `MetricsPlugin`, `FilterPlugin`. Discovers plugins from `~/.hermes/mnemosyne/plugins/`.
 
+### Tiered Degradation (v2.3)
+
+Three-tier degradation for long-term memory health. Memories transition from Tier 1 (full detail, 0-30d) → Tier 2 (LLM-compressed summary, 30-180d) → Tier 3 (entity-extracted signal, 180d+) automatically during `sleep()`. Cold memories still exist and are queryable but need stronger semantic matches to surface. Zero maintenance, fully configurable via env vars.
+
+### Memory Confidence / Veracity (v2.3)
+
+Every memory carries a `veracity` field: `stated`, `inferred`, `tool`, `imported`, or `unknown`. Recall applies veracity weighting so direct user statements outrank AI inferences. `get_contaminated()` surfaces non-stated memories for periodic review.
+
+### Multi-Agent Identity (v2.1)
+
+New `author_id`, `author_type`, `channel_id` columns on both working and episodic memory. Agents in different sessions can share a channel and recall each other's memories. `recall()` accepts identity filters for fine-grained multi-agent coordination.
+
+### Cross-Provider Importers (v2.2)
+
+One-command migration from Mem0, Letta, Zep, Cognee, Honcho, and SuperMemory. Each importer handles extraction, field mapping, and identity preservation.
+
 ## Design Philosophy
 
 Mnemosyne's architecture prioritizes:

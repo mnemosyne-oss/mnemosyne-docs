@@ -17,6 +17,8 @@ const searchIndex: SearchResult[] = [
   { title: "Configuration", href: "/getting-started/configuration", excerpt: "Environment variables and setup options", section: "Getting Started" },
   { title: "BEAM Architecture", href: "/architecture/beam-overview", excerpt: "Biological-inspired memory architecture", section: "Architecture" },
   { title: "System Architecture", href: "/architecture/system-design", excerpt: "High-level system design and data flow", section: "Architecture" },
+  { title: "Tiered Degradation", href: "/architecture/tiered-degradation", excerpt: "Three-tier memory lifecycle from hot to cold with automatic compression", section: "Architecture" },
+  { title: "Veracity Signal", href: "/architecture/veracity-signal", excerpt: "Track memory trustworthiness with confidence levels and audit inferred content", section: "Architecture" },
   { title: "Working Memory", href: "/memory-systems/working", excerpt: "Short-term agent context and conversation history", section: "Memory Systems" },
   { title: "Episodic Memory", href: "/memory-systems/episodic", excerpt: "Long-term experience storage and retrieval", section: "Memory Systems" },
   { title: "Semantic Memory", href: "/memory-systems/semantic", excerpt: "Structured knowledge and facts", section: "Memory Systems" },

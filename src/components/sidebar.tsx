@@ -39,6 +39,8 @@ const navigation: NavSection[] = [
       { title: "Data Flow", href: "/architecture/data-flow" },
       { title: "Sleep Consolidation", href: "/architecture/sleep-consolidation" },
       { title: "AAAK Compression", href: "/architecture/aaak-compression" },
+      { title: "Tiered Degradation", href: "/architecture/tiered-degradation", badge: "new" },
+      { title: "Veracity Signal", href: "/architecture/veracity-signal", badge: "new" },
     ],
   },
   {

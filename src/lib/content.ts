@@ -24,6 +24,8 @@ export const pageOrder: string[] = [
   "architecture/data-flow",
   "architecture/sleep-consolidation",
   "architecture/aaak-compression",
+  "architecture/tiered-degradation",
+  "architecture/veracity-signal",
   "memory-systems/working",
   "memory-systems/episodic",
   "memory-systems/semantic",
