@@ -12,6 +12,10 @@ Mnemosyne is configured via environment variables or a `mnemosyne.yaml` file.
 | `MNEMOSYNE_MAX_WORKING` | `1000` | Working memory entry limit |
 | `MNEMOSYNE_CONSOLIDATION_INTERVAL` | `3600` | Sleep cycle interval (seconds) |
 | `MNEMOSYNE_ENCRYPTION_KEY` | — | AES-256 encryption key (hex) |
+| `MNEMOSYNE_HOST_LLM_ENABLED` | `false` | Route LLM calls through Hermes' authenticated auxiliary client |
+| `MNEMOSYNE_HOST_LLM_PROVIDER` | — | Optional provider override (e.g. `openai-codex`) |
+| `MNEMOSYNE_HOST_LLM_MODEL` | — | Optional model override (e.g. `gpt-5.1-mini`) |
+| `MNEMOSYNE_HOST_LLM_N_CTX` | `32000` | Prompt context budget for host LLM path |
 
 ## YAML Configuration
 

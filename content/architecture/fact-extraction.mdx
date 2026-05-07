@@ -11,12 +11,17 @@ Mnemosyne v2 can extract structured facts from memory content using an LLM, stor
 
 ## Fallback Chain
 
-1. **Remote OpenAI-compatible API** - fastest, best quality
-2. **Local ctransformers GGUF** - offline, no API key
-3. **Skip** - graceful degradation, never raises
+1. **Host LLM backend** (Hermes auxiliary client) — when `MNEMOSYNE_HOST_LLM_ENABLED=true` and running inside Hermes. Uses authenticated provider including OAuth-backed subscriptions like ChatGPT/Codex.
+2. **Remote OpenAI-compatible API** — fastest, best quality
+3. **Local ctransformers GGUF** — offline, no API key
+4. **Skip** — graceful degradation, never raises
 
 <Callout type="info">
 Fact extraction is **opt-in**. Pass `extract=True` to `remember()`.
+</Callout>
+
+<Callout type="warning" title="Determinism">
+Fact extraction uses `temperature=0.0` for deterministic output. Re-ingesting the same content produces identical facts, avoiding near-duplicate writes to the facts table.
 </Callout>
 
 ## Usage
