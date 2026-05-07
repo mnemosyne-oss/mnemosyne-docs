@@ -20,14 +20,22 @@ The only runtime parameters are passed directly to the constructor:
 <CodeBlock code={`from mnemosyne import Mnemosyne
 
 mem = Mnemosyne(
-    session_id="my-agent",   # Scope working memories to this session
-    db_path="./data/mem.db", # Custom database path (optional)
-)
-`} language="python" />
+    session_id="my-agent",        # Scope working memories to this session
+    data_dir="./my-data",         # Custom data directory (optional)
+    bank="work",                  # Named memory bank (optional)
+    author_id="alice",            # Multi-agent identity (v2.1)
+    author_type="human",          # "human", "agent", or "system" (v2.1)
+    channel_id="team-slack",      # Cross-session channel (v2.1)
+)`} language="python" />
 
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
 | `session_id` | `str` | `"default"` | Session identifier for scoping working memories |
+| `data_dir` | `str \| None` | `None` | Root data directory (default: `~/.hermes/mnemosyne/data/`) |
+| `bank` | `str \| None` | `None` | Named memory bank — each bank gets its own isolated SQLite file under `data_dir/banks/` |
+| `author_id` | `str \| None` | `None` | Author identifier for multi-agent memory scoping (v2.1) |
+| `author_type` | `str \| None` | `None` | Author category: `"human"`, `"agent"`, or `"system"` (v2.1) |
+| `channel_id` | `str \| None` | `None` | Channel identifier for cross-session shared memory (v2.1) |
 | `db_path` | `str \| None` | `None` | Path to the SQLite database file |
 
 ## Environment Variables
@@ -43,6 +51,37 @@ mem = Mnemosyne(
 | `MNEMOSYNE_SLEEP_BATCH` | `5000` | Number of items to process per sleep cycle |
 | `MNEMOSYNE_SP_MAX` | `1000` | Maximum scratchpad entries |
 | `MNEMOSYNE_RECENCY_HALFLIFE` | `168.0` | Recency decay half-life in hours (default = 1 week) |
+
+### Multi-Agent Identity (v2.1)
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `MNEMOSYNE_AUTHOR_ID` | — | Default author identifier for multi-agent sessions |
+| `MNEMOSYNE_AUTHOR_TYPE` | — | Default author type: `"human"`, `"agent"`, `"system"` |
+| `MNEMOSYNE_CHANNEL_ID` | — | Default channel for cross-session shared memory |
+
+### Tiered Degradation (v2.3)
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `MNEMOSYNE_TIER2_DAYS` | `30` | Days before Tier 1 memories degrade to Tier 2 (LLM-compressed) |
+| `MNEMOSYNE_TIER3_DAYS` | `180` | Days before Tier 2 memories degrade to Tier 3 (entity-extracted signal) |
+| `MNEMOSYNE_TIER1_WEIGHT` | `1.0` | Recall score multiplier for fresh Tier 1 memories |
+| `MNEMOSYNE_TIER2_WEIGHT` | `0.5` | Recall score multiplier for compressed Tier 2 memories |
+| `MNEMOSYNE_TIER3_WEIGHT` | `0.25` | Recall score multiplier for cold Tier 3 memories |
+| `MNEMOSYNE_DEGRADE_BATCH` | `100` | Maximum memories to process per degradation cycle |
+| `MNEMOSYNE_SMART_COMPRESS` | `1` | Enable entity-aware sentence extraction for Tier 3 (0 or 1) |
+| `MNEMOSYNE_TIER3_MAX_CHARS` | `300` | Maximum characters for Tier 3 signal extraction |
+
+### Veracity / Memory Confidence (v2.3)
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `MNEMOSYNE_STATED_WEIGHT` | `1.0` | Recall multiplier for explicitly-stated memories |
+| `MNEMOSYNE_INFERRED_WEIGHT` | `0.7` | Recall multiplier for AI-inferred memories |
+| `MNEMOSYNE_TOOL_WEIGHT` | `0.5` | Recall multiplier for tool-generated memories |
+| `MNEMOSYNE_IMPORTED_WEIGHT` | `0.6` | Recall multiplier for cross-provider imported memories |
+| `MNEMOSYNE_UNKNOWN_WEIGHT` | `0.8` | Recall multiplier for legacy/uncategorized memories |
 
 ### Embeddings
 

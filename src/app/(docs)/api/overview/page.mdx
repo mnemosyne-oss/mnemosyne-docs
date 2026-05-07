@@ -1,6 +1,6 @@
 export const metadata = {
   title: 'API Overview — Mnemosyne Integration Interfaces',
-  description: 'Overview of all Mnemosyne API interfaces: Python SDK, Hermes plugin, and legacy REST API. Choose the right integration method for your AI agent project.',
+  description: 'Overview of all Mnemosyne API interfaces: Python SDK, Hermes plugin, MCP server, and legacy REST API. Choose the right integration method for your AI agent project.',
   openGraph: {
     images: ['/og-image.svg'],
   },
@@ -11,7 +11,7 @@ export const metadata = {
 
 # API Overview
 
-Mnemosyne exposes multiple interfaces: Python SDK, Hermes plugin tools, and a legacy REST API.
+Mnemosyne v2.3 exposes four interfaces: Python SDK, Hermes plugin tools, MCP server, and a legacy REST API.
 
 ## Interface Comparison
 
@@ -19,51 +19,82 @@ Mnemosyne exposes multiple interfaces: Python SDK, Hermes plugin tools, and a le
 |-----------|----------|---------|-------|
 | Python SDK | Direct integration, scripts | Lowest | `pip install` |
 | Hermes Plugin | Agent frameworks | Low | Plugin config |
+| MCP Server | Claude Desktop, Cursor, MCP clients | Low | `mnemosyne mcp` |
 | REST API (Legacy) | Remote services, microservices | Medium | `python -m mnemosyne` |
 
 ## Python SDK
 
-The primary interface for Python applications:
+The primary interface. v2.3 supports multi-agent identity, tiered degradation, veracity signals, and cross-provider importers.
 
-<CodeBlock code={`from mnemosyne import Memory
+```python
+from mnemosyne import Mnemosyne
 
-mem = Memory()
-mem.remember("User prefers dark mode.")
-results = mem.recall("user preferences")
-`} language="python" />
+mem = Mnemosyne(session_id="agent-42", author_id="alice", author_type="human")
+
+# Store with veracity confidence
+mem.remember("PostgreSQL migration completed.", veracity="stated")
+
+# Multi-agent channel recall
+results = mem.recall("migration status", channel_id="team-db")
+
+# Tiered degradation runs automatically
+mem.sleep()  # consolidates + degrades old memories
+```
 
 ## Hermes Plugin
 
-First-class integration with the Hermes agent framework:
+First-class Hermes integration with 17 tools: `mnemosyne_remember`, `mnemosyne_recall`, `mnemosyne_stats`, `mnemosyne_sleep`, `mnemosyne_invalidate`, `mnemosyne_triple_add`, `mnemosyne_triple_query`, and more.
 
-<CodeBlock code={`# hermes.yaml
+```yaml
+# hermes.yaml
 plugins:
   - name: mnemosyne-memory
     source: pip
     config:
-      db_path: ./memory.db
-      embedding_model: text-embedding-3-small
+      data_dir: ~/.hermes/mnemosyne/data
       auto_context: true
       context_injection:
         enabled: true
         max_memories: 5
         min_relevance: 0.7
-`} language="yaml" />
+```
+
+## MCP Server
+
+Connect from Claude Desktop, Cursor, or any MCP client:
+
+```bash
+# Add to claude_desktop_config.json
+{
+  "mcpServers": {
+    "mnemosyne": {
+      "command": "mnemosyne",
+      "args": ["mcp"]
+    }
+  }
+}
+```
+
+For SSE transport (web clients):
+
+```bash
+mnemosyne mcp --transport sse --port 8080
+```
 
 ## REST API (Legacy)
 
-The legacy FastAPI server embedded in `mnemosyne/cli.py`:
+The FastAPI server embedded in `mnemosyne/cli.py`. Port 8090. Endpoints: `POST /store`, `GET /recall`, `GET /stats`, `DELETE /forget/{id}`, `PUT /update/{id}`, `POST /consolidate`.
 
-<CodeBlock code={`python -m mnemosyne --port 8090
-`} language="bash" />
+```bash
+python -m mnemosyne --port 8090
+```
 
-Example request:
-
-<CodeBlock code={`curl -X POST http://localhost:8090/store \
+```bash
+curl -X POST http://localhost:8090/store \
   -H "Content-Type: application/json" \
-  -d '{"content": "User prefers dark mode.", "tags": ["preferences"]}'
-`} language="bash" />
+  -d '{"content": "User prefers dark mode."}'
+```
 
 <Callout type="info" title="SDK Version Compatibility">
-Python SDK, Hermes plugin, and REST API share the same core version. Ensure all components use matching versions for full compatibility.
+Python SDK, Hermes plugin, MCP server, and REST API share the same core version. Use matching versions across all components.
 </Callout>

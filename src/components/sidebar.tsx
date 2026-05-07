@@ -196,11 +196,8 @@ export function Sidebar({ mobile = false, onClose }: { mobile?: boolean; onClose
   return (
     <div className={`${mobile ? "" : "w-64 shrink-0"} h-full flex flex-col`}>
       <div className="flex items-center justify-between px-4 py-3 border-b border-border-warm dark:border-charcoal-light shrink-0">
-        <Link href="/" className="flex items-center gap-2 font-serif font-semibold text-charcoal dark:text-parchment">
-          <div className="w-7 h-7 rounded-lg bg-charcoal dark:bg-parchment flex items-center justify-center text-cream dark:text-midnight text-sm font-bold">
-            M
-          </div>
-          Mnemosyne
+        <Link href="/" className="flex items-center gap-2">
+          <img src="/logo.jpg" alt="Mnemosyne" className="w-7 h-7 rounded-lg object-cover" />
         </Link>
         {mobile && onClose && (
           <button onClick={onClose} className="text-warm-gray dark:text-warm-gray-muted hover:text-charcoal dark:hover:text-parchment">

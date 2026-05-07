@@ -18,22 +18,31 @@ A hands-on walkthrough of Mnemosyne's core operations.
 <CodeBlock code={`from mnemosyne import Mnemosyne
 
 mem = Mnemosyne()
-# Or with a named session:
-mem = Mnemosyne(session_id="agent-42")
+// Or with a named session and multi-agent identity (v2.1):
+mem = Mnemosyne(
+    session_id="agent-42",
+    author_id="alice",
+    author_type="human",
+    channel_id="team-alpha",
+)
 `} language="python" />
 
 ## 2. Store Information
 
-<CodeBlock code={`# Simple memory
+<CodeBlock code={`// Simple memory
 mem.remember("Alice is a backend engineer who prefers Go over Python.")
 
-# With metadata and importance
+// With metadata, importance, and veracity confidence (v2.3)
 mem.remember(
     content="Project deadline moved to Friday.",
     source="slack",
     importance=0.8,
     metadata={"project": "alpha"},
+    veracity="stated",  // explicitly-stated fact
 )
+
+// With entity extraction — captures "PostgreSQL" as a triple
+mem.remember("We decided to use PostgreSQL.", extract_entities=True)
 `} language="python" />
 
 ## 3. Recall Information
