@@ -157,8 +157,9 @@ memory:
 
     # Pattern filtering
     ignore_patterns:              # Content patterns to skip during remember
-      - "^\s*$"                   # Empty strings
-      - "^[!@#\$%^&*()\-_=+\[\]{}|;:',.<>?/`~]+$"  # Punctuation-only
+      - "be ACTIVE"                # Skill refinement boilerplate
+      - "nothing to change"        # No-op responses
+      - "skill.*refined"           # Wildcard match
 
     # Local LLM (for sleep summarization)
     llm:
