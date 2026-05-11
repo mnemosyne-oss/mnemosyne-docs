@@ -21,11 +21,10 @@ stream = mem.stream
 mem.remember("test memory")
 
 # Pull via callback
-stream.on_event(lambda event: print(f"Event: {event.type}"))
+stream.on(lambda event: print(f"Event: {event.type}"))
 
 # Pull via iterator
-for event in stream:
-    process(event)
+stream.listen()
 `} language="python" />
 
 ## DeltaSync
@@ -36,11 +35,11 @@ Checkpoint-based incremental synchronization.
 mem_b = Mnemosyne(session_id="agent-b")
 
 # Compute and apply delta
-delta = mem_a.delta_sync.compute_delta()
+delta = mem_a.delta_sync.compute_delta(peer_id="agent-b")
 mem_b.delta_sync.apply_delta(delta)
 
 # Bidirectional sync
-mem_a.delta_sync.sync_to(mem_b)
+mem_a.delta_sync.sync_to("agent-b")
 mem_a.delta_sync.sync_from(mem_b)
 `} language="python" />
 

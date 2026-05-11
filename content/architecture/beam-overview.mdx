@@ -1,8 +1,8 @@
 # BEAM Architecture Overview
 
-BEAM (Biological-inspired Episodic-Associative Memory) is the core architecture powering Mnemosyne. It models human memory organization with four distinct tiers, each optimized for different retention and retrieval patterns.
+BEAM (Biological-inspired Episodic-Associative Memory) is the core architecture powering Mnemosyne. It models human memory organization with three tiers plus TripleStore, each optimized for different retention and retrieval patterns.
 
-## The Four Memory Tiers
+## The Three Memory Tiers + TripleStore
 
 <MermaidDiagram chart={`
 
@@ -20,9 +20,6 @@ graph TB
         EM[Episodic Memory
         Long-term experiences
         Hybrid retrieval]
-        SM[Semantic Memory
-        Structured facts
-        Subject-predicate-object triples]
         SP[Scratchpad
         Temporary workspace
         Up to 1K entries]
@@ -36,7 +33,6 @@ graph TB
 
     style WM fill:#e0f2fe,stroke:#0284c7
     style EM fill:#fef3c7,stroke:#d97706
-    style SM fill:#f0fdf4,stroke:#16a34a
     style SP fill:#faf5ff,stroke:#9333ea
 
 `} />
@@ -61,7 +57,7 @@ Long-term storage for experiences, conversations, and events. Organized chronolo
 - **Temporal decay**: Tunable via `temporal_weight` and `temporal_halflife` parameters on `recall()`
 - **Consolidation**: Promoted from Working Memory via `sleep()`
 
-### Semantic Memory
+### TripleStore (Knowledge Graph)
 
 Structured knowledge stored as subject-predicate-object triples. Managed by the separate `TripleStore` class (not part of the main `Mnemosyne` class).
 
@@ -90,7 +86,7 @@ sequenceDiagram
     participant WM as Working Memory
     participant SP as Scratchpad
     participant EM as Episodic Memory
-    participant SM as Semantic Memory (TripleStore)
+    participant SM as TripleStore (Knowledge Graph)
 
     Agent->>WM: remember(content)
     WM->>WM: store + index

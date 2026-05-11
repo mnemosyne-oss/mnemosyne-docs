@@ -14,15 +14,14 @@ graph LR
 
     subgraph API["API Layer"]
         P[Python SDK]
-        R[REST API]
         T[Tool Schema]
     end
 
     subgraph Core["Core Engine"]
-        M[Memory Manager]
-        R1[Retrieval Engine]
-        S[Sleep Consolidator]
-        I[Index Manager]
+        M[Mnemosyne class]
+        R1[BeamMemory]
+        S[Sleep]
+        I[SQLite + sqlite-vec + FTS5]
     end
 
     subgraph Storage["Storage Layer"]
@@ -34,7 +33,6 @@ graph LR
     A --> P
     H --> T
     P --> M
-    R --> M
     T --> M
     M --> R1
     M --> S
@@ -51,19 +49,19 @@ graph LR
 
 ## Core Components
 
-### Memory Manager
+### Mnemosyne class
 
 Central orchestrator handling all CRUD operations. Routes operations to appropriate memory tiers and manages cross-tier consistency.
 
-### Retrieval Engine
+### BeamMemory
 
-Hybrid search coordinator. Dispatches queries to vector and text indices, then fuses results using a fixed ranking formula.
+Hybrid search coordinator. Dispatches queries to vector and text indices, then fuses results using configurable scoring weights.
 
-### Sleep Consolidator
+### Sleep
 
 On-demand consolidator triggered by calling `sleep()`. Groups older Working Memory entries by source, summarizes via LLM or AAAK, promotes to Episodic Memory, and evicts the originals.
 
-### Index Manager
+### SQLite + sqlite-vec + FTS5
 
 Maintains all database indices: vector embeddings (via `sqlite-vec`, int8 quantized 384-dim vectors) and FTS5 full-text search tables.
 
@@ -82,7 +80,7 @@ Mnemosyne is designed for single-node deployments:
 
 - **Working Memory**: SQLite-backed with configurable max (default 10,000 items, 24h TTL)
 - **Episodic Memory**: SQLite with sqlite-vec extension for vector search
-- **Semantic Memory**: Subject-predicate-object triples stored in SQLite (via separate `TripleStore` class)
+- **TripleStore (Knowledge Graph)**: Subject-predicate-object triples stored in SQLite (via separate `TripleStore` class)
 
 For multi-agent deployments, each agent maintains its own database instance. There is no built-in synchronization or shared-memory mechanism between instances.
 

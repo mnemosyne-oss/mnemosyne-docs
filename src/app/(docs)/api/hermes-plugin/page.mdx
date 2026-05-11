@@ -1,14 +1,3 @@
-export const metadata = {
-  title: 'Hermes Plugin — Mnemosyne Agent Framework Integration',
-  description: 'Guide to the Mnemosyne Hermes plugin: auto-context injection, seamless memory operations, and zero-config integration with the Hermes AI agent framework.',
-  openGraph: {
-    images: ['/og-image.svg'],
-  },
-  twitter: {
-    card: 'summary_large_image',
-  },
-};
-
 # Hermes Plugin
 
 First-class integration with the Hermes agent framework.
@@ -66,10 +55,10 @@ Mnemosyne registers the following Hermes hooks:
 
 | Hook | Timing | Action |
 |------|--------|--------|
-| `pre_prompt` | Before LLM call | Inject relevant memories |
-| `post_response` | After LLM call | Store conversation |
-| `tool_call` | After tool execution | Store tool results |
-| `shutdown` | Agent shutdown | Run sleep consolidation |
+| `pre_llm_call` | Before LLM call | Inject relevant memories |
+| `on_session_start` | Session start | Store conversation |
+| `post_tool_call` | After tool execution | Store tool results |
+| `on_session_end` | Agent shutdown | Run sleep consolidation |
 
 ## Tool Schema
 
@@ -271,16 +260,6 @@ Mnemosyne exposes these tools to agents:
   }
 }
 `} language="json" />
-
-## Configuration Options
-
-| Option | Default | Description |
-|--------|---------|-------------|
-| `auto_context` | `true` | Inject memories into prompts |
-| `context_injection.max_memories` | `5` | Memories per injection |
-| `context_injection.min_relevance` | `0.7` | Minimum score to include |
-| `store_conversations` | `true` | Save conversation history |
-| `store_tool_results` | `true` | Save tool outputs |
 
 ## Troubleshooting
 

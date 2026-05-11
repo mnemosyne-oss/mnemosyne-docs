@@ -1,53 +1,175 @@
 # Configuration
 
-Mnemosyne is configured via environment variables or a `mnemosyne.yaml` file.
+Mnemosyne is configured via environment variables and an optional Hermes `config.yaml` file. All settings have sensible defaults — you can start using it with zero configuration.
 
 ## Environment Variables
 
+### Storage & Memory Tiers
+
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `MNEMOSYNE_DB_PATH` | `./mnemosyne.db` | SQLite database file path |
-| `MNEMOSYNE_EMBEDDING_MODEL` | `text-embedding-3-small` | OpenAI embedding model |
-| `MNEMOSYNE_API_KEY` | — | OpenAI API key |
-| `MNEMOSYNE_MAX_WORKING` | `1000` | Working memory entry limit |
-| `MNEMOSYNE_CONSOLIDATION_INTERVAL` | `3600` | Sleep cycle interval (seconds) |
-| `MNEMOSYNE_ENCRYPTION_KEY` | — | AES-256 encryption key (hex) |
-| `MNEMOSYNE_HOST_LLM_ENABLED` | `false` | Route LLM calls through Hermes' authenticated auxiliary client |
-| `MNEMOSYNE_HOST_LLM_PROVIDER` | — | Optional provider override (e.g. `openai-codex`) |
-| `MNEMOSYNE_HOST_LLM_MODEL` | — | Optional model override (e.g. `gpt-5.1-mini`) |
+| `MNEMOSYNE_DATA_DIR` | `~/.hermes/mnemosyne/data` | Root data directory for SQLite database files |
+| `MNEMOSYNE_WM_MAX_ITEMS` | `10000` | Maximum items in working memory (per session) |
+| `MNEMOSYNE_WM_TTL_HOURS` | `24` | Working memory TTL in hours |
+| `MNEMOSYNE_EP_LIMIT` | `50000` | Episodic recall scan limit |
+| `MNEMOSYNE_SLEEP_BATCH` | `5000` | Sleep/consolidation batch size |
+| `MNEMOSYNE_SP_MAX` | `1000` | Maximum scratchpad entries |
+| `MNEMOSYNE_RECENCY_HALFLIFE` | `168` | Recency decay half-life in hours (default: 1 week) |
+
+### Vector & Retrieval Weights
+
+Mnemosyne uses hybrid scoring (vector + FTS5 + importance) for recall. These weights are configurable and auto-normalized per query.
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `MNEMOSYNE_VEC_TYPE` | `int8` | Vector quantization: `float32`, `int8`, or `bit` |
+| `MNEMOSYNE_VEC_WEIGHT` | `0.5` | Vector similarity weight in hybrid scoring |
+| `MNEMOSYNE_FTS_WEIGHT` | `0.3` | FTS5 text relevance weight |
+| `MNEMOSYNE_IMPORTANCE_WEIGHT` | `0.2` | Importance score weight |
+| `MNEMOSYNE_TEMPORAL_HALFLIFE_HOURS` | `24` | Temporal boost half-life in hours |
+| `MNEMOSYNE_BEAM_OPTIMIZATIONS` | `false` | Enable BEAM benchmark optimizations (OR semantics, larger scans) |
+
+### Tiered Degradation
+
+Episodic memories degrade through 3 tiers over time. Tier 1 is full content, Tier 2 is LLM-summarized, Tier 3 is entity-extracted compressed signal.
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `MNEMOSYNE_TIER2_DAYS` | `30` | Days before Tier 1 degrades to Tier 2 |
+| `MNEMOSYNE_TIER3_DAYS` | `180` | Days before Tier 2 degrades to Tier 3 |
+| `MNEMOSYNE_TIER1_WEIGHT` | `1.0` | Recall score multiplier for Tier 1 memories |
+| `MNEMOSYNE_TIER2_WEIGHT` | `0.5` | Recall score multiplier for Tier 2 memories |
+| `MNEMOSYNE_TIER3_WEIGHT` | `0.25` | Recall score multiplier for Tier 3 memories |
+| `MNEMOSYNE_DEGRADE_BATCH` | `100` | Max memories per degradation cycle |
+| `MNEMOSYNE_SMART_COMPRESS` | `true` | Enable entity-aware sentence extraction for Tier 3 |
+| `MNEMOSYNE_TIER3_MAX_CHARS` | `300` | Max characters for Tier 3 compressed content |
+
+### Veracity Weights
+
+Memories carry veracity labels that affect their recall weight. These multipliers tune how strongly each veracity level influences retrieval.
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `MNEMOSYNE_STATED_WEIGHT` | `1.0` | Recall multiplier for explicitly stated facts |
+| `MNEMOSYNE_INFERRED_WEIGHT` | `0.7` | Recall multiplier for inferred facts |
+| `MNEMOSYNE_TOOL_WEIGHT` | `0.5` | Recall multiplier for tool-generated output |
+| `MNEMOSYNE_IMPORTED_WEIGHT` | `0.6` | Recall multiplier for imported facts |
+| `MNEMOSYNE_UNKNOWN_WEIGHT` | `0.8` | Recall multiplier for uncategorized/legacy facts |
+
+### Embeddings
+
+Mnemosyne uses **BAAI/bge-small-en-v1.5** via fastembed (384 dimensions, local ONNX) for embedding generation. No external API key is needed.
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `MNEMOSYNE_EMBEDDING_MODEL` | `BAAI/bge-small-en-v1.5` | Embedding model (local fastembed or `openai/*` API) |
+
+### Local LLM (Sleep Summarization)
+
+The sleep/consolidation cycle can use a local or remote LLM to summarize grouped working memories before promoting them to episodic memory.
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `MNEMOSYNE_LLM_ENABLED` | `true` | Enable LLM-based summarization during sleep |
+| `MNEMOSYNE_LLM_BASE_URL` | — | OpenAI-compatible API base URL for remote LLM |
+| `MNEMOSYNE_LLM_API_KEY` | — | API key for the remote LLM endpoint |
+| `MNEMOSYNE_LLM_MODEL` | — | Model name for the remote LLM endpoint |
+| `MNEMOSYNE_LLM_MAX_TOKENS` | `256` | Max output tokens for generated summaries |
+| `MNEMOSYNE_LLM_N_THREADS` | `4` | CPU threads for local LLM inference |
+| `MNEMOSYNE_LLM_N_CTX` | `2048` | Context window size for the local LLM |
+| `MNEMOSYNE_LLM_REPO` | `TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF` | GGUF model repository |
+| `MNEMOSYNE_LLM_FILE` | `tinyllama-1.1b-chat-v1.0.Q4_K_M.gguf` | GGUF model filename |
+
+### Host LLM Backend (Hermes Integration)
+
+When running inside Hermes, the host agent can provide an LLM backend for consolidation — avoiding duplicate API calls.
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `MNEMOSYNE_HOST_LLM_ENABLED` | `false` | Route LLM calls through Hermes' authenticated client |
+| `MNEMOSYNE_HOST_LLM_PROVIDER` | — | Provider name override (e.g. `openai-codex`) |
+| `MNEMOSYNE_HOST_LLM_MODEL` | — | Model name override |
 | `MNEMOSYNE_HOST_LLM_N_CTX` | `32000` | Prompt context budget for host LLM path |
+
+### Multi-Agent Identity
+
+Filter memories by author and channel for multi-agent or multi-tenant deployments.
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `MNEMOSYNE_AUTHOR_ID` | — | Default author identifier |
+| `MNEMOSYNE_AUTHOR_TYPE` | — | Author category: `human`, `agent`, or `system` |
+| `MNEMOSYNE_CHANNEL_ID` | — | Default channel identifier for cross-session memory |
+
+### Auto-Sleep & SHMR
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `MNEMOSYNE_AUTO_SLEEP_ENABLED` | `false` | Enable auto-sleep after N turns |
+| `MNEMOSYNE_SHMR_BATCH_SIZE` | `50` | SHMR batch size for harmony cycles |
+| `MNEMOSYNE_SHMR_MAX_ITERATIONS` | `3` | SHMR max iterations per cluster |
+| `MNEMOSYNE_SHMR_SIMILARITY_THRESHOLD` | `0.70` | SHMR cosine similarity threshold |
+| `MNEMOSYNE_SHMR_HARMONY_THRESHOLD` | `0.60` | SHMR harmony score threshold |
+| `MNEMOSYNE_LOG_TOOLS` | `false` | Opt-in tool call logging in hermes_plugin |
+| `MNEMOSYNE_MCP_BANK` | `default` | Default bank for MCP server |
+
+### Extraction
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `MNEMOSYNE_EXTRACTION_PROMPT` | built-in | Custom prompt for fact extraction during `extract=True` |
 
 ## YAML Configuration
 
-Create `mnemosyne.yaml` in your project root:
+Mnemosyne integrates with the Hermes `config.yaml` file (not a standalone `mnemosyne.yaml`). Configure settings under the `memory.mnemosyne` key:
 
-<CodeBlock code={`db_path: ./memory.db
-embedding:
-  model: text-embedding-3-small
-  api_key: your-openai-api-key
-
+<CodeBlock code={`# config.yaml (Hermes project root)
 memory:
-  working_max: 1000
-  consolidation_interval: 3600
+  mnemosyne:
+    # Auto-sleep consolidation
+    auto_sleep: false             # Auto-run sleep() when working memory exceeds threshold
+    sleep_threshold: 50           # Working memory count before auto-sleep triggers
 
-retrieval:
-  vector_weight: 0.7
-  text_weight: 0.3
-  top_k: 10
+    # Vector configuration
+    vector_type: int8             # Quantization: float32, int8, or bit
+
+    # Pattern filtering
+    ignore_patterns:              # Content patterns to skip during remember()
+      - "be ACTIVE"               # Skill refinement boilerplate
+      - "nothing to change"       # No-op responses
+      - "skill.*refined"          # Wildcard match
 `} language="yaml" />
+
+Config file lookup order (first found wins):
+1. `./config.yaml` (current working directory)
+2. `~/.hermes/mnemosyne/config.yaml` (user-level)
+3. Environment variables (fallback for any setting not in config.yaml)
 
 ## Programmatic Configuration
 
-<CodeBlock code={`from mnemosyne import Memory
+No config file is needed. You can create a `Mnemosyne` instance directly in Python:
 
-mem = Memory(
-    db_path="./my-memory.db",
-    embedding_model="text-embedding-3-large",
-    max_working=500,
-    consolidation_interval=1800,
+<CodeBlock code={`from mnemosyne import Mnemosyne
+
+mem = Mnemosyne(
+    session_id="my-agent",        # Scope working memories to this session
+    db_path="./my-memory.db",     # Custom SQLite database path (optional)
+    bank="work",                  # Named memory bank for isolation
+    author_id="alice",            # Multi-agent identity
+    author_type="human",          # "human", "agent", or "system"
+    channel_id="team-slack",      # Cross-session channel
 )
 `} language="python" />
 
-<Callout type="info" title="Tip">
-Use `text-embedding-3-small` for development and `text-embedding-3-large` for production workloads requiring higher accuracy.
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `session_id` | `str` | `"default"` | Session identifier for scoping working memories |
+| `db_path` | `str \| None` | `None` | Path to the SQLite database file (auto-created if None) |
+| `bank` | `str \| None` | `None` | Named memory bank — each bank gets its own isolated SQLite file under `data_dir/banks/` |
+| `author_id` | `str \| None` | `None` | Author identifier for multi-agent memory scoping |
+| `author_type` | `str \| None` | `None` | Author category: `"human"`, `"agent"`, or `"system"` |
+| `channel_id` | `str \| None` | `None` | Channel identifier for cross-session shared memory |
+
+<Callout type="info" title="Local-first by default">
+Mnemosyne requires no external API keys for basic usage. Embeddings use **BAAI/bge-small-en-v1.5** via fastembed (384-dimensional, local ONNX runtime). The sleep/consolidation cycle defaults to a local TinyLlama GGUF model. You only need API keys if you configure a remote LLM endpoint via `MNEMOSYNE_LLM_BASE_URL`.
 </Callout>

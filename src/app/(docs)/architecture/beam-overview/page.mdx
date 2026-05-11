@@ -1,10 +1,11 @@
 # BEAM Architecture Overview
 
-BEAM (Biological-inspired Episodic-Associative Memory) is the core architecture powering Mnemosyne. It models human memory organization with four distinct tiers, each optimized for different retention and retrieval patterns.
+BEAM (Biological-inspired Episodic-Associative Memory) is the core architecture powering Mnemosyne. It models human memory organization with three tiers plus TripleStore, each optimized for different retention and retrieval patterns.
 
-## The Four Memory Tiers
+## The Three Memory Tiers + TripleStore
 
 <MermaidDiagram chart={`
+
 graph TB
     subgraph Input["Agent Input"]
         I1[Observation]
@@ -19,9 +20,6 @@ graph TB
         EM[Episodic Memory
         Long-term experiences
         Hybrid retrieval]
-        SM[Semantic Memory
-        Structured facts
-        Subject-predicate-object triples]
         SP[Scratchpad
         Temporary workspace
         Up to 1K entries]
@@ -35,7 +33,6 @@ graph TB
 
     style WM fill:#e0f2fe,stroke:#0284c7
     style EM fill:#fef3c7,stroke:#d97706
-    style SM fill:#f0fdf4,stroke:#16a34a
     style SP fill:#faf5ff,stroke:#9333ea
 
 `} />
@@ -56,11 +53,11 @@ Long-term storage for experiences, conversations, and events. Organized chronolo
 
 **Key characteristics:**
 - **Retention**: Permanent (until explicit deletion)
-- **Retrieval**: Hybrid (vector + FTS5 + binary_vectors) with **configurable scoring weights** (`vec_weight`, `fts_weight`, `importance_weight`, defaulting to 50/30/20). Binary vectors provide fast pre-filtering via Hamming distance for large datasets.
+- **Retrieval**: Hybrid (vector + FTS5) with **configurable scoring weights** (`vec_weight`, `fts_weight`, `importance_weight`, defaulting to 50/30/20)
 - **Temporal decay**: Tunable via `temporal_weight` and `temporal_halflife` parameters on `recall()`
 - **Consolidation**: Promoted from Working Memory via `sleep()`
 
-### Semantic Memory
+### TripleStore (Knowledge Graph)
 
 Structured knowledge stored as subject-predicate-object triples. Managed by the separate `TripleStore` class (not part of the main `Mnemosyne` class).
 
@@ -89,7 +86,7 @@ sequenceDiagram
     participant WM as Working Memory
     participant SP as Scratchpad
     participant EM as Episodic Memory
-    participant SM as Semantic Memory (TripleStore)
+    participant SM as TripleStore (Knowledge Graph)
 
     Agent->>WM: remember(content)
     WM->>WM: store + index
@@ -147,22 +144,6 @@ Named banks provide isolated SQLite databases per project or context. Create via
 ### Plugin System
 
 A plugin base class (`MnemosynePlugin`) with 4 lifecycle hooks. Built-in plugins: `LoggingPlugin`, `MetricsPlugin`, `FilterPlugin`. Discovers plugins from `~/.hermes/mnemosyne/plugins/`.
-
-### Tiered Degradation (v2.3)
-
-Three-tier degradation for long-term memory health. Memories transition from Tier 1 (full detail, 0-30d) → Tier 2 (LLM-compressed summary, 30-180d) → Tier 3 (entity-extracted signal, 180d+) automatically during `sleep()`. Cold memories still exist and are queryable but need stronger semantic matches to surface. Zero maintenance, fully configurable via env vars.
-
-### Memory Confidence / Veracity (v2.3)
-
-Every memory carries a `veracity` field: `stated`, `inferred`, `tool`, `imported`, or `unknown`. Recall applies veracity weighting so direct user statements outrank AI inferences. `get_contaminated()` surfaces non-stated memories for periodic review.
-
-### Multi-Agent Identity (v2.1)
-
-New `author_id`, `author_type`, `channel_id` columns on both working and episodic memory. Agents in different sessions can share a channel and recall each other's memories. `recall()` accepts identity filters for fine-grained multi-agent coordination.
-
-### Cross-Provider Importers (v2.2)
-
-One-command migration from Mem0, Letta, Zep, Cognee, Honcho, and SuperMemory. Each importer handles extraction, field mapping, and identity preservation.
 
 ## Design Philosophy
 

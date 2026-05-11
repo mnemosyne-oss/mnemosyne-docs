@@ -1,14 +1,3 @@
-export const metadata = {
-  title: 'Performance Tuning \u2014 Optimizing Mnemosyne Speed',
-  description: 'Optimize Mnemosyne performance: WAL mode settings, working memory limits, batch writes, and benchmarking strategies for efficient retrieval.',
-  openGraph: {
-    images: ['/og-image.svg'],
-  },
-  twitter: {
-    card: 'summary_large_image',
-  },
-};
-
 # Performance
 
 Optimize Mnemosyne for your workload.
@@ -74,9 +63,8 @@ mem.sleep()
 
 | Component | Per Entry | 10K Entries |
 |-----------|-----------|-------------|
-| Working Memory | ~50KB | ~500MB |
+| Working Memory | 48 bytes | ~480KB |
 | Episodic Memory | ~2KB | ~20MB |
-| Semantic Memory | ~500B | ~5MB |
 | Vector Index | ~6KB | ~60MB |
 | FTS5 Index | ~2KB | ~20MB |
 

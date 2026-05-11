@@ -16,8 +16,8 @@ Extensible plugin architecture for custom memory behavior.
 class AuditPlugin(MnemosynePlugin):
     name = "audit-logger"
     
-    def on_remember(self, memory_id, content, **kwargs):
-        print(f"[AUDIT] Stored: {memory_id}")
+    def on_remember(self, memory, **kwargs):
+        print(f"[AUDIT] Stored: {memory.id}")
     
     def on_recall(self, query, results, **kwargs):
         print(f"[AUDIT] Recall: {query} -> {len(results)} results")
@@ -34,10 +34,10 @@ class AuditPlugin(MnemosynePlugin):
 
 <CodeBlock code={`mem = Mnemosyne()
 
-mem.plugin_manager.register(AuditPlugin())
-mem.plugin_manager.discover("~/.hermes/mnemosyne/plugins/")
+mem.plugin_manager.register_plugin("audit-logger", AuditPlugin)
+mem.plugin_manager.discover_plugins()
 plugins = mem.plugin_manager.list_plugins()
-mem.plugin_manager.unregister("audit-logger")
+mem.plugin_manager.unload_plugin("audit-logger")
 `} language="python" />
 
 ## Built-in Plugins
