@@ -1,17 +1,6 @@
-export const metadata = {
-  title: 'Quick Start — Get Mnemosyne Running in 5 Minutes',
-  description: 'Install Mnemosyne and perform your first memory operations in under 5 minutes. Covers pip install, configuration, and storing your first AI memories.',
-  openGraph: {
-    images: ['/og-image.svg'],
-  },
-  twitter: {
-    card: 'summary_large_image',
-  },
-};
-
 # Quick Start
 
-Get Mnemosyne running in under 5 minutes. This guide covers installation, basic configuration, and your first memory operations.
+Get Mnemosyne v2.5.0 running in under 5 minutes. This guide covers installation, basic configuration, and your first memory operations — including entity extraction and temporal recall.
 
 ## Prerequisites
 
@@ -20,21 +9,14 @@ Get Mnemosyne running in under 5 minutes. This guide covers installation, basic 
 
 ## Install
 
-First, activate the Hermes agent virtual environment:
+Install Mnemosyne **with semantic search**:
 
-<CodeBlock code={`source ~/.hermes/hermes-agent/venv/bin/activate`} language="bash" />
-
-Then install Mnemosyne **with semantic search**:
-
-<CodeBlock code={`# If your venv was created with python -m venv or virtualenv
+<CodeBlock code={`# Using pip
 pip install mnemosyne-memory[embeddings]
 
-# If your venv was created with uv venv (pip is not included)
-uv pip install mnemosyne-memory[embeddings]`} language="bash" />
-
-<Callout type="warning" title="uv venv does not include pip">
-If you created the Hermes venv with `uv venv`, running `pip install` will fail with "command not found." This is by design — uv replaces pip with `uv pip`. Always use `uv pip install` in uv-created environments.
-</Callout>
+# Using uv (faster)
+uv pip install mnemosyne-memory[embeddings]
+`} language="bash" />
 
 <Callout type="info" title="What [embeddings] gives you">
 The `[embeddings]` extra installs **fastembed**, which powers semantic vector search. With it, Mnemosyne can:
@@ -46,9 +28,64 @@ The `[embeddings]` extra installs **fastembed**, which powers semantic vector se
 Without `[embeddings]`, you get FTS5 keyword search only.
 </Callout>
 
-Or with uv (recommended for speed):
+## Your First Memories
 
-<CodeBlock code={`uv pip install mnemosyne-memory[embeddings]`} language="bash" />
+<CodeBlock code={`from mnemosyne import Mnemosyne
+
+mem = Mnemosyne()
+
+# Store a memory with entity extraction
+mem.remember(
+    "Alice prefers dark mode for the UI. She's the project lead.",
+    extract_entities=True,
+    importance=0.8,
+)
+
+# Store with LLM fact extraction
+mem.remember(
+    "The deadline was moved to June 15th.",
+    extract=True,
+)
+
+# Temporal recall — find what happened recently
+results = mem.recall("UI preferences", top_k=5)
+
+for r in results:
+    print(f"[{r['score']:.3f}] {r['content']}")
+`} language="python" />
+
+## Configurable Retrieval
+
+Mnemosyne v2 lets you tune scoring weights per query:
+
+<CodeBlock code={`# Boost text matching over semantic similarity
+results = mem.recall(
+    "exact error code E501",
+    vec_weight=20.0,
+    fts_weight=60.0,
+    importance_weight=20.0,
+)
+
+# Emphasize very recent memories
+results = mem.recall(
+    "what did we discuss today?",
+    temporal_weight=0.6,
+    temporal_halflife=24.0,  # 24-hour half-life
+)
+`} language="python" />
+
+## Memory Banks
+
+Isolate memories for different projects or contexts:
+
+<CodeBlock code={`# Create a bank for work projects
+work_mem = Mnemosyne(bank="work")
+work_mem.remember("Deployed v2.5.0 to staging.")
+
+# Separate bank for personal
+personal_mem = Mnemosyne(bank="personal")
+personal_mem.remember("Dentist appointment on Friday.")
+`} language="python" />
 
 ## Optional: sqlite-vec for Performance
 
@@ -56,24 +93,17 @@ Or with uv (recommended for speed):
 
 <CodeBlock code={`pip install sqlite-vec`} language="bash" />
 
-## Initialize the Database
-
-Run the built-in installer to set up the SQLite database and schema:
-
-<CodeBlock code={`python -m mnemosyne.install`} language="bash" />
-
 ## Verify Installation
 
 Confirm everything is working:
 
-<CodeBlock code={`hermes mnemosyne stats`} language="bash" />
-
-This should print memory statistics (e.g. total memories, database size). You can also check the version:
-
-<CodeBlock code={`hermes mnemosyne version`} language="bash" />
+<CodeBlock code={`python -c "import mnemosyne; print(mnemosyne.__version__)"
+# Should print: 2.3.0
+`} language="bash" />
 
 ## What's Next?
 
 - Read the [Installation Guide](https://docs.mnemosyne.site/getting-started/installation) for detailed setup options
-- Learn about [Configuration](https://docs.mnemosyne.site/getting-started/configuration) to customize behavior
-- Explore the [BEAM Architecture](https://docs.mnemosyne.site/architecture/beam-overview) to understand how memory works
+- Explore the [Python SDK Reference](https://docs.mnemosyne.site/api/python-sdk) for the full API
+- Learn about the [BEAM Architecture](https://docs.mnemosyne.site/architecture/beam-overview) to understand how memory works
+- See [Hybrid Search](https://docs.mnemosyne.site/retrieval/hybrid-search) for retrieval tuning details

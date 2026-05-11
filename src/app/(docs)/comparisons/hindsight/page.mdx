@@ -13,7 +13,7 @@ export const metadata = {
 
 An honest, technical comparison for users running memory systems locally with Hermes Agent and OpenClaw.
 
-**Last updated:** 2026-05-11 · Mnemosyne v2.5.0
+**Last updated:** 2026-05-07 · Mnemosyne v2.4.0
 
 > **TL;DR:** They are not direct competitors. Hindsight is a **memory engine** with sophisticated NLP and multi-signal retrieval. Mnemosyne is a **memory layer** optimized for simplicity, speed, and single-machine deployments. Choose based on what you actually need.
 
@@ -223,7 +223,7 @@ Custom HTTP API on port 8888. Native `openclaw-hindsight` plugin exists for Open
 | Gap | Severity | Workaround |
 |-----|----------|------------|
 | No automatic entity normalization | Medium | `extract_entities=True` captures entities; fuzzy matching helps but doesn't resolve coreference |
-| No cross-machine network API | Medium for multi-agent setups | Export/import JSON; same-machine sharing via shared SQLite file |
+| No cross-machine network API | Medium for multi-agent setups | Export/import JSON; same-machine sharing via shared SQLite file. **Can now import FROM Hindsight directly** — migrate without data loss |
 | No cross-encoder reranking | Low for most queries | Hybrid scoring with configurable weights covers common cases |
 | No automatic conflict detection | Medium | Manual `invalidate(memory_id, replacement_id=new_id)` |
 | No multi-tenancy / access control | High for SaaS use cases | Use per-bank SQLite isolation for domain separation |

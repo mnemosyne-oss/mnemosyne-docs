@@ -254,7 +254,7 @@
       "status": "clean",
       "category": "mirror",
       "mirrors": "content/architecture/veracity-signal.mdx",
-      "note": "Synced from content/ source. No independent audit."
+      "note": "Synced from source after mirror drift detected."
     },
     "src/app/(docs)/comparisons/cognee/page.mdx": {
       "last_audited": "2026-05-11",
@@ -270,7 +270,7 @@
       "status": "clean",
       "category": "mirror",
       "mirrors": "content/comparisons/hindsight.mdx",
-      "note": "Synced from content/ source. No independent audit."
+      "note": "Synced from source after mirror drift detected."
     },
     "src/app/(docs)/comparisons/honcho/page.mdx": {
       "last_audited": "2026-05-11",
@@ -334,7 +334,7 @@
       "status": "clean",
       "category": "mirror",
       "mirrors": "content/getting-started/quick-start.mdx",
-      "note": "Synced from content/ source. No independent audit."
+      "note": "Synced from source after mirror drift detected."
     },
     "src/app/(docs)/migration/overview/page.mdx": {
       "last_audited": "2026-05-11",
@@ -358,7 +358,668 @@
       "status": "clean",
       "category": "mirror",
       "mirrors": "content/use-cases/multi-agent.mdx",
-      "note": "Synced from content/ source. No independent audit."
+      "note": "Synced from source after mirror drift detected."
+    },
+    "AGENTS.md": {
+      "last_audited": null,
+      "audit_hash": "8bd0e39085d5260e7f8faffcad2fdc45e10aef33",
+      "status": "unaudited",
+      "category": "mirror",
+      "note": "Never audited. Full audit needed."
+    },
+    "CLAUDE.md": {
+      "last_audited": null,
+      "audit_hash": "43c994c2d3617f947bcb5adf1933e21dabe46bb5",
+      "status": "unaudited",
+      "category": "mirror",
+      "note": "Never audited. Full audit needed."
+    },
+    "README.md": {
+      "last_audited": null,
+      "audit_hash": "e215bc4ccf138bbc38ad58ad57e92135484b3c0f",
+      "status": "unaudited",
+      "category": "mirror",
+      "note": "Never audited. Full audit needed."
+    },
+    "content/api/overview.mdx": {
+      "last_audited": null,
+      "audit_hash": "476cc2c5f3225d87357ec8bfe4c922aaf625a0d0",
+      "status": "unaudited",
+      "category": "source",
+      "note": "Never audited. Full audit needed."
+    },
+    "content/api/rest.mdx": {
+      "last_audited": null,
+      "audit_hash": "c28d629ae27f6bd7709488582335e2fb142515d5",
+      "status": "unaudited",
+      "category": "source",
+      "note": "Never audited. Full audit needed."
+    },
+    "content/architecture/aaak-compression.mdx": {
+      "last_audited": null,
+      "audit_hash": "89b03e6fc29657ccecda9081f3136dd9e814dc3e",
+      "status": "unaudited",
+      "category": "source",
+      "note": "Never audited. Full audit needed."
+    },
+    "content/architecture/data-flow.mdx": {
+      "last_audited": null,
+      "audit_hash": "2ab23beb3024ffa67cf2bd3cbc4751a6df16b72d",
+      "status": "unaudited",
+      "category": "source",
+      "note": "Never audited. Full audit needed."
+    },
+    "content/architecture/entity-extraction.mdx": {
+      "last_audited": null,
+      "audit_hash": "00b9dd6b2ab4b9a652c00cee0f536475153f2f98",
+      "status": "unaudited",
+      "category": "source",
+      "note": "Never audited. Full audit needed."
+    },
+    "content/architecture/fact-extraction.mdx": {
+      "last_audited": null,
+      "audit_hash": "a922df715383e66e0847a0e7409fa6549c270d74",
+      "status": "unaudited",
+      "category": "source",
+      "note": "Never audited. Full audit needed."
+    },
+    "content/architecture/llm-backends.mdx": {
+      "last_audited": null,
+      "audit_hash": "5bde8533e4fdca86d6cddf8d9497837912926b90",
+      "status": "unaudited",
+      "category": "source",
+      "note": "Never audited. Full audit needed."
+    },
+    "content/architecture/pattern-detection.mdx": {
+      "last_audited": null,
+      "audit_hash": "f80f40a054c714be6fceee28682c46e17f7bac99",
+      "status": "unaudited",
+      "category": "source",
+      "note": "Never audited. Full audit needed."
+    },
+    "content/architecture/sleep-consolidation.mdx": {
+      "last_audited": null,
+      "audit_hash": "2cb1e9203d2806272fc5e990a54650ce3bee1ae4",
+      "status": "unaudited",
+      "category": "source",
+      "note": "Never audited. Full audit needed."
+    },
+    "content/deployment/cron.mdx": {
+      "last_audited": null,
+      "audit_hash": "67bf1c3df43f7054635dd95691cbd1cb175a68a0",
+      "status": "unaudited",
+      "category": "source",
+      "note": "Never audited. Full audit needed."
+    },
+    "content/deployment/docker.mdx": {
+      "last_audited": null,
+      "audit_hash": "3f5e45aad1e3ef81c0472979e41d2b484ac6ec25",
+      "status": "unaudited",
+      "category": "source",
+      "note": "Never audited. Full audit needed."
+    },
+    "content/deployment/fly-io.mdx": {
+      "last_audited": null,
+      "audit_hash": "ef332bd3b13fa3ad392e187be5a4d88b8c615c77",
+      "status": "unaudited",
+      "category": "source",
+      "note": "Never audited. Full audit needed."
+    },
+    "content/deployment/overview.mdx": {
+      "last_audited": null,
+      "audit_hash": "26692dc2eaecf7a1d4f78a5bcdb3e84a69acaf1e",
+      "status": "unaudited",
+      "category": "source",
+      "note": "Never audited. Full audit needed."
+    },
+    "content/deployment/systemd.mdx": {
+      "last_audited": null,
+      "audit_hash": "a06cafccf37c12037f4a6dcd498ba8cc75ab2d4e",
+      "status": "unaudited",
+      "category": "source",
+      "note": "Never audited. Full audit needed."
+    },
+    "content/getting-started/first-steps.mdx": {
+      "last_audited": null,
+      "audit_hash": "c0a82d81b8bd0bbca5135117853aeaa849acbc52",
+      "status": "unaudited",
+      "category": "source",
+      "note": "Never audited. Full audit needed."
+    },
+    "content/getting-started/installation.mdx": {
+      "last_audited": null,
+      "audit_hash": "87a748603bd8ac3d1fca29f4f162a274eaaa44c4",
+      "status": "unaudited",
+      "category": "source",
+      "note": "Never audited. Full audit needed."
+    },
+    "content/memory-systems/episodic.mdx": {
+      "last_audited": null,
+      "audit_hash": "e1b1f7657f669e74e712e45db4939530cffa9836",
+      "status": "unaudited",
+      "category": "source",
+      "note": "Never audited. Full audit needed."
+    },
+    "content/memory-systems/memory-banks.mdx": {
+      "last_audited": null,
+      "audit_hash": "2d64da6552680beb8c9db8f636ea2584e2eba04e",
+      "status": "unaudited",
+      "category": "source",
+      "note": "Never audited. Full audit needed."
+    },
+    "content/memory-systems/scratchpad.mdx": {
+      "last_audited": null,
+      "audit_hash": "bd4cca6fd8ef744978443892b7a22bce2c79d488",
+      "status": "unaudited",
+      "category": "source",
+      "note": "Never audited. Full audit needed."
+    },
+    "content/memory-systems/semantic.mdx": {
+      "last_audited": null,
+      "audit_hash": "59f1c17bd6fdfcad87c9f64a363968772ef604f9",
+      "status": "unaudited",
+      "category": "source",
+      "note": "Never audited. Full audit needed."
+    },
+    "content/memory-systems/temporal-graph.mdx": {
+      "last_audited": null,
+      "audit_hash": "de82344d1627a6e9e503577b304ab1a64482eb1d",
+      "status": "unaudited",
+      "category": "source",
+      "note": "Never audited. Full audit needed."
+    },
+    "content/memory-systems/working.mdx": {
+      "last_audited": null,
+      "audit_hash": "bd81dfade01232ce4f81d7ab594efe1982b5eee2",
+      "status": "unaudited",
+      "category": "source",
+      "note": "Never audited. Full audit needed."
+    },
+    "content/migration/from-hindsight.mdx": {
+      "last_audited": null,
+      "audit_hash": "80888e0ebd95914908b81f700dc6178acb3f8fd8",
+      "status": "unaudited",
+      "category": "source",
+      "note": "Never audited. Full audit needed."
+    },
+    "content/migration/from-letta.mdx": {
+      "last_audited": null,
+      "audit_hash": "268b7b69a3ee8005ec43cde9c3d8c47cd05394e8",
+      "status": "unaudited",
+      "category": "source",
+      "note": "Never audited. Full audit needed."
+    },
+    "content/migration/from-mem0.mdx": {
+      "last_audited": null,
+      "audit_hash": "a322250a3eedd750fbb6fdb1e78615829b9a670f",
+      "status": "unaudited",
+      "category": "source",
+      "note": "Never audited. Full audit needed."
+    },
+    "content/migration/from-zep.mdx": {
+      "last_audited": null,
+      "audit_hash": "1eaf55635c676b61b58e88cc91f690dde17a3cdc",
+      "status": "unaudited",
+      "category": "source",
+      "note": "Never audited. Full audit needed."
+    },
+    "content/operations/backups.mdx": {
+      "last_audited": null,
+      "audit_hash": "569abf3b5acefd6d798876b0ee76b89751b0ea4b",
+      "status": "unaudited",
+      "category": "source",
+      "note": "Never audited. Full audit needed."
+    },
+    "content/operations/migration.mdx": {
+      "last_audited": null,
+      "audit_hash": "c1e9932e966b4d166df9aff2409241b9784ded00",
+      "status": "unaudited",
+      "category": "source",
+      "note": "Never audited. Full audit needed."
+    },
+    "content/operations/monitoring.mdx": {
+      "last_audited": null,
+      "audit_hash": "c11195a0bcd11533276f863d0e12ad3ed269717a",
+      "status": "unaudited",
+      "category": "source",
+      "note": "Never audited. Full audit needed."
+    },
+    "content/operations/troubleshooting.mdx": {
+      "last_audited": null,
+      "audit_hash": "c4596f6befc9cd103a4ffa020a4613c85bcba139",
+      "status": "unaudited",
+      "category": "source",
+      "note": "Never audited. Full audit needed."
+    },
+    "content/retrieval/configurable-scoring.mdx": {
+      "last_audited": null,
+      "audit_hash": "f310b2cea3a87bd2510d429216e693cf81cba9db",
+      "status": "unaudited",
+      "category": "source",
+      "note": "Never audited. Full audit needed."
+    },
+    "content/retrieval/fts5-search.mdx": {
+      "last_audited": null,
+      "audit_hash": "6f3719c3e84bd2fe94c1275724629701ae52904e",
+      "status": "unaudited",
+      "category": "source",
+      "note": "Never audited. Full audit needed."
+    },
+    "content/retrieval/hybrid-search.mdx": {
+      "last_audited": null,
+      "audit_hash": "1a4da999e979b7432b5fb3394ec483ca58ba9b0e",
+      "status": "unaudited",
+      "category": "source",
+      "note": "Never audited. Full audit needed."
+    },
+    "content/retrieval/ranking.mdx": {
+      "last_audited": null,
+      "audit_hash": "12fb50e88647ecf28bdea376256761254444844c",
+      "status": "unaudited",
+      "category": "source",
+      "note": "Never audited. Full audit needed."
+    },
+    "content/retrieval/temporal-recall.mdx": {
+      "last_audited": null,
+      "audit_hash": "10ca700a1bc7d96a303097e0eaf7924fe9be7d55",
+      "status": "unaudited",
+      "category": "source",
+      "note": "Never audited. Full audit needed."
+    },
+    "content/retrieval/vector-search.mdx": {
+      "last_audited": null,
+      "audit_hash": "613dd21dd4f5a3eb8b0bd3b020196c02ca4c5d3b",
+      "status": "unaudited",
+      "category": "source",
+      "note": "Never audited. Full audit needed."
+    },
+    "content/security/access-control.mdx": {
+      "last_audited": null,
+      "audit_hash": "396870595cd0e753322865a5569f26625a783ab8",
+      "status": "unaudited",
+      "category": "source",
+      "note": "Never audited. Full audit needed."
+    },
+    "content/security/data-privacy.mdx": {
+      "last_audited": null,
+      "audit_hash": "0235309d8a7f55a0322731ec7f17477e5633da59",
+      "status": "unaudited",
+      "category": "source",
+      "note": "Never audited. Full audit needed."
+    },
+    "content/security/encryption.mdx": {
+      "last_audited": null,
+      "audit_hash": "64dae079e5a57e9db2cee3f6093fe22b4007158c",
+      "status": "unaudited",
+      "category": "source",
+      "note": "Never audited. Full audit needed."
+    },
+    "content/security/overview.mdx": {
+      "last_audited": null,
+      "audit_hash": "b133446bb2ee7001045c3cd7e9171cb6b58feaa2",
+      "status": "unaudited",
+      "category": "source",
+      "note": "Never audited. Full audit needed."
+    },
+    "content/use-cases/knowledge-base.mdx": {
+      "last_audited": null,
+      "audit_hash": "7617e277d0848b36881dd2f6ff048001237de034",
+      "status": "unaudited",
+      "category": "source",
+      "note": "Never audited. Full audit needed."
+    },
+    "content/use-cases/long-running.mdx": {
+      "last_audited": null,
+      "audit_hash": "830dba889f1bb753aa13a59ce143adc4f38e1500",
+      "status": "unaudited",
+      "category": "source",
+      "note": "Never audited. Full audit needed."
+    },
+    "content/use-cases/overview.mdx": {
+      "last_audited": null,
+      "audit_hash": "d4846f37c49d91baf7192bf954e90d258cb66e10",
+      "status": "unaudited",
+      "category": "source",
+      "note": "Never audited. Full audit needed."
+    },
+    "src/app/(docs)/api/overview/page.mdx": {
+      "last_audited": null,
+      "audit_hash": "1c5f8fc9cbfcdef3f8c4ce501e1576819f9fdf34",
+      "status": "unaudited",
+      "category": "mirror",
+      "note": "Never audited. Full audit needed."
+    },
+    "src/app/(docs)/api/page.mdx": {
+      "last_audited": null,
+      "audit_hash": "476cc2c5f3225d87357ec8bfe4c922aaf625a0d0",
+      "status": "unaudited",
+      "category": "mirror",
+      "note": "Never audited. Full audit needed."
+    },
+    "src/app/(docs)/api/rest/page.mdx": {
+      "last_audited": null,
+      "audit_hash": "c28d629ae27f6bd7709488582335e2fb142515d5",
+      "status": "unaudited",
+      "category": "mirror",
+      "note": "Never audited. Full audit needed."
+    },
+    "src/app/(docs)/architecture/aaak-compression/page.mdx": {
+      "last_audited": null,
+      "audit_hash": "ac94e8fec437aecc3b73abd5c0913819fc0e65f3",
+      "status": "unaudited",
+      "category": "mirror",
+      "note": "Never audited. Full audit needed."
+    },
+    "src/app/(docs)/architecture/data-flow/page.mdx": {
+      "last_audited": null,
+      "audit_hash": "1a4a577c63001a231304e2b2aebd7978196487b3",
+      "status": "unaudited",
+      "category": "mirror",
+      "note": "Never audited. Full audit needed."
+    },
+    "src/app/(docs)/architecture/entity-extraction/page.mdx": {
+      "last_audited": null,
+      "audit_hash": "00b9dd6b2ab4b9a652c00cee0f536475153f2f98",
+      "status": "unaudited",
+      "category": "mirror",
+      "note": "Never audited. Full audit needed."
+    },
+    "src/app/(docs)/architecture/fact-extraction/page.mdx": {
+      "last_audited": null,
+      "audit_hash": "e0f2cca2df985f0b6b14c1ad91fdf64c298c8c52",
+      "status": "unaudited",
+      "category": "mirror",
+      "note": "Never audited. Full audit needed."
+    },
+    "src/app/(docs)/architecture/llm-backends/page.mdx": {
+      "last_audited": null,
+      "audit_hash": "5bde8533e4fdca86d6cddf8d9497837912926b90",
+      "status": "unaudited",
+      "category": "mirror",
+      "note": "Never audited. Full audit needed."
+    },
+    "src/app/(docs)/architecture/pattern-detection/page.mdx": {
+      "last_audited": null,
+      "audit_hash": "f80f40a054c714be6fceee28682c46e17f7bac99",
+      "status": "unaudited",
+      "category": "mirror",
+      "note": "Never audited. Full audit needed."
+    },
+    "src/app/(docs)/architecture/sleep-consolidation/page.mdx": {
+      "last_audited": null,
+      "audit_hash": "7c70e3d9e39ed9c03089c9b22ee809a5494b74d3",
+      "status": "unaudited",
+      "category": "mirror",
+      "note": "Never audited. Full audit needed."
+    },
+    "src/app/(docs)/deployment/cron/page.mdx": {
+      "last_audited": null,
+      "audit_hash": "d46d9dd985f33dbc2bd9d62acab11b957e723e01",
+      "status": "unaudited",
+      "category": "mirror",
+      "note": "Never audited. Full audit needed."
+    },
+    "src/app/(docs)/deployment/docker/page.mdx": {
+      "last_audited": null,
+      "audit_hash": "cf7991ee69f651e1c6ccb762aa36929e08ba2b77",
+      "status": "unaudited",
+      "category": "mirror",
+      "note": "Never audited. Full audit needed."
+    },
+    "src/app/(docs)/deployment/fly-io/page.mdx": {
+      "last_audited": null,
+      "audit_hash": "4a4ef1326f221647e87f4f709a63d04d3ae18a6a",
+      "status": "unaudited",
+      "category": "mirror",
+      "note": "Never audited. Full audit needed."
+    },
+    "src/app/(docs)/deployment/overview/page.mdx": {
+      "last_audited": null,
+      "audit_hash": "154daf2f860a29e978aedbda7c2aa0c0bd4f01dd",
+      "status": "unaudited",
+      "category": "mirror",
+      "note": "Never audited. Full audit needed."
+    },
+    "src/app/(docs)/deployment/systemd/page.mdx": {
+      "last_audited": null,
+      "audit_hash": "03c29c8e8c2c5bf17dcb673ac1f8b843b4db9979",
+      "status": "unaudited",
+      "category": "mirror",
+      "note": "Never audited. Full audit needed."
+    },
+    "src/app/(docs)/getting-started/first-steps/page.mdx": {
+      "last_audited": null,
+      "audit_hash": "4ff280a7db4bc70c6560edca5f3cad5874a67357",
+      "status": "unaudited",
+      "category": "mirror",
+      "note": "Never audited. Full audit needed."
+    },
+    "src/app/(docs)/getting-started/installation/page.mdx": {
+      "last_audited": null,
+      "audit_hash": "87a748603bd8ac3d1fca29f4f162a274eaaa44c4",
+      "status": "unaudited",
+      "category": "mirror",
+      "note": "Never audited. Full audit needed."
+    },
+    "src/app/(docs)/memory-systems/episodic/page.mdx": {
+      "last_audited": null,
+      "audit_hash": "e1b1f7657f669e74e712e45db4939530cffa9836",
+      "status": "unaudited",
+      "category": "mirror",
+      "note": "Never audited. Full audit needed."
+    },
+    "src/app/(docs)/memory-systems/memory-banks/page.mdx": {
+      "last_audited": null,
+      "audit_hash": "2d64da6552680beb8c9db8f636ea2584e2eba04e",
+      "status": "unaudited",
+      "category": "mirror",
+      "note": "Never audited. Full audit needed."
+    },
+    "src/app/(docs)/memory-systems/scratchpad/page.mdx": {
+      "last_audited": null,
+      "audit_hash": "bd4cca6fd8ef744978443892b7a22bce2c79d488",
+      "status": "unaudited",
+      "category": "mirror",
+      "note": "Never audited. Full audit needed."
+    },
+    "src/app/(docs)/memory-systems/semantic/page.mdx": {
+      "last_audited": null,
+      "audit_hash": "e70f0d6cfc3574882e57af8c483f56d02c400c47",
+      "status": "unaudited",
+      "category": "mirror",
+      "note": "Never audited. Full audit needed."
+    },
+    "src/app/(docs)/memory-systems/temporal-graph/page.mdx": {
+      "last_audited": null,
+      "audit_hash": "0aa80d44e145e63514f350fe6047e8eaa8507d6f",
+      "status": "unaudited",
+      "category": "mirror",
+      "note": "Never audited. Full audit needed."
+    },
+    "src/app/(docs)/memory-systems/working/page.mdx": {
+      "last_audited": null,
+      "audit_hash": "bd81dfade01232ce4f81d7ab594efe1982b5eee2",
+      "status": "unaudited",
+      "category": "mirror",
+      "note": "Never audited. Full audit needed."
+    },
+    "src/app/(docs)/migration/from-cognee/page.mdx": {
+      "last_audited": null,
+      "audit_hash": "5bcde72991f04341e7e7e0ced0d7febcfbd6f0ee",
+      "status": "unaudited",
+      "category": "mirror",
+      "note": "Never audited. Full audit needed."
+    },
+    "src/app/(docs)/migration/from-hindsight/page.mdx": {
+      "last_audited": null,
+      "audit_hash": "80888e0ebd95914908b81f700dc6178acb3f8fd8",
+      "status": "unaudited",
+      "category": "mirror",
+      "note": "Never audited. Full audit needed."
+    },
+    "src/app/(docs)/migration/from-honcho/page.mdx": {
+      "last_audited": null,
+      "audit_hash": "7e6c460ca1529c4af915d8b0a8a62143e7a28380",
+      "status": "unaudited",
+      "category": "mirror",
+      "note": "Never audited. Full audit needed."
+    },
+    "src/app/(docs)/migration/from-letta/page.mdx": {
+      "last_audited": null,
+      "audit_hash": "268b7b69a3ee8005ec43cde9c3d8c47cd05394e8",
+      "status": "unaudited",
+      "category": "mirror",
+      "note": "Never audited. Full audit needed."
+    },
+    "src/app/(docs)/migration/from-mem0/page.mdx": {
+      "last_audited": null,
+      "audit_hash": "a322250a3eedd750fbb6fdb1e78615829b9a670f",
+      "status": "unaudited",
+      "category": "mirror",
+      "note": "Never audited. Full audit needed."
+    },
+    "src/app/(docs)/migration/from-supermemory/page.mdx": {
+      "last_audited": null,
+      "audit_hash": "427b9abe77845a937ed45f04cc7b84971e44a633",
+      "status": "unaudited",
+      "category": "mirror",
+      "note": "Never audited. Full audit needed."
+    },
+    "src/app/(docs)/migration/from-zep/page.mdx": {
+      "last_audited": null,
+      "audit_hash": "1eaf55635c676b61b58e88cc91f690dde17a3cdc",
+      "status": "unaudited",
+      "category": "mirror",
+      "note": "Never audited. Full audit needed."
+    },
+    "src/app/(docs)/operations/backups/page.mdx": {
+      "last_audited": null,
+      "audit_hash": "69f20829f5843031137c7dcbd655b00fd55fdd75",
+      "status": "unaudited",
+      "category": "mirror",
+      "note": "Never audited. Full audit needed."
+    },
+    "src/app/(docs)/operations/migration/page.mdx": {
+      "last_audited": null,
+      "audit_hash": "7d2444650c01029712e0cff7d3bf3331e39f6910",
+      "status": "unaudited",
+      "category": "mirror",
+      "note": "Never audited. Full audit needed."
+    },
+    "src/app/(docs)/operations/monitoring/page.mdx": {
+      "last_audited": null,
+      "audit_hash": "4e741ae5d734e199477c3a8e6b1e46aebe626a17",
+      "status": "unaudited",
+      "category": "mirror",
+      "note": "Never audited. Full audit needed."
+    },
+    "src/app/(docs)/operations/troubleshooting/page.mdx": {
+      "last_audited": null,
+      "audit_hash": "7eb8314973e9d4bfffe1b16157e1880d7eee2fd4",
+      "status": "unaudited",
+      "category": "mirror",
+      "note": "Never audited. Full audit needed."
+    },
+    "src/app/(docs)/retrieval/configurable-scoring/page.mdx": {
+      "last_audited": null,
+      "audit_hash": "f310b2cea3a87bd2510d429216e693cf81cba9db",
+      "status": "unaudited",
+      "category": "mirror",
+      "note": "Never audited. Full audit needed."
+    },
+    "src/app/(docs)/retrieval/fts5-search/page.mdx": {
+      "last_audited": null,
+      "audit_hash": "18a56d82314872ced43a718dfc9b05078c83c8a2",
+      "status": "unaudited",
+      "category": "mirror",
+      "note": "Never audited. Full audit needed."
+    },
+    "src/app/(docs)/retrieval/hybrid-search/page.mdx": {
+      "last_audited": null,
+      "audit_hash": "1a4da999e979b7432b5fb3394ec483ca58ba9b0e",
+      "status": "unaudited",
+      "category": "mirror",
+      "note": "Never audited. Full audit needed."
+    },
+    "src/app/(docs)/retrieval/ranking/page.mdx": {
+      "last_audited": null,
+      "audit_hash": "14ad4894e9f1c8e2859e9fcfa3b3638703b3ab51",
+      "status": "unaudited",
+      "category": "mirror",
+      "note": "Never audited. Full audit needed."
+    },
+    "src/app/(docs)/retrieval/temporal-recall/page.mdx": {
+      "last_audited": null,
+      "audit_hash": "10ca700a1bc7d96a303097e0eaf7924fe9be7d55",
+      "status": "unaudited",
+      "category": "mirror",
+      "note": "Never audited. Full audit needed."
+    },
+    "src/app/(docs)/retrieval/vector-search/page.mdx": {
+      "last_audited": null,
+      "audit_hash": "030b34e518dc41437d46d880a23418151dd9c9a5",
+      "status": "unaudited",
+      "category": "mirror",
+      "note": "Never audited. Full audit needed."
+    },
+    "src/app/(docs)/security/access-control/page.mdx": {
+      "last_audited": null,
+      "audit_hash": "d151a7a24477c4f42c2b5b963d6d0585fbc84ff5",
+      "status": "unaudited",
+      "category": "mirror",
+      "note": "Never audited. Full audit needed."
+    },
+    "src/app/(docs)/security/data-privacy/page.mdx": {
+      "last_audited": null,
+      "audit_hash": "774eb7b7d30dcb609206be7b82c78eab3ebcb97e",
+      "status": "unaudited",
+      "category": "mirror",
+      "note": "Never audited. Full audit needed."
+    },
+    "src/app/(docs)/security/encryption/page.mdx": {
+      "last_audited": null,
+      "audit_hash": "350ec0eb56dcd89b2bf9565fde49112d7ec1e80b",
+      "status": "unaudited",
+      "category": "mirror",
+      "note": "Never audited. Full audit needed."
+    },
+    "src/app/(docs)/security/overview/page.mdx": {
+      "last_audited": null,
+      "audit_hash": "07a5465f17c562fce7284b9b331a56bdc49ac6d4",
+      "status": "unaudited",
+      "category": "mirror",
+      "note": "Never audited. Full audit needed."
+    },
+    "src/app/(docs)/use-cases/knowledge-base/page.mdx": {
+      "last_audited": null,
+      "audit_hash": "5a24c90408f6ccf584cabcd63a4df378867813d3",
+      "status": "unaudited",
+      "category": "mirror",
+      "note": "Never audited. Full audit needed."
+    },
+    "src/app/(docs)/use-cases/long-running/page.mdx": {
+      "last_audited": null,
+      "audit_hash": "fe8f59b66bbac3e2d60a17bec582a7e78f93119f",
+      "status": "unaudited",
+      "category": "mirror",
+      "note": "Never audited. Full audit needed."
+    },
+    "src/app/(docs)/use-cases/overview/page.mdx": {
+      "last_audited": null,
+      "audit_hash": "64729033fc3a4a884b9e962d49ad5e036bf32b40",
+      "status": "unaudited",
+      "category": "mirror",
+      "note": "Never audited. Full audit needed."
     }
+  },
+  "_health": {
+    "checked_at": "2026-05-11T14:33:05.687283+00:00",
+    "total_tracked": 139,
+    "audited_clean": 46,
+    "unaudited": 93,
+    "gone": 0,
+    "drifted": 0,
+    "stale_version": 0,
+    "rebase_detected": false
   }
 }
