@@ -28,7 +28,8 @@ During each consolidation cycle, Mnemosyne:
 Consolidation triggers on:
 
 - **Age threshold**: When Working Memory entries exceed TTL/2 (default: 12 hours with 24h TTL)
-- **Explicit call**: `mem.consolidate()` for manual consolidation
+- **Explicit call**: `mem.sleep()` or `mem.consolidate()` for manual consolidation
+- **auto_sleep**: Background thread that periodically runs consolidation without explicit calls (configure via `config.yaml` or `MNEMOSYNE_AUTO_SLEEP` env var)
 - **Shutdown**: Graceful process exit
 
 ## Consolidation Pipeline

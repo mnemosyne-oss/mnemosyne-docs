@@ -56,7 +56,7 @@ Long-term storage for experiences, conversations, and events. Organized chronolo
 
 **Key characteristics:**
 - **Retention**: Permanent (until explicit deletion)
-- **Retrieval**: Hybrid (vector + FTS5) with **configurable scoring weights** (`vec_weight`, `fts_weight`, `importance_weight`, defaulting to 50/30/20)
+- **Retrieval**: Hybrid (vector + FTS5 + binary_vectors) with **configurable scoring weights** (`vec_weight`, `fts_weight`, `importance_weight`, defaulting to 50/30/20). Binary vectors provide fast pre-filtering via Hamming distance for large datasets.
 - **Temporal decay**: Tunable via `temporal_weight` and `temporal_halflife` parameters on `recall()`
 - **Consolidation**: Promoted from Working Memory via `sleep()`
 

@@ -110,3 +110,64 @@ The sleep cycle can use a local LLM to summarize grouped working memories before
 <Callout type="info" title="No External Dependencies Required">
 Mnemosyne runs entirely locally. Embeddings use fastembed with **BAAI/bge-small-en-v1.5** (384 dims), and the sleep cycle uses a local LLM via llamafile or an optional external OpenAI-compatible endpoint. No OpenAI API key is required for basic usage.
 </Callout>
+
+## Configuration File (config.yaml)
+
+In addition to environment variables, Mnemosyne can be configured via a `config.yaml` file. This is the recommended approach for Hermes plugin deployments and multi-bank setups.
+
+### Location
+
+Mnemosyne looks for configuration in this order (first found wins):
+
+1. `./config.yaml` (current working directory)
+2. `~/.hermes/mnemosyne/config.yaml` (user-level)
+3. Environment variables (fallback for any setting not in config.yaml)
+
+### Schema
+
+<CodeBlock code={`# mnemosyne config.yaml
+memory:
+  mnemosyne:
+    # Storage
+    data_dir: ~/.hermes/mnemosyne/data
+    db_path: ./memory.db
+
+    # Auto-sleep consolidation
+    auto_sleep: true              # Enable background consolidation thread
+    sleep_threshold: 5000         # Min Working Memory entries before auto-sleep triggers
+
+    # Vector configuration
+    vector_type: int8             # Quantization: int8, float32, or binary
+    embedding_model: BAAI/bge-small-en-v1.5
+
+    # Memory tiers
+    wm_max_items: 10000           # Max Working Memory entries
+    wm_ttl_hours: 24              # TTL for Working Memory entries
+    ep_limit: 50000               # Max Episodic Memory entries
+    sp_max: 1000                  # Max scratchpad entries
+
+    # Sleep consolidation
+    sleep_batch: 5000             # Items per sleep cycle
+    recency_halflife: 168.0       # Recency decay half-life (hours)
+
+    # Tiered degradation (v2.3)
+    tier2_days: 30                # Days before Tier 1 → Tier 2
+    tier3_days: 180               # Days before Tier 2 → Tier 3
+    smart_compress: true          # Entity-aware sentence extraction for Tier 3
+
+    # Pattern filtering
+    ignore_patterns:              # Content patterns to skip during remember
+      - "^\s*$"                   # Empty strings
+      - "^[!@#\$%^&*()\-_=+\[\]{}|;:',.<>?/`~]+$"  # Punctuation-only
+
+    # Local LLM (for sleep summarization)
+    llm:
+      enabled: true
+      max_tokens: 256
+      n_threads: 4
+      n_ctx: 2048
+`} language="yaml" />
+
+### Precedence
+
+Settings merge with this priority: **config.yaml** > **environment variables** > **defaults**. Any setting left unset in config.yaml falls back to the corresponding environment variable, then to the built-in default.

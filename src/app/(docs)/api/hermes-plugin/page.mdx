@@ -77,39 +77,197 @@ Mnemosyne exposes these tools to agents:
 
 <CodeBlock code={`{
   "name": "mnemosyne_remember",
-  "description": "Store information in long-term memory",
+  "description": "Store information in long-term memory. Use for facts, preferences, decisions, and observations.",
   "parameters": {
-    "content": { "type": "string", "description": "Information to store" },
-    "tags": { "type": "array", "items": { "type": "string" } },
-    "importance": { "type": "number", "minimum": 0, "maximum": 1 }
+    "type": "object",
+    "required": ["content"],
+    "properties": {
+      "content": { "type": "string", "description": "Information to store" },
+      "source": { "type": "string", "description": "Origin of the memory (e.g., 'conversation', 'tool')" },
+      "importance": { "type": "number", "minimum": 0, "maximum": 1, "description": "0.0 = transient, 1.0 = critical" },
+      "metadata": { "type": "object", "description": "Additional structured metadata" },
+      "valid_until": { "type": "string", "description": "ISO 8601 timestamp for automatic expiry" },
+      "scope": { "type": "string", "enum": ["session", "global"], "description": "Visibility scope" },
+      "extract_entities": { "type": "boolean", "description": "Auto-extract named entities into triples" },
+      "extract": { "type": "boolean", "description": "Auto-extract factual statements into triples" },
+      "veracity": { "type": "string", "enum": ["stated", "inferred", "tool", "imported", "unknown"], "description": "Confidence level" }
+    }
   }
 }
 
 {
   "name": "mnemosyne_recall",
-  "description": "Retrieve relevant memories",
+  "description": "Retrieve relevant memories from long-term storage.",
   "parameters": {
-    "query": { "type": "string" },
-    "top_k": { "type": "integer", "default": 5 }
+    "type": "object",
+    "required": ["query"],
+    "properties": {
+      "query": { "type": "string", "description": "Natural language search query" },
+      "top_k": { "type": "integer", "default": 5, "description": "Max memories to return" },
+      "from_date": { "type": "string", "description": "ISO 8601 start date filter" },
+      "to_date": { "type": "string", "description": "ISO 8601 end date filter" },
+      "source": { "type": "string", "description": "Filter by source" },
+      "topic": { "type": "string", "description": "Filter by topic" },
+      "author_id": { "type": "string", "description": "Filter by author" },
+      "author_type": { "type": "string", "enum": ["human", "agent", "system"] },
+      "channel_id": { "type": "string", "description": "Filter by channel" },
+      "temporal_weight": { "type": "number", "description": "Weight for recency in scoring" },
+      "query_time": { "type": "string", "description": "Point-in-time query (ISO 8601)" },
+      "temporal_halflife": { "type": "number", "description": "Recency decay half-life in hours" },
+      "vec_weight": { "type": "number", "description": "Vector similarity weight" },
+      "fts_weight": { "type": "number", "description": "Full-text search weight" },
+      "importance_weight": { "type": "number", "description": "Importance score weight" }
+    }
+  }
+}
+
+{
+  "name": "mnemosyne_stats",
+  "description": "Get memory system statistics: entry counts, database size, consolidation status.",
+  "parameters": {
+    "type": "object",
+    "properties": {}
   }
 }
 
 {
   "name": "mnemosyne_triple_add",
-  "description": "Store a structured fact as a knowledge graph triple",
+  "description": "Store a structured fact as a knowledge graph triple.",
   "parameters": {
-    "subject": { "type": "string" },
-    "predicate": { "type": "string" },
-    "object": { "type": "string" }
+    "type": "object",
+    "required": ["subject", "predicate", "object"],
+    "properties": {
+      "subject": { "type": "string", "description": "The entity the fact is about" },
+      "predicate": { "type": "string", "description": "The relationship or property" },
+      "object": { "type": "string", "description": "The value or target entity" },
+      "valid_from": { "type": "string", "description": "ISO 8601 timestamp when this fact became true" }
+    }
   }
 }
 
 {
   "name": "mnemosyne_triple_query",
-  "description": "Query the knowledge graph",
+  "description": "Query the knowledge graph for structured facts.",
   "parameters": {
-    "subject": { "type": "string" },
-    "predicate": { "type": "string" }
+    "type": "object",
+    "properties": {
+      "subject": { "type": "string", "description": "Filter by subject entity" },
+      "predicate": { "type": "string", "description": "Filter by relationship type" },
+      "object": { "type": "string", "description": "Filter by value or target" }
+    }
+  }
+}
+
+{
+  "name": "mnemosyne_sleep",
+  "description": "Run consolidation cycle: promote Working Memory entries to Episodic, run tiered degradation.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "dry_run": { "type": "boolean", "description": "If true, preview what would happen without making changes" }
+    }
+  }
+}
+
+{
+  "name": "mnemosyne_scratchpad_write",
+  "description": "Write to the temporary scratchpad workspace for chain-of-thought and planning.",
+  "parameters": {
+    "type": "object",
+    "required": ["content"],
+    "properties": {
+      "content": { "type": "string", "description": "Content to write to the scratchpad" }
+    }
+  }
+}
+
+{
+  "name": "mnemosyne_scratchpad_read",
+  "description": "Read all entries from the temporary scratchpad workspace.",
+  "parameters": {
+    "type": "object",
+    "properties": {}
+  }
+}
+
+{
+  "name": "mnemosyne_scratchpad_clear",
+  "description": "Clear all entries from the scratchpad workspace.",
+  "parameters": {
+    "type": "object",
+    "properties": {}
+  }
+}
+
+{
+  "name": "mnemosyne_invalidate",
+  "description": "Mark a memory as invalid (soft delete). Use when information is outdated or incorrect.",
+  "parameters": {
+    "type": "object",
+    "required": ["memory_id"],
+    "properties": {
+      "memory_id": { "type": "string", "description": "Memory ID to invalidate" },
+      "replacement_id": { "type": "string", "description": "Optional replacement memory ID" }
+    }
+  }
+}
+
+{
+  "name": "mnemosyne_export",
+  "description": "Export memories to a file for backup or migration.",
+  "parameters": {
+    "type": "object",
+    "required": ["path"],
+    "properties": {
+      "path": { "type": "string", "description": "File path for export (JSON format)" }
+    }
+  }
+}
+
+{
+  "name": "mnemosyne_import",
+  "description": "Import memories from a previously exported file.",
+  "parameters": {
+    "type": "object",
+    "required": ["path"],
+    "properties": {
+      "path": { "type": "string", "description": "File path to import from (JSON format)" }
+    }
+  }
+}
+
+{
+  "name": "mnemosyne_update",
+  "description": "Update an existing memory's content, importance, or metadata.",
+  "parameters": {
+    "type": "object",
+    "required": ["memory_id"],
+    "properties": {
+      "memory_id": { "type": "string", "description": "Memory ID to update" },
+      "content": { "type": "string", "description": "New content" },
+      "importance": { "type": "number", "minimum": 0, "maximum": 1, "description": "Updated importance score" }
+    }
+  }
+}
+
+{
+  "name": "mnemosyne_forget",
+  "description": "Permanently delete a memory by ID.",
+  "parameters": {
+    "type": "object",
+    "required": ["memory_id"],
+    "properties": {
+      "memory_id": { "type": "string", "description": "Memory ID to permanently delete" }
+    }
+  }
+}
+
+{
+  "name": "mnemosyne_diagnose",
+  "description": "Run diagnostic checks on the memory system: database integrity, index health, storage stats.",
+  "parameters": {
+    "type": "object",
+    "properties": {}
   }
 }
 `} language="json" />

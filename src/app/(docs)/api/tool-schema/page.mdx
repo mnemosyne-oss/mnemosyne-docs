@@ -102,7 +102,12 @@ Complete JSON Schema for Mnemosyne tools exposed to agents.
   "description": "Run sleep consolidation to promote Working Memory entries to Episodic and Semantic memory. Triggers summarization and importance-based promotion. Also runs tiered degradation after consolidation. (v2.3)",
   "parameters": {
     "type": "object",
-    "properties": {}
+    "properties": {
+      "dry_run": {
+        "type": "boolean",
+        "description": "If true, preview what would be consolidated without making changes."
+      }
+    }
   }
 }
 `} language="json" />
@@ -174,14 +179,18 @@ Complete JSON Schema for Mnemosyne tools exposed to agents.
 
 <CodeBlock code={`{
   "name": "mnemosyne_invalidate",
-  "description": "Mark a specific memory as invalidated. Use when information is outdated, incorrect, or explicitly requested to be removed.",
+  "description": "Mark a specific memory as invalidated (soft delete). Use when information is outdated, incorrect, or explicitly requested to be removed.",
   "parameters": {
     "type": "object",
-    "required": ["id"],
+    "required": ["memory_id"],
     "properties": {
-      "id": {
+      "memory_id": {
         "type": "string",
         "description": "The memory ID to invalidate."
+      },
+      "replacement_id": {
+        "type": "string",
+        "description": "Optional replacement memory ID that supersedes the invalidated one."
       }
     }
   }
@@ -235,6 +244,96 @@ Complete JSON Schema for Mnemosyne tools exposed to agents.
 }
 `} language="json" />
 
+## mnemosyne_scratchpad_write
+
+<CodeBlock code={`{
+  "name": "mnemosyne_scratchpad_write",
+  "description": "Write content to the temporary scratchpad workspace. Use for chain-of-thought reasoning, planning, and intermediate computations.",
+  "parameters": {
+    "type": "object",
+    "required": ["content"],
+    "properties": {
+      "content": {
+        "type": "string",
+        "description": "Content to store in the scratchpad."
+      }
+    }
+  }
+}
+`} language="json" />
+
+## mnemosyne_scratchpad_read
+
+<CodeBlock code={`{
+  "name": "mnemosyne_scratchpad_read",
+  "description": "Read all entries from the scratchpad workspace. Returns the full scratchpad content.",
+  "parameters": {
+    "type": "object",
+    "properties": {}
+  }
+}
+`} language="json" />
+
+## mnemosyne_scratchpad_clear
+
+<CodeBlock code={`{
+  "name": "mnemosyne_scratchpad_clear",
+  "description": "Clear all entries from the scratchpad workspace. Use when starting a new reasoning thread.",
+  "parameters": {
+    "type": "object",
+    "properties": {}
+  }
+}
+`} language="json" />
+
+## mnemosyne_export
+
+<CodeBlock code={`{
+  "name": "mnemosyne_export",
+  "description": "Export memories to a JSON file for backup, migration, or external processing.",
+  "parameters": {
+    "type": "object",
+    "required": ["path"],
+    "properties": {
+      "path": {
+        "type": "string",
+        "description": "File path to write the export (JSON format)."
+      }
+    }
+  }
+}
+`} language="json" />
+
+## mnemosyne_import
+
+<CodeBlock code={`{
+  "name": "mnemosyne_import",
+  "description": "Import memories from a previously exported JSON file. Merges imported memories into the current store.",
+  "parameters": {
+    "type": "object",
+    "required": ["path"],
+    "properties": {
+      "path": {
+        "type": "string",
+        "description": "File path to import from (JSON format)."
+      }
+    }
+  }
+}
+`} language="json" />
+
+## mnemosyne_diagnose
+
+<CodeBlock code={`{
+  "name": "mnemosyne_diagnose",
+  "description": "Run diagnostic checks on the memory system. Returns database integrity status, index health, storage statistics, and any detected issues.",
+  "parameters": {
+    "type": "object",
+    "properties": {}
+  }
+}
+`} language="json" />
+
 ## Tool Selection Guide
 
 | Goal | Tool | Example |
@@ -248,6 +347,12 @@ Complete JSON Schema for Mnemosyne tools exposed to agents.
 | Update existing memory | `mnemosyne_update` | Correct facts, promote inferences |
 | Store relational facts | `mnemosyne_triple_add` | Team structure, dependencies |
 | Precise lookup | `mnemosyne_triple_query` | "Who reports to Carol?" |
+| Scratchpad reasoning | `mnemosyne_scratchpad_write` | Chain-of-thought, planning |
+| Read scratchpad | `mnemosyne_scratchpad_read` | Review reasoning steps |
+| Clear scratchpad | `mnemosyne_scratchpad_clear` | Start fresh reasoning |
+| Backup memories | `mnemosyne_export` | Export to JSON file |
+| Restore memories | `mnemosyne_import` | Import from JSON file |
+| System diagnostics | `mnemosyne_diagnose` | DB integrity, index health |
 
 <Callout type="success" title="Schema Validation">
 Tool calls are validated against these schemas before execution. Invalid parameters return a structured error that the agent can use to self-correct.

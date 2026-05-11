@@ -1,12 +1,12 @@
 # Installation
 
-Mnemosyne v2.3.0 is a standalone Python package — no agent framework required. This page walks through every step from prerequisites to verification.
+Mnemosyne v2.5.0 is a standalone Python package — no agent framework required. This page walks through every step from prerequisites to verification.
 
 ## Prerequisites
 
 Before installing Mnemosyne, make sure you have:
 
-- **Python 3.10 or higher** — check with `python --version`
+- **Python 3.9 or higher** — check with `python --version`
 - **pip** or **uv** package manager available in your shell
 
 ## Quick Install
@@ -17,10 +17,10 @@ Two commands. That's all it takes.
 
 ```bash
 # Using pip
-pip install mnemosyne-memory[embeddings]
+pip install mnemosyne-memory[all]
 
 # Using uv (faster)
-uv pip install mnemosyne-memory[embeddings]
+uv pip install mnemosyne-memory[all]
 ```
 
 **Step 2 — Verify:**
@@ -40,8 +40,8 @@ Both work. `uv` is faster, but use the matching command:
 
 | Tool | Install command |
 |------|-----------------|
-| `pip` | `pip install mnemosyne-memory[embeddings]` |
-| `uv` | `uv pip install mnemosyne-memory[embeddings]` |
+| `pip` | `pip install mnemosyne-memory[all]` |
+| `uv` | `uv pip install mnemosyne-memory[all]` |
 
 ### Extras
 
@@ -50,7 +50,7 @@ Mnemosyne ships optional dependency groups you can install as needed:
 | Extra | Command | What it adds |
 |-------|---------|--------------|
 | Core (not recommended) | `pip install mnemosyne-memory` | Base package with FTS5 keyword search only |
-| **Embeddings** | `pip install mnemosyne-memory[embeddings]` | **+ fastembed for semantic vector search** |
+| **Embeddings** | `pip install mnemosyne-memory[all]` | **+ fastembed for semantic vector search** |
 | LLM consolidation | `pip install mnemosyne-memory[llm]` | + ctransformers for local LLM sleep consolidation |
 | Everything | `pip install mnemosyne-memory[all]` | All optional dependencies |
 
@@ -62,9 +62,9 @@ Mnemosyne ships optional dependency groups you can install as needed:
 pip install sqlite-vec
 ```
 
-- **With `[embeddings]` only:** Full semantic search + hybrid retrieval via in-memory numpy cosine similarity. Works great for most deployments.
-- **With `[embeddings]` + `sqlite-vec`:** Same semantic search, but vector queries run in native C inside SQLite. Faster on very large datasets.
-- **Without `[embeddings]`:** FTS5 keyword search only, regardless of sqlite-vec.
+- **With `[all]` only:** Full semantic search + hybrid retrieval via in-memory numpy cosine similarity. Works great for most deployments.
+- **With `[all]` + `sqlite-vec`:** Same semantic search, but vector queries run in native C inside SQLite. Faster on very large datasets.
+- **Without `[all]`:** FTS5 keyword search only, regardless of sqlite-vec.
 
 Install sqlite-vec only if you need maximum performance on huge datasets.
 

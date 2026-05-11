@@ -11,7 +11,7 @@ export const metadata = {
 
 # API Overview
 
-Mnemosyne v2.3 exposes four interfaces: Python SDK, Hermes plugin tools, MCP server, and a legacy REST API.
+Mnemosyne v2.5.0 exposes four interfaces: Python SDK, Hermes plugin tools, MCP server, and a legacy REST API.
 
 ## Interface Comparison
 
@@ -24,7 +24,7 @@ Mnemosyne v2.3 exposes four interfaces: Python SDK, Hermes plugin tools, MCP ser
 
 ## Python SDK
 
-The primary interface. v2.3 supports multi-agent identity, tiered degradation, veracity signals, and cross-provider importers.
+The primary interface. v2.5.0 supports multi-agent identity, tiered degradation, veracity signals, and cross-provider importers.
 
 ```python
 from mnemosyne import Mnemosyne
@@ -43,7 +43,7 @@ mem.sleep()  # consolidates + degrades old memories
 
 ## Hermes Plugin
 
-First-class Hermes integration with 17 tools: `mnemosyne_remember`, `mnemosyne_recall`, `mnemosyne_stats`, `mnemosyne_sleep`, `mnemosyne_invalidate`, `mnemosyne_triple_add`, `mnemosyne_triple_query`, and more.
+First-class Hermes integration with 15 tools: `mnemosyne_remember`, `mnemosyne_recall`, `mnemosyne_stats`, `mnemosyne_sleep`, `mnemosyne_invalidate`, `mnemosyne_triple_add`, `mnemosyne_triple_query`, and more.
 
 ```yaml
 # hermes.yaml
