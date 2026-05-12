@@ -1,10 +1,10 @@
 1:"$Sreact.fragment"
 2:I[80561,["/_next/static/chunks/14iy9u_bz-pgx.js","/_next/static/chunks/0cxg64m_kli2i.js","/_next/static/chunks/12sez-g_34565.js","/_next/static/chunks/0a4uvox5u-8r1.js"],"AnchorHeading"]
 3:I[36231,["/_next/static/chunks/14iy9u_bz-pgx.js","/_next/static/chunks/0cxg64m_kli2i.js","/_next/static/chunks/12sez-g_34565.js","/_next/static/chunks/0a4uvox5u-8r1.js"],"CodeBlock"]
-22:I[88125,["/_next/static/chunks/14iy9u_bz-pgx.js","/_next/static/chunks/0cxg64m_kli2i.js","/_next/static/chunks/12sez-g_34565.js","/_next/static/chunks/0a4uvox5u-8r1.js"],"default"]
-23:I[766,["/_next/static/chunks/14iy9u_bz-pgx.js","/_next/static/chunks/0cxg64m_kli2i.js"],"OutletBoundary"]
-24:"$Sreact.suspense"
-4:T4e9,{
+25:I[88125,["/_next/static/chunks/14iy9u_bz-pgx.js","/_next/static/chunks/0cxg64m_kli2i.js","/_next/static/chunks/12sez-g_34565.js","/_next/static/chunks/0a4uvox5u-8r1.js"],"default"]
+26:I[766,["/_next/static/chunks/14iy9u_bz-pgx.js","/_next/static/chunks/0cxg64m_kli2i.js"],"OutletBoundary"]
+27:"$Sreact.suspense"
+4:T7b4,{
 "name": "mnemosyne_remember",
 "description": "Store information in long-term memory. Use for facts, preferences, decisions, and observations that should persist across sessions.",
 "parameters": {
@@ -15,10 +15,9 @@
       "type": "string",
       "description": "The information to store. Be specific and self-contained."
     },
-    "tags": {
-      "type": "array",
-      "items": { "type": "string" },
-      "description": "Categorical labels for filtering. Use descriptive tags like 'user-preference', 'api-decision', 'bug-fix'."
+    "source": {
+      "type": "string",
+      "description": "Origin of the memory (e.g., 'conversation', 'tool', 'inference')."
     },
     "importance": {
       "type": "number",
@@ -31,15 +30,40 @@
       "enum": ["session", "global"],
       "description": "Session-scoped or globally visible."
     },
+    "valid_until": {
+      "type": "string",
+      "description": "ISO 8601 timestamp for automatic expiry."
+    },
+    "extract_entities": {
+      "type": "boolean",
+      "description": "Auto-extract named entities into knowledge graph triples."
+    },
+    "extract": {
+      "type": "boolean",
+      "description": "Auto-extract factual statements into knowledge graph triples."
+    },
     "veracity": {
       "type": "string",
       "enum": ["stated", "inferred", "tool", "imported", "unknown"],
-      "description": "Confidence level of this memory. Use 'stated' for explicit user statements, 'inferred' for AI deductions, 'tool' for system output. (v2.3)"
+      "description": "Confidence level of this memory. Use 'stated' for explicit user statements, 'inferred' for AI deductions, 'tool' for system output."
+    },
+    "author_id": {
+      "type": "string",
+      "description": "Identifier of the author who created this memory."
+    },
+    "author_type": {
+      "type": "string",
+      "enum": ["human", "agent", "system"],
+      "description": "Category of the author who created this memory."
+    },
+    "channel_id": {
+      "type": "string",
+      "description": "Channel identifier for contextual scoping."
     }
   }
 }
 }
-5:T4a3,{
+5:T683,{
 "name": "mnemosyne_recall",
 "description": "Retrieve relevant memories from long-term storage. Use when you need context about past interactions, user preferences, or established facts.",
 "parameters": {
@@ -74,37 +98,58 @@
       "type": "string",
       "enum": ["stated", "inferred", "tool", "imported", "unknown"],
       "description": "Filter by confidence level. Useful for retrieving only explicit user statements. (v2.3)"
+    },
+    "vec_weight": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Weight for vector similarity in scoring."
+    },
+    "fts_weight": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Weight for full-text search in scoring."
+    },
+    "importance_weight": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Weight for importance score in retrieval ranking."
     }
   }
 }
 }
-0:{"rsc":["$","$1","c",{"children":[[["$","$L2",null,{"as":"h1","children":"Tool Schema"}],"\n",["$","p",null,{"children":"Complete JSON Schema for Mnemosyne tools exposed to agents."}],"\n",["$","$L2",null,{"as":"h2","children":"mnemosyne_remember"}],"\n",["$","$L3",null,{"code":"$4","language":"json"}],"\n",["$","$L2",null,{"as":"h2","children":"mnemosyne_recall"}],"\n",["$","$L3",null,{"code":"$5","language":"json"}],"\n",["$","$L2",null,{"as":"h2","children":"mnemosyne_sleep"}],"\n",["$","$L3",null,{"code":"{\n\"name\": \"mnemosyne_sleep\",\n\"description\": \"Run sleep consolidation to promote Working Memory entries to Episodic and Semantic memory. Triggers summarization and importance-based promotion. Also runs tiered degradation after consolidation. (v2.3)\",\n\"parameters\": {\n  \"type\": \"object\",\n  \"properties\": {\n    \"dry_run\": {\n      \"type\": \"boolean\",\n      \"description\": \"If true, preview what would be consolidated without making changes.\"\n    }\n  }\n}\n}\n","language":"json"}],"\n",["$","$L2",null,{"as":"h2","children":"mnemosyne_stats"}],"\n","$L6","\n","$L7","\n","$L8","\n","$L9","\n","$La","\n","$Lb","\n","$Lc","\n","$Ld","\n","$Le","\n","$Lf","\n","$L10","\n","$L11","\n","$L12","\n","$L13","\n","$L14","\n","$L15","\n","$L16","\n","$L17","\n","$L18","\n","$L19","\n","$L1a","\n","$L1b","\n","$L1c","\n","$L1d","\n","$L1e","\n","$L1f"],["$L20"],"$L21"]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"zj_hjOJvNkOONB6cRNspF"}
-6:["$","$L3",null,{"code":"{\n\"name\": \"mnemosyne_stats\",\n\"description\": \"Get memory system statistics including entry counts across all memory stores, database size, and consolidation status.\",\n\"parameters\": {\n  \"type\": \"object\",\n  \"properties\": {}\n}\n}\n","language":"json"}]
-7:["$","$L2",null,{"as":"h2","children":"mnemosyne_forget"}]
-8:["$","$L3",null,{"code":"{\n\"name\": \"mnemosyne_forget\",\n\"description\": \"Delete a specific memory by ID. Use when information is wrong, outdated, or explicitly requested to be removed. Unlike invalidate, this permanently removes the memory.\",\n\"parameters\": {\n  \"type\": \"object\",\n  \"required\": [\"memory_id\"],\n  \"properties\": {\n    \"memory_id\": {\n      \"type\": \"string\",\n      \"description\": \"The memory ID to permanently delete.\"\n    }\n  }\n}\n}\n","language":"json"}]
-9:["$","$L2",null,{"as":"h2","children":"mnemosyne_update"}]
-a:["$","$L3",null,{"code":"{\n\"name\": \"mnemosyne_update\",\n\"description\": \"Update an existing memory's content, importance, or veracity. Only the fields you provide will be changed.\",\n\"parameters\": {\n  \"type\": \"object\",\n  \"required\": [\"memory_id\"],\n  \"properties\": {\n    \"memory_id\": {\n      \"type\": \"string\",\n      \"description\": \"The memory ID to update.\"\n    },\n    \"content\": {\n      \"type\": \"string\",\n      \"description\": \"New content for the memory.\"\n    },\n    \"importance\": {\n      \"type\": \"number\",\n      \"minimum\": 0,\n      \"maximum\": 1,\n      \"description\": \"Updated importance score.\"\n    },\n    \"veracity\": {\n      \"type\": \"string\",\n      \"enum\": [\"stated\", \"inferred\", \"tool\", \"imported\", \"unknown\"],\n      \"description\": \"Update confidence level. Use when promoting an inference to a stated fact. (v2.3)\"\n    }\n  }\n}\n}\n","language":"json"}]
-b:["$","$L2",null,{"as":"h2","children":"mnemosyne_invalidate"}]
-c:["$","$L3",null,{"code":"{\n\"name\": \"mnemosyne_invalidate\",\n\"description\": \"Mark a specific memory as invalidated (soft delete). Use when information is outdated, incorrect, or explicitly requested to be removed.\",\n\"parameters\": {\n  \"type\": \"object\",\n  \"required\": [\"memory_id\"],\n  \"properties\": {\n    \"memory_id\": {\n      \"type\": \"string\",\n      \"description\": \"The memory ID to invalidate.\"\n    },\n    \"replacement_id\": {\n      \"type\": \"string\",\n      \"description\": \"Optional replacement memory ID that supersedes the invalidated one.\"\n    }\n  }\n}\n}\n","language":"json"}]
-d:["$","$L2",null,{"as":"h2","children":"mnemosyne_triple_add"}]
-e:["$","$L3",null,{"code":"{\n\"name\": \"mnemosyne_triple_add\",\n\"description\": \"Store a structured fact as a subject-predicate-object triple in the temporal knowledge graph. Use for precise, relational knowledge that benefits from graph queries.\",\n\"parameters\": {\n  \"type\": \"object\",\n  \"required\": [\"subject\", \"predicate\", \"object\"],\n  \"properties\": {\n    \"subject\": {\n      \"type\": \"string\",\n      \"description\": \"The entity the fact is about.\"\n    },\n    \"predicate\": {\n      \"type\": \"string\",\n      \"description\": \"The relationship or property. Use consistent predicates for the same concept.\"\n    },\n    \"object\": {\n      \"type\": \"string\",\n      \"description\": \"The value or target entity.\"\n    }\n  }\n}\n}\n","language":"json"}]
-f:["$","$L2",null,{"as":"h2","children":"mnemosyne_triple_query"}]
-10:["$","$L3",null,{"code":"{\n\"name\": \"mnemosyne_triple_query\",\n\"description\": \"Query the temporal knowledge graph for structured facts. Use for precise lookups and relationship traversal.\",\n\"parameters\": {\n  \"type\": \"object\",\n  \"properties\": {\n    \"subject\": {\n      \"type\": \"string\",\n      \"description\": \"Filter by subject entity.\"\n    },\n    \"predicate\": {\n      \"type\": \"string\",\n      \"description\": \"Filter by relationship type.\"\n    }\n  }\n}\n}\n","language":"json"}]
-11:["$","$L2",null,{"as":"h2","children":"mnemosyne_scratchpad_write"}]
-12:["$","$L3",null,{"code":"{\n\"name\": \"mnemosyne_scratchpad_write\",\n\"description\": \"Write content to the temporary scratchpad workspace. Use for chain-of-thought reasoning, planning, and intermediate computations.\",\n\"parameters\": {\n  \"type\": \"object\",\n  \"required\": [\"content\"],\n  \"properties\": {\n    \"content\": {\n      \"type\": \"string\",\n      \"description\": \"Content to store in the scratchpad.\"\n    }\n  }\n}\n}\n","language":"json"}]
-13:["$","$L2",null,{"as":"h2","children":"mnemosyne_scratchpad_read"}]
-14:["$","$L3",null,{"code":"{\n\"name\": \"mnemosyne_scratchpad_read\",\n\"description\": \"Read all entries from the scratchpad workspace. Returns the full scratchpad content.\",\n\"parameters\": {\n  \"type\": \"object\",\n  \"properties\": {}\n}\n}\n","language":"json"}]
-15:["$","$L2",null,{"as":"h2","children":"mnemosyne_scratchpad_clear"}]
-16:["$","$L3",null,{"code":"{\n\"name\": \"mnemosyne_scratchpad_clear\",\n\"description\": \"Clear all entries from the scratchpad workspace. Use when starting a new reasoning thread.\",\n\"parameters\": {\n  \"type\": \"object\",\n  \"properties\": {}\n}\n}\n","language":"json"}]
-17:["$","$L2",null,{"as":"h2","children":"mnemosyne_export"}]
-18:["$","$L3",null,{"code":"{\n\"name\": \"mnemosyne_export\",\n\"description\": \"Export memories to a JSON file for backup, migration, or external processing.\",\n\"parameters\": {\n  \"type\": \"object\",\n  \"required\": [\"path\"],\n  \"properties\": {\n    \"path\": {\n      \"type\": \"string\",\n      \"description\": \"File path to write the export (JSON format).\"\n    }\n  }\n}\n}\n","language":"json"}]
-19:["$","$L2",null,{"as":"h2","children":"mnemosyne_import"}]
-1a:["$","$L3",null,{"code":"{\n\"name\": \"mnemosyne_import\",\n\"description\": \"Import memories from a previously exported JSON file. Merges imported memories into the current store.\",\n\"parameters\": {\n  \"type\": \"object\",\n  \"required\": [\"path\"],\n  \"properties\": {\n    \"path\": {\n      \"type\": \"string\",\n      \"description\": \"File path to import from (JSON format).\"\n    }\n  }\n}\n}\n","language":"json"}]
-1b:["$","$L2",null,{"as":"h2","children":"mnemosyne_diagnose"}]
-1c:["$","$L3",null,{"code":"{\n\"name\": \"mnemosyne_diagnose\",\n\"description\": \"Run diagnostic checks on the memory system. Returns database integrity status, index health, storage statistics, and any detected issues.\",\n\"parameters\": {\n  \"type\": \"object\",\n  \"properties\": {}\n}\n}\n","language":"json"}]
-1d:["$","$L2",null,{"as":"h2","children":"Tool Selection Guide"}]
-1e:["$","table",null,{"children":[["$","thead",null,{"children":["$","tr",null,{"children":[["$","th",null,{"children":"Goal"}],["$","th",null,{"children":"Tool"}],["$","th",null,{"children":"Example"}]]}]}],["$","tbody",null,{"children":[["$","tr",null,{"children":[["$","td",null,{"children":"Store general info"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_remember"}]}],["$","td",null,{"children":"User preferences, decisions"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Retrieve context"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_recall"}]}],["$","td",null,{"children":"\"What did we decide?\""}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Consolidate memories"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_sleep"}]}],["$","td",null,{"children":"End-of-session cleanup"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Check system health"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_stats"}]}],["$","td",null,{"children":"Memory counts, DB size"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Remove bad data"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_invalidate"}]}],["$","td",null,{"children":"Outdated information"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Permanently delete memory"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_forget"}]}],["$","td",null,{"children":"Wrong information, retractions"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Update existing memory"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_update"}]}],["$","td",null,{"children":"Correct facts, promote inferences"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Store relational facts"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_triple_add"}]}],["$","td",null,{"children":"Team structure, dependencies"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Precise lookup"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_triple_query"}]}],["$","td",null,{"children":"\"Who reports to Carol?\""}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Scratchpad reasoning"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_scratchpad_write"}]}],["$","td",null,{"children":"Chain-of-thought, planning"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Read scratchpad"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_scratchpad_read"}]}],["$","td",null,{"children":"Review reasoning steps"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Clear scratchpad"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_scratchpad_clear"}]}],["$","td",null,{"children":"Start fresh reasoning"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Backup memories"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_export"}]}],["$","td",null,{"children":"Export to JSON file"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Restore memories"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_import"}]}],["$","td",null,{"children":"Import from JSON file"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"System diagnostics"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_diagnose"}]}],["$","td",null,{"children":"DB integrity, index health"}]]}]]}]]}]
-1f:["$","div",null,{"className":"callout callout-success","children":["$","div",null,{"className":"flex items-start gap-3","children":[["$","$L22",null,{"iconNode":[["path",{"d":"M21.801 10A10 10 0 1 1 17 3.335","key":"yps3ct"}],["path",{"d":"m9 11 3 3L22 4","key":"1pflzl"}]],"className":"lucide-circle-check-big shrink-0 mt-0.5","size":18}],["$","div",null,{"children":[["$","strong",null,{"className":"block mb-1","children":"Schema Validation"}],["$","div",null,{"className":"text-sm leading-relaxed","children":["$","p",null,{"children":"Tool calls are validated against these schemas before execution. Invalid parameters return a structured error that the agent can use to self-correct."}]}]]}]]}]}]
-20:["$","script","script-0",{"src":"/_next/static/chunks/0a4uvox5u-8r1.js","async":true}]
-21:["$","$L23",null,{"children":["$","$24",null,{"name":"Next.MetadataOutlet","children":"$@25"}]}]
-25:null
+0:{"rsc":["$","$1","c",{"children":[[["$","$L2",null,{"as":"h1","children":"Tool Schema"}],"\n",["$","p",null,{"children":"Complete JSON Schema for Mnemosyne tools exposed to agents."}],"\n",["$","$L2",null,{"as":"h2","children":"mnemosyne_remember"}],"\n",["$","$L3",null,{"code":"$4","language":"json"}],"\n",["$","$L2",null,{"as":"h2","children":"mnemosyne_recall"}],"\n",["$","$L3",null,{"code":"$5","language":"json"}],"\n","$L6","\n","$L7","\n","$L8","\n","$L9","\n","$La","\n","$Lb","\n","$Lc","\n","$Ld","\n","$Le","\n","$Lf","\n","$L10","\n","$L11","\n","$L12","\n","$L13","\n","$L14","\n","$L15","\n","$L16","\n","$L17","\n","$L18","\n","$L19","\n","$L1a","\n","$L1b","\n","$L1c","\n","$L1d","\n","$L1e","\n","$L1f","\n","$L20","\n","$L21","\n","$L22"],["$L23"],"$L24"]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"w2V6K6EKWmEvKvxCYnnRM"}
+6:["$","$L2",null,{"as":"h2","children":"mnemosyne_sleep"}]
+7:["$","$L3",null,{"code":"{\n\"name\": \"mnemosyne_sleep\",\n\"description\": \"Run sleep consolidation to promote Working Memory entries to Episodic and Semantic memory. Triggers summarization and importance-based promotion. Also runs tiered degradation after consolidation.\",\n\"parameters\": {\n  \"type\": \"object\",\n  \"properties\": {\n    \"dry_run\": {\n      \"type\": \"boolean\",\n      \"description\": \"If true, preview what would happen without making changes.\"\n    },\n    \"bank\": {\n      \"type\": \"string\",\n      \"description\": \"Target memory bank for consolidation (default: the active bank).\"\n    }\n  }\n}\n}\n","language":"json"}]
+8:["$","$L2",null,{"as":"h2","children":"mnemosyne_stats"}]
+9:["$","$L3",null,{"code":"{\n\"name\": \"mnemosyne_stats\",\n\"description\": \"Get memory system statistics including entry counts across all memory stores, database size, and consolidation status.\",\n\"parameters\": {\n  \"type\": \"object\",\n  \"properties\": {\n    \"bank\": {\n      \"type\": \"string\",\n      \"description\": \"Target memory bank for statistics (default: all banks).\"\n    }\n  }\n}\n}\n","language":"json"}]
+a:["$","$L2",null,{"as":"h2","children":"mnemosyne_forget"}]
+b:["$","$L3",null,{"code":"{\n\"name\": \"mnemosyne_forget\",\n\"description\": \"Delete a specific memory by ID. Use when information is wrong, outdated, or explicitly requested to be removed. Unlike invalidate, this permanently removes the memory.\",\n\"parameters\": {\n  \"type\": \"object\",\n  \"required\": [\"memory_id\"],\n  \"properties\": {\n    \"memory_id\": {\n      \"type\": \"string\",\n      \"description\": \"The memory ID to permanently delete.\"\n    }\n  }\n}\n}\n","language":"json"}]
+c:["$","$L2",null,{"as":"h2","children":"mnemosyne_update"}]
+d:["$","$L3",null,{"code":"{\n\"name\": \"mnemosyne_update\",\n\"description\": \"Update an existing memory's content, importance, or veracity. Only the fields you provide will be changed.\",\n\"parameters\": {\n  \"type\": \"object\",\n  \"required\": [\"memory_id\"],\n  \"properties\": {\n    \"memory_id\": {\n      \"type\": \"string\",\n      \"description\": \"The memory ID to update.\"\n    },\n    \"content\": {\n      \"type\": \"string\",\n      \"description\": \"New content for the memory.\"\n    },\n    \"importance\": {\n      \"type\": \"number\",\n      \"minimum\": 0,\n      \"maximum\": 1,\n      \"description\": \"Updated importance score.\"\n    },\n    \"veracity\": {\n      \"type\": \"string\",\n      \"enum\": [\"stated\", \"inferred\", \"tool\", \"imported\", \"unknown\"],\n      \"description\": \"Update confidence level. Use when promoting an inference to a stated fact. (v2.3)\"\n    }\n  }\n}\n}\n","language":"json"}]
+e:["$","$L2",null,{"as":"h2","children":"mnemosyne_invalidate"}]
+f:["$","$L3",null,{"code":"{\n\"name\": \"mnemosyne_invalidate\",\n\"description\": \"Mark a specific memory as invalidated. Use when information is outdated, incorrect, or explicitly requested to be removed.\",\n\"parameters\": {\n  \"type\": \"object\",\n  \"required\": [\"memory_id\"],\n  \"properties\": {\n    \"memory_id\": {\n      \"type\": \"string\",\n      \"description\": \"The memory ID to invalidate.\"\n    },\n    \"replacement_id\": {\n      \"type\": \"string\",\n      \"description\": \"Optional replacement memory ID to supersede the invalidated one.\"\n    }\n  }\n}\n}\n","language":"json"}]
+10:["$","$L2",null,{"as":"h2","children":"mnemosyne_triple_add"}]
+11:["$","$L3",null,{"code":"{\n\"name\": \"mnemosyne_triple_add\",\n\"description\": \"Store a structured fact as a subject-predicate-object triple in the temporal knowledge graph. Use for precise, relational knowledge that benefits from graph queries.\",\n\"parameters\": {\n  \"type\": \"object\",\n  \"required\": [\"subject\", \"predicate\", \"object\"],\n  \"properties\": {\n    \"subject\": {\n      \"type\": \"string\",\n      \"description\": \"The entity the fact is about.\"\n    },\n    \"predicate\": {\n      \"type\": \"string\",\n      \"description\": \"The relationship or property. Use consistent predicates for the same concept.\"\n    },\n    \"object\": {\n      \"type\": \"string\",\n      \"description\": \"The value or target entity.\"\n    }\n  }\n}\n}\n","language":"json"}]
+12:["$","$L2",null,{"as":"h2","children":"mnemosyne_triple_query"}]
+13:["$","$L3",null,{"code":"{\n\"name\": \"mnemosyne_triple_query\",\n\"description\": \"Query the temporal knowledge graph for structured facts. Use for precise lookups and relationship traversal.\",\n\"parameters\": {\n  \"type\": \"object\",\n  \"properties\": {\n    \"subject\": {\n      \"type\": \"string\",\n      \"description\": \"Filter by subject entity.\"\n    },\n    \"predicate\": {\n      \"type\": \"string\",\n      \"description\": \"Filter by relationship type.\"\n    },\n    \"object\": {\n      \"type\": \"string\",\n      \"description\": \"Filter by value or target entity.\"\n    },\n    \"as_of\": {\n      \"type\": \"string\",\n      \"description\": \"ISO 8601 timestamp for point-in-time query. Returns facts valid as of this time.\"\n    }\n  }\n}\n}\n","language":"json"}]
+14:["$","$L2",null,{"as":"h2","children":"mnemosyne_scratchpad_write"}]
+15:["$","$L3",null,{"code":"{\n\"name\": \"mnemosyne_scratchpad_write\",\n\"description\": \"Write to the temporary scratchpad workspace for chain-of-thought and planning.\",\n\"parameters\": {\n  \"type\": \"object\",\n  \"required\": [\"content\"],\n  \"properties\": {\n    \"content\": {\n      \"type\": \"string\",\n      \"description\": \"Content to write to the scratchpad.\"\n    }\n  }\n}\n}\n","language":"json"}]
+16:["$","$L2",null,{"as":"h2","children":"mnemosyne_scratchpad_read"}]
+17:["$","$L3",null,{"code":"{\n\"name\": \"mnemosyne_scratchpad_read\",\n\"description\": \"Read all entries from the temporary scratchpad workspace.\",\n\"parameters\": {\n  \"type\": \"object\",\n  \"properties\": {}\n}\n}\n","language":"json"}]
+18:["$","$L2",null,{"as":"h2","children":"mnemosyne_scratchpad_clear"}]
+19:["$","$L3",null,{"code":"{\n\"name\": \"mnemosyne_scratchpad_clear\",\n\"description\": \"Clear all entries from the scratchpad workspace.\",\n\"parameters\": {\n  \"type\": \"object\",\n  \"properties\": {}\n}\n}\n","language":"json"}]
+1a:["$","$L2",null,{"as":"h2","children":"mnemosyne_export"}]
+1b:["$","$L3",null,{"code":"{\n\"name\": \"mnemosyne_export\",\n\"description\": \"Export memories to a file for backup or migration.\",\n\"parameters\": {\n  \"type\": \"object\",\n  \"required\": [\"path\"],\n  \"properties\": {\n    \"path\": {\n      \"type\": \"string\",\n      \"description\": \"File path for export (JSON format).\"\n    }\n  }\n}\n}\n","language":"json"}]
+1c:["$","$L2",null,{"as":"h2","children":"mnemosyne_import"}]
+1d:["$","$L3",null,{"code":"{\n\"name\": \"mnemosyne_import\",\n\"description\": \"Import memories from a previously exported file.\",\n\"parameters\": {\n  \"type\": \"object\",\n  \"required\": [\"path\"],\n  \"properties\": {\n    \"path\": {\n      \"type\": \"string\",\n      \"description\": \"File path to import from (JSON format).\"\n    }\n  }\n}\n}\n","language":"json"}]
+1e:["$","$L2",null,{"as":"h2","children":"mnemosyne_diagnose"}]
+1f:["$","$L3",null,{"code":"{\n\"name\": \"mnemosyne_diagnose\",\n\"description\": \"Run diagnostic checks on the memory system: database integrity, index health, storage stats.\",\n\"parameters\": {\n  \"type\": \"object\",\n  \"properties\": {}\n}\n}\n","language":"json"}]
+20:["$","$L2",null,{"as":"h2","children":"Tool Selection Guide"}]
+21:["$","table",null,{"children":[["$","thead",null,{"children":["$","tr",null,{"children":[["$","th",null,{"children":"Goal"}],["$","th",null,{"children":"Tool"}],["$","th",null,{"children":"Example"}]]}]}],["$","tbody",null,{"children":[["$","tr",null,{"children":[["$","td",null,{"children":"Store general info"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_remember"}]}],["$","td",null,{"children":"User preferences, decisions"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Retrieve context"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_recall"}]}],["$","td",null,{"children":"\"What did we decide?\""}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Consolidate memories"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_sleep"}]}],["$","td",null,{"children":"End-of-session cleanup"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Check system health"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_stats"}]}],["$","td",null,{"children":"Memory counts, DB size"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Run diagnostics"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_diagnose"}]}],["$","td",null,{"children":"DB integrity, index health"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Remove bad data"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_invalidate"}]}],["$","td",null,{"children":"Outdated information"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Permanently delete memory"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_forget"}]}],["$","td",null,{"children":"Wrong information, retractions"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Update existing memory"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_update"}]}],["$","td",null,{"children":"Correct facts, promote inferences"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Store relational facts"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_triple_add"}]}],["$","td",null,{"children":"Team structure, dependencies"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Precise lookup"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_triple_query"}]}],["$","td",null,{"children":"\"Who reports to Carol?\""}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Export memories"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_export"}]}],["$","td",null,{"children":"Backup, migration"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Import memories"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_import"}]}],["$","td",null,{"children":"Restore from backup"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Write scratchpad"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_scratchpad_write"}]}],["$","td",null,{"children":"Chain-of-thought planning"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Read scratchpad"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_scratchpad_read"}]}],["$","td",null,{"children":"Review planning notes"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Clear scratchpad"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_scratchpad_clear"}]}],["$","td",null,{"children":"Reset workspace"}]]}]]}]]}]
+22:["$","div",null,{"className":"callout callout-success","children":["$","div",null,{"className":"flex items-start gap-3","children":[["$","$L25",null,{"iconNode":[["path",{"d":"M21.801 10A10 10 0 1 1 17 3.335","key":"yps3ct"}],["path",{"d":"m9 11 3 3L22 4","key":"1pflzl"}]],"className":"lucide-circle-check-big shrink-0 mt-0.5","size":18}],["$","div",null,{"children":[["$","strong",null,{"className":"block mb-1","children":"Schema Validation"}],["$","div",null,{"className":"text-sm leading-relaxed","children":["$","p",null,{"children":"Tool calls are validated against these schemas before execution. Invalid parameters return a structured error that the agent can use to self-correct."}]}]]}]]}]}]
+23:["$","script","script-0",{"src":"/_next/static/chunks/0a4uvox5u-8r1.js","async":true}]
+24:["$","$L26",null,{"children":["$","$27",null,{"name":"Next.MetadataOutlet","children":"$@28"}]}]
+28:null
