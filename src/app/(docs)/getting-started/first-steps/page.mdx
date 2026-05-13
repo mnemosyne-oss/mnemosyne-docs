@@ -1,14 +1,3 @@
-export const metadata = {
-  title: 'First Steps — Building with Mnemosyne Memories',
-  description: 'Learn the fundamentals of Mnemosyne after installation: storing memories, querying, understanding the memory tiers, and integrating with your AI agent workflow.',
-  openGraph: {
-    images: ['/og-image.svg'],
-  },
-  twitter: {
-    card: 'summary_large_image',
-  },
-};
-
 # First Steps
 
 A hands-on walkthrough of Mnemosyne's core operations.
@@ -18,31 +7,21 @@ A hands-on walkthrough of Mnemosyne's core operations.
 <CodeBlock code={`from mnemosyne import Mnemosyne
 
 mem = Mnemosyne()
-// Or with a named session and multi-agent identity (v2.1):
-mem = Mnemosyne(
-    session_id="agent-42",
-    author_id="alice",
-    author_type="human",
-    channel_id="team-alpha",
-)
+print(f"Initialized: {mem.db_path}")
 `} language="python" />
 
 ## 2. Store Information
 
-<CodeBlock code={`// Simple memory
+<CodeBlock code={`# Simple memory
 mem.remember("Alice is a backend engineer who prefers Go over Python.")
 
-// With metadata, importance, and veracity confidence (v2.3)
+# Structured memory with metadata
 mem.remember(
     content="Project deadline moved to Friday.",
-    source="slack",
+    metadata={"project": "alpha", "type": "deadline"},
     importance=0.8,
-    metadata={"project": "alpha"},
-    veracity="stated",  // explicitly-stated fact
+    source="slack",
 )
-
-// With entity extraction — captures "PostgreSQL" as a triple
-mem.remember("We decided to use PostgreSQL.", extract_entities=True)
 `} language="python" />
 
 ## 3. Recall Information
@@ -50,46 +29,43 @@ mem.remember("We decided to use PostgreSQL.", extract_entities=True)
 <CodeBlock code={`# Semantic search
 results = mem.recall("What programming language does Alice prefer?")
 
-# Limit the number of results
-results = mem.recall("deadline", top_k=3)
+# Filtered search by topic and date
+results = mem.recall(
+    query="deadline",
+    topic="project-alpha",
+    from_date="2026-04-01",
+)
 
-# Get recent context for a prompt
-context = mem.get_context(limit=5)
+# Access a specific memory from results
+for r in results:
+    print(f"{r['score']:.2f}: {r['content']}")
 `} language="python" />
 
 ## 4. Update and Delete
 
-<CodeBlock code={`# Update a memory's content or importance
+<CodeBlock code={`# Update a memory
 mem.update("mem_abc123", content="Deadline moved to Monday.")
 
-# Delete a single memory
+# Delete a memory
 mem.forget("mem_abc123")
 
-# Mark a memory as superseded by a newer one
-mem.invalidate("mem_old456", replacement_id="mem_new789")
+# No bulk delete — iterate through results
+results = mem.recall("temp notes", top_k=10)
+for r in results:
+    mem.forget(r["memory_id"])
 `} language="python" />
 
 ## 5. Inspect Memory State
 
-<CodeBlock code={`# Get statistics
+<CodeBlock code={`# Statistics
 stats = mem.get_stats()
-print(f"Working: {stats['working_count']}")
-print(f"Episodic: {stats['episodic_count']}")
-print(f"Database size: {stats['db_size_mb']:.1f} MB")
-`} language="python" />
-
-## 6. Use the Scratchpad
-
-<CodeBlock code={`# Jot down transient notes
-note_id = mem.scratchpad_write("Remember to check the API logs tomorrow.")
-
-# Read scratchpad entries
-notes = mem.scratchpad_read()
-
-# Clear when done
-mem.scratchpad_clear()
+print(f"Total: {stats['total_memories']} memories across {stats['total_sessions']} sessions")
+print(f"BEAM working: {stats['beam']['working_memory']}")
+print(f"BEAM episodic: {stats['beam']['episodic_memory']}")
+print(f"Triples: {stats['beam']['triples']['total']}")
+print(f"Database: {stats['database']}")
 `} language="python" />
 
 <Callout type="success" title="You're Ready">
-You've learned the core operations. Next, explore [Configuration](/getting-started/configuration) to fine-tune Mnemosyne for your workload, or the [Python SDK Reference](/api/python-sdk) for the complete API.
+You've learned the core CRUD operations. Next, explore the [BEAM Architecture](/architecture/beam-overview) to understand how Mnemosyne organizes memory.
 </Callout>

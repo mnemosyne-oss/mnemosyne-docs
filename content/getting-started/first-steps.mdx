@@ -4,9 +4,9 @@ A hands-on walkthrough of Mnemosyne's core operations.
 
 ## 1. Initialize Memory
 
-<CodeBlock code={`from mnemosyne import Memory
+<CodeBlock code={`from mnemosyne import Mnemosyne
 
-mem = Memory()
+mem = Mnemosyne()
 print(f"Initialized: {mem.db_path}")
 `} language="python" />
 
@@ -18,7 +18,7 @@ mem.remember("Alice is a backend engineer who prefers Go over Python.")
 # Structured memory with metadata
 mem.remember(
     content="Project deadline moved to Friday.",
-    tags=["project-alpha", "deadline"],
+    metadata={"project": "alpha", "type": "deadline"},
     importance=0.8,
     source="slack",
 )
@@ -29,15 +29,16 @@ mem.remember(
 <CodeBlock code={`# Semantic search
 results = mem.recall("What programming language does Alice prefer?")
 
-# Filtered search
+# Filtered search by topic and date
 results = mem.recall(
     query="deadline",
-    tags=["project-alpha"],
-    since="2026-04-01",
+    topic="project-alpha",
+    from_date="2026-04-01",
 )
 
-# Access a specific memory by ID
-memory = mem.get("mem_abc123")
+# Access a specific memory from results
+for r in results:
+    print(f"{r['score']:.2f}: {r['content']}")
 `} language="python" />
 
 ## 4. Update and Delete
@@ -48,17 +49,21 @@ mem.update("mem_abc123", content="Deadline moved to Monday.")
 # Delete a memory
 mem.forget("mem_abc123")
 
-# Bulk delete by tag
-mem.forget_all(tags=["temp"])
+# No bulk delete — iterate through results
+results = mem.recall("temp notes", top_k=10)
+for r in results:
+    mem.forget(r["memory_id"])
 `} language="python" />
 
 ## 5. Inspect Memory State
 
 <CodeBlock code={`# Statistics
-stats = mem.stats()
-print(f"Working: {stats.working_count}")
-print(f"Episodic: {stats.episodic_count}")
-print(f"Database size: {stats.db_size_mb:.1f} MB")
+stats = mem.get_stats()
+print(f"Total: {stats['total_memories']} memories across {stats['total_sessions']} sessions")
+print(f"BEAM working: {stats['beam']['working_memory']}")
+print(f"BEAM episodic: {stats['beam']['episodic_memory']}")
+print(f"Triples: {stats['beam']['triples']['total']}")
+print(f"Database: {stats['database']}")
 `} language="python" />
 
 <Callout type="success" title="You're Ready">

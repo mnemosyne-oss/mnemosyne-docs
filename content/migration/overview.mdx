@@ -13,7 +13,7 @@ export const metadata = {
 
 Move your memories out of other providers and into Mnemosyne with a single command.
 
-Mnemosyne v2.5 ships importers for 7 major memory providers. Each importer handles extraction, field mapping, and data import end to end. You don't need to write export scripts or manually map fields.
+Mnemosyne v2.8 ships importers for 7 major memory providers. Each importer handles extraction, field mapping, and data import end to end. You don't need to write export scripts or manually map fields.
 
 ## Supported Providers
 
@@ -25,6 +25,7 @@ Mnemosyne v2.5 ships importers for 7 major memory providers. Each importer handl
 | **Cognee** | SDK (Kuzu graph export) | `--from cognee` |
 | **Honcho** | SDK (Workspace/Peer/Session/Message model) | `--from honcho` |
 | **SuperMemory** | REST API | `--from supermemory --api-key sk-xxx` |
+| **Hindsight** | JSON export file | `--from hindsight --file ./export.json` |
 
 For providers that do not expose a clean API, there is an agentic fallback. Mnemosyne generates the exact migration script or AI agent prompt you need.
 
@@ -38,7 +39,7 @@ hermes mnemosyne import --from mem0 --api-key sk-xxx
 hermes mnemosyne import --from mem0 --api-key sk-xxx --dry-run
 
 # Import from a JSON export file
-hermes mnemosyne import --file ./export.json
+hermes mnemosyne import --input ./export.json
 
 # List all supported providers
 hermes mnemosyne import --list-providers
@@ -82,8 +83,8 @@ hermes mnemosyne import --from zep --generate-script
 # Generate AI agent instructions (give these to your AI)
 hermes mnemosyne import --from zep --agentic
 
-# Generate documentation for writing your own importer
-hermes mnemosyne import --from zep --generate-docs
+# Save the generated script to a file
+hermes mnemosyne import --from zep --output-script ./migrate_zep.py
 ```
 
 ## Per-Provider Guides
