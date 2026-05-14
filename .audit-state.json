@@ -1,7 +1,7 @@
 {
   "_schema": "mnemosyne-docs-audit-checkpoint-v1",
   "_description": "Tracks per-page audit state. On re-audit, only check pages whose git hash changed since last_audit_hash. Pages not listed here have never been audited \u2014 audit them fully.",
-  "last_full_audit": "2026-05-14T20:18:04.583852+00:00",
+  "last_full_audit": "2026-05-14T20:23:28.908333+00:00",
   "codebase_version": "2.8.0",
   "audit_history": [
     {
@@ -1031,13 +1031,12 @@
     }
   },
   "_health": {
-    "checked_at": "2026-05-14T20:18:04.583852+00:00",
+    "checked_at": "2026-05-14T20:23:28.908333+00:00",
     "total_tracked": 140,
     "audited_clean": 46,
     "unaudited": 90,
     "gone": 0,
     "drifted": 0,
-    "stale_version": 4,
-    "clean": 45
+    "stale_version": 4
   }
 }
