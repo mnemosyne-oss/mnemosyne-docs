@@ -53,11 +53,6 @@ Complete JSON Schema for Mnemosyne tools exposed to agents.
         "type": "boolean",
         "description": "Auto-extract factual statements into knowledge graph triples."
       },
-      "veracity": {
-        "type": "string",
-        "enum": ["stated", "inferred", "tool", "imported", "unknown"],
-        "description": "Confidence level of this memory. Use 'stated' for explicit user statements, 'inferred' for AI deductions, 'tool' for system output."
-      },
       "author_id": {
         "type": "string",
         "description": "Identifier of the author who created this memory."
@@ -108,11 +103,6 @@ Complete JSON Schema for Mnemosyne tools exposed to agents.
       "channel_id": {
         "type": "string",
         "description": "Filter by channel for cross-session recall. (v2.1)"
-      },
-      "veracity": {
-        "type": "string",
-        "enum": ["stated", "inferred", "tool", "imported", "unknown"],
-        "description": "Filter by confidence level. Useful for retrieving only explicit user statements. (v2.3)"
       },
       "vec_weight": {
         "type": "number",
@@ -197,7 +187,7 @@ Complete JSON Schema for Mnemosyne tools exposed to agents.
 
 <CodeBlock code={`{
   "name": "mnemosyne_update",
-  "description": "Update an existing memory's content, importance, or veracity. Only the fields you provide will be changed.",
+  "description": "Update an existing memory's content or importance. Only the fields you provide will be changed.",
   "parameters": {
     "type": "object",
     "required": ["memory_id"],
@@ -215,11 +205,6 @@ Complete JSON Schema for Mnemosyne tools exposed to agents.
         "minimum": 0,
         "maximum": 1,
         "description": "Updated importance score."
-      },
-      "veracity": {
-        "type": "string",
-        "enum": ["stated", "inferred", "tool", "imported", "unknown"],
-        "description": "Update confidence level. Use when promoting an inference to a stated fact. (v2.3)"
       }
     }
   }
@@ -352,9 +337,9 @@ Complete JSON Schema for Mnemosyne tools exposed to agents.
   "description": "Export memories to a file for backup or migration.",
   "parameters": {
     "type": "object",
-    "required": ["path"],
+    "required": ["output_path"],
     "properties": {
-      "path": {
+      "output_path": {
         "type": "string",
         "description": "File path for export (JSON format)."
       }
@@ -370,9 +355,9 @@ Complete JSON Schema for Mnemosyne tools exposed to agents.
   "description": "Import memories from a previously exported file.",
   "parameters": {
     "type": "object",
-    "required": ["path"],
+    "required": ["input_path"],
     "properties": {
-      "path": {
+      "input_path": {
         "type": "string",
         "description": "File path to import from (JSON format)."
       }
@@ -395,12 +380,18 @@ Complete JSON Schema for Mnemosyne tools exposed to agents.
 
 ## Tool Selection Guide
 
+<Callout type="info" title="MCP vs Hermes Plugin Tools">
+**MCP-native tools** (available via `mnemosyne serve --mcp`): `mnemosyne_remember`, `mnemosyne_recall`, `mnemosyne_sleep`, `mnemosyne_get_stats`, `mnemosyne_scratchpad_write`, `mnemosyne_scratchpad_read`, `mnemosyne_scratchpad_clear`.
+
+**Hermes plugin tools** (available via Hermes Agent plugin): `mnemosyne_forget`, `mnemosyne_update`, `mnemosyne_invalidate`, `mnemosyne_export`, `mnemosyne_import`, `mnemosyne_triple_add`, `mnemosyne_triple_query`, `mnemosyne_diagnose`.
+</Callout>
+
 | Goal | Tool | Example |
 |------|------|---------|
 | Store general info | `mnemosyne_remember` | User preferences, decisions |
 | Retrieve context | `mnemosyne_recall` | "What did we decide?" |
 | Consolidate memories | `mnemosyne_sleep` | End-of-session cleanup |
-| Check system health | `mnemosyne_stats` | Memory counts, DB size |
+| Check system health | `mnemosyne_get_stats` | Memory counts, DB size |
 | Run diagnostics | `mnemosyne_diagnose` | DB integrity, index health |
 | Remove bad data | `mnemosyne_invalidate` | Outdated information |
 | Permanently delete memory | `mnemosyne_forget` | Wrong information, retractions |

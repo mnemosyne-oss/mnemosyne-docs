@@ -50,6 +50,7 @@ Store a memory in Working Memory. Returns the generated memory ID.
     content: str,
     source: str = "conversation",
     importance: float = 0.5,
+    trust_tier: str | None = None,
     metadata: dict | None = None,
     valid_until: str | None = None,
     scope: str = "session",
@@ -63,6 +64,7 @@ Store a memory in Working Memory. Returns the generated memory ID.
 | `content` | `str` | — | The text content to store |
 | `source` | `str` | `"conversation"` | Origin of the memory (e.g. `"user"`, `"system"`, `"inferred"`) |
 | `importance` | `float` | `0.5` | Importance score from 0.0 to 1.0, affects retrieval ranking |
+| `trust_tier` | `str \| None` | `None` | Trust tier label for memory provenance tracking |
 | `metadata` | `dict \| None` | `None` | Optional arbitrary metadata dictionary |
 | `valid_until` | `str \| None` | `None` | Optional expiry timestamp (ISO 8601) |
 | `scope` | `str` | `"session"` | Scope for the memory: `"session"` or `"global"` |
@@ -93,7 +95,7 @@ Retrieve relevant memories using hybrid vector + full-text search with configura
 
 <CodeBlock code={`recall(
     query: str,
-    top_k: int = 40,
+    top_k: int = 5,
     *,
     from_date: str | None = None,
     to_date: str | None = None,
@@ -116,7 +118,7 @@ Retrieve relevant memories using hybrid vector + full-text search with configura
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
 | `query` | `str` | — | Natural language query to match against stored memories |
-| `top_k` | `int` | `40` | Maximum number of results to return |
+| `top_k` | `int` | `5` | Maximum number of results to return |
 | `from_date` | `str \| None` | `None` | ISO 8601 timestamp — only return memories on or after this date |
 | `to_date` | `str \| None` | `None` | ISO 8601 timestamp — only return memories on or before this date |
 | `source` | `str \| None` | `None` | Filter by source label (e.g. `"conversation"`, `"user"`) |

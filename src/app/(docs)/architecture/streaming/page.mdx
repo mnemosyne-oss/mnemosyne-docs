@@ -14,6 +14,7 @@ Real-time memory event streaming and incremental synchronization for distributed
 Thread-safe event stream with push (callbacks) and pull (iterator) patterns.
 
 <CodeBlock code={`from mnemosyne import Mnemosyne
+from mnemosyne.core.streaming import EventType
 
 mem = Mnemosyne()
 stream = mem.stream
@@ -21,7 +22,7 @@ stream = mem.stream
 mem.remember("test memory")
 
 # Pull via callback
-stream.on(lambda event: print(f"Event: {event.type}"))
+stream.on(EventType.MEMORY_STORED, lambda event: print(f"Event: {event.event_type}"))
 
 # Pull via iterator
 stream.listen()
@@ -40,7 +41,7 @@ mem_b.delta_sync.apply_delta(delta)
 
 # Bidirectional sync
 mem_a.delta_sync.sync_to("agent-b")
-mem_a.delta_sync.sync_from(mem_b)
+mem_a.delta_sync.sync_from(peer_id="agent-b", delta=delta, table="memory")
 `} language="python" />
 
 <Callout type="info">

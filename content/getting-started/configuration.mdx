@@ -74,7 +74,7 @@ The sleep/consolidation cycle can use a local or remote LLM to summarize grouped
 | `MNEMOSYNE_LLM_BASE_URL` | — | OpenAI-compatible API base URL for remote LLM |
 | `MNEMOSYNE_LLM_API_KEY` | — | API key for the remote LLM endpoint |
 | `MNEMOSYNE_LLM_MODEL` | — | Model name for the remote LLM endpoint |
-| `MNEMOSYNE_LLM_MAX_TOKENS` | `256` | Max output tokens for generated summaries |
+| `MNEMOSYNE_LLM_MAX_TOKENS` | `2048` | Max output tokens for generated summaries |
 | `MNEMOSYNE_LLM_N_THREADS` | `4` | CPU threads for local LLM inference |
 | `MNEMOSYNE_LLM_N_CTX` | `2048` | Context window size for the local LLM |
 | `MNEMOSYNE_LLM_REPO` | `TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF` | GGUF model repository |
@@ -112,12 +112,6 @@ Filter memories by author and channel for multi-agent or multi-tenant deployment
 | `MNEMOSYNE_SHMR_HARMONY_THRESHOLD` | `0.60` | SHMR harmony score threshold |
 | `MNEMOSYNE_LOG_TOOLS` | `false` | Opt-in tool call logging in hermes_plugin |
 | `MNEMOSYNE_MCP_BANK` | `default` | Default bank for MCP server |
-
-### Extraction
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `MNEMOSYNE_EXTRACTION_PROMPT` | built-in | Custom prompt for fact extraction during `extract=True` |
 
 ## YAML Configuration
 

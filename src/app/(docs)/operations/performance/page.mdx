@@ -52,8 +52,8 @@ export MNEMOSYNE_WM_TTL_HOURS=12    # Shorter TTL for more aggressive eviction
 
 Run consolidation periodically to promote working memories to episodic and maintain query performance:
 
-<CodeBlock code={`# Via Hermes
-hermes mnemosyne sleep
+<CodeBlock code={`# Standalone CLI
+mnemosyne sleep
 
 # Or programmatically
 mem.sleep()
