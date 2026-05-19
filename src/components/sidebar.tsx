@@ -94,6 +94,7 @@ const navigation: NavSection[] = [
       { title: "Backups", href: "/operations/backups" },
       { title: "Upgrades", href: "/operations/migration" },
       { title: "Performance", href: "/operations/performance" },
+      { title: "Benchmarking", href: "/operations/benchmarking", badge: "new" },
       { title: "Troubleshooting", href: "/operations/troubleshooting" },
     ],
   },

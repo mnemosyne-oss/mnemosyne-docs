@@ -1,0 +1,229 @@
+# Benchmarking
+
+Run the official BEAM benchmark on your own hardware. Compare Mnemosyne against published SOTA, test with your preferred LLM, or verify performance before deploying to production.
+
+## What is BEAM?
+
+[BEAM](https://huggingface.co/datasets/Mohammadta/BEAM) (Benchmark for Evaluating Agent Memory) is the standard benchmark for AI memory systems. It measures how well a memory backend helps an LLM answer questions across 10 abilities:
+
+| Ability | Code | What it measures |
+|:--|:--|:--|
+| Information Extraction | IE | Pulling specific facts from past conversations |
+| Multi-hop Reasoning | MR | Connecting facts across multiple turns |
+| Knowledge Update | KU | Correctly updating facts when new info arrives |
+| Temporal Reasoning | TR | Reasoning about when things happened |
+| Abstention | ABS | Knowing when to say "I don't know" |
+| Contradiction Resolution | CR | Handling conflicting information |
+| Event Ordering | EO | Ordering events chronologically |
+| Instruction Following | IF | Following user instructions over time |
+| Preference Following | PF | Remembering user preferences |
+| Summarization | SUM | Summarizing past conversations |
+
+The benchmark ships at four scales: **100K**, **500K**, **1M**, and **10M** conversations in the training set. Larger scales stress memory retrieval under heavier data load.
+
+## Prerequisites
+
+- **Python 3.9+** with Mnemosyne installed (`pip install mnemosyne-memory[all]`)
+- **An LLM API key** — OpenRouter or NVIDIA. The benchmark uses an LLM to answer questions and another LLM (or the same one) as a judge
+- **The BEAM dataset** — downloaded automatically from HuggingFace on first run
+- **~2GB disk** for the 10M dataset
+
+### API Key Setup
+
+```bash
+# OpenRouter (recommended)
+export OPENROUTER_API_KEY="sk-or-v1-..."
+
+# Or NVIDIA API
+export NVIDIA_API_KEY="nvapi-..."
+```
+
+The benchmark script also checks `/tmp/openrouter_key.txt` and `/tmp/opencode_key.txt` as fallbacks.
+
+## Quick Start
+
+Clone the repo and run the evaluation:
+
+```bash
+git clone https://github.com/AxDSan/mnemosyne.git
+cd mnemosyne
+
+# Small test run (5 conversations per scale, all scales)
+python tools/evaluate_beam_end_to_end.py --sample 5 --scales 100K,500K,1M,10M
+```
+
+The first run downloads the BEAM dataset from HuggingFace to `~/.cache/huggingface/`. Subsequent runs reuse the cached data.
+
+## Scales
+
+The `--scales` flag controls which dataset sizes to evaluate:
+
+```bash
+# Just the smallest scale (fastest)
+--scales 100K
+
+# 100K and 1M (most common for comparisons)
+--scales 100K,1M
+
+# All four scales (full SOTA run)
+--scales 100K,500K,1M,10M
+```
+
+Each conversation in the dataset has up to 50 probing questions. The `--sample` flag sets how many conversations to evaluate per scale:
+
+```bash
+# 3 conversations per scale (default, good for development)
+--sample 3
+
+# 10 conversations per scale (better statistical significance)
+--sample 10
+
+# All conversations (0 = evaluate everything)
+--sample 0
+```
+
+Tip: Start with `--sample 3 --scales 100K` to verify your setup. Scale up once everything runs cleanly.
+
+## Models
+
+By default the benchmark uses **DeepSeek V4 Pro** via OpenRouter. You can change the model:
+
+```bash
+# Use any OpenRouter model
+python tools/evaluate_beam_end_to_end.py --model "anthropic/claude-sonnet-4" --sample 3
+
+# Use NVIDIA models
+python tools/evaluate_beam_end_to_end.py --model "meta/llama-3.3-70b-instruct" --sample 3
+```
+
+The judge model (which scores the answers) defaults to the same model. For cost savings, use a cheaper model for judging:
+
+```bash
+python tools/evaluate_beam_end_to_end.py \
+  --model "anthropic/claude-sonnet-4" \
+  --judge-model "deepseek/deepseek-v4-flash" \
+  --sample 3
+```
+
+## Modes
+
+Two evaluation modes:
+
+**End-to-end** (default): Full pipeline. Ingests conversations into Mnemosyne, retrieves memories, has the LLM answer questions, then another LLM judges the answers. This measures the complete memory + LLM system.
+
+```bash
+python tools/evaluate_beam_end_to_end.py --mode end_to_end --sample 3
+```
+
+**Retrieval-only**: Skips the LLM answering step. Only measures how well Mnemosyne retrieves relevant memories for each question. Useful for isolating retrieval quality from LLM quality.
+
+```bash
+python tools/evaluate_beam_end_to_end.py --mode retrieval --sample 3
+```
+
+## Resuming Interrupted Runs
+
+Long benchmark runs can be interrupted. Use `--resume` to pick up where you left off:
+
+```bash
+python tools/evaluate_beam_end_to_end.py --scales 100K,1M --sample 10 --resume
+```
+
+Results are saved incrementally to `results/beam_e2e_results.json`. The resume flag skips any question that already has a score in that file.
+
+## Interpreting Results
+
+Results are saved to `results/beam_e2e_results.json`. The summary includes:
+
+- **Per-ability scores** (IE, MR, KU, TR, etc.) — percentage of questions answered correctly
+- **Per-scale overall score** — average across all abilities for that scale
+- **Paired outcomes** in `results/paired_outcomes.jsonl` — detailed question-by-question breakdowns
+
+Example output:
+```json
+{
+  "scale": "100K",
+  "overall": 65.2,
+  "abilities": {
+    "IE": 91.5,
+    "MR": 87.5,
+    "KU": 50.0,
+    "TR": 75.0,
+    "ABS": 100.0,
+    "CR": 50.0,
+    "EO": 25.0,
+    "IF": 62.5,
+    "PF": 54.5,
+    "SUM": 55.6
+  }
+}
+```
+
+### Published SOTA (10M scale)
+
+| System | Score |
+|:--|:--|
+| Mnemosyne v3.0.0 (Llama 3.3 70B) | 65.2% |
+| Hindsight | 64.1% |
+| Honcho | 63.0% |
+| LIGHT | 26.6% |
+| RAG (baseline) | 24.9% |
+
+Note: Your scores will vary based on hardware, LLM provider, and model. The benchmark is designed to be reproducible — same dataset, same questions, same scoring rubric.
+
+## Running on Your Own Hardware
+
+The benchmark doesn't need a GPU. The LLM calls go through the API. Mnemosyne runs locally, so:
+
+- **Disk I/O matters** — SSD recommended for larger scales
+- **RAM** — ~2GB for the 10M dataset, otherwise minimal
+- **CPU** — embedding operations use CPU by default. More cores = faster ingestion
+
+### Reproducing Published Results
+
+To reproduce the v3.0.0 published scores:
+
+```bash
+git clone https://github.com/AxDSan/mnemosyne.git
+cd mnemosyne
+pip install mnemosyne-memory[all]
+
+export OPENROUTER_API_KEY="your-key"
+python tools/evaluate_beam_end_to_end.py \
+  --model "meta-llama/llama-3.3-70b-instruct" \
+  --judge-model "deepseek/deepseek-v4-flash" \
+  --scales 100K,500K,1M,10M \
+  --sample 0
+```
+
+This is a full run — expect several hours for all four scales with all conversations.
+
+### Pure Recall Mode
+
+For measuring just the memory retrieval (not the LLM's answering ability), use `--pure-recall`:
+
+```bash
+python tools/evaluate_beam_end_to_end.py --pure-recall --sample 5 --scales 100K
+```
+
+This disables the LLM answer step and scores purely on whether the correct facts were retrieved.
+
+## Contributing Results
+
+If you run benchmarks with different models or hardware, we'd love to see the results. Open an issue or PR with:
+
+1. Your `results/beam_e2e_results.json`
+2. The command you used
+3. Your hardware specs (CPU, RAM, disk type)
+
+This helps the community understand real-world performance across different setups.
+
+## Troubleshooting
+
+**Dataset download fails**: Make sure you have internet access and `huggingface_hub` installed (`pip install huggingface_hub`).
+
+**API key not found**: The script checks `OPENROUTER_API_KEY` and `NVIDIA_API_KEY` env vars, plus `/tmp/openrouter_key.txt` and `/tmp/opencode_key.txt`. Set one of these.
+
+**Out of memory**: Use smaller scales (`--scales 100K`) and fewer samples (`--sample 3`). The 10M dataset is ~2GB.
+
+**Slow runs**: Embedding is CPU-bound. Install `fastembed` for faster vector generation. Use fewer samples while tuning.
