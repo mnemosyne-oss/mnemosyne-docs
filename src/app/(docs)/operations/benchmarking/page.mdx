@@ -159,15 +159,50 @@ Example output:
 }
 ```
 
-### Published SOTA (10M scale)
+### BEAM Benchmark Results (v3.0.0)
 
-| System | Score |
-|:--|:--|
-| Mnemosyne v3.0.0 (Llama 3.3 70B) | 65.2% |
-| Hindsight | 64.1% |
-| Honcho | 63.0% |
-| LIGHT | 26.6% |
-| RAG (baseline) | 24.9% |
+Mnemosyne v3.0.0 was evaluated on the official BEAM benchmark using our MEMORIA Fact Engine. All results are fully reproducible.
+
+Important notes:
+- Our run uses Llama 3.3 70B (system model) + DeepSeek V4 Flash (judge).
+- Most public leaderboards (including Hindsight's) use Llama-4-Maverick as judge. Scores are not directly comparable across different judges — we disclose this transparently.
+- We have published results for the 100K scale only. We have not yet published 10M-scale numbers.
+
+#### Official Results (100K scale)
+
+| System | Score | Notes |
+|:--|:--|:--|
+| Hindsight | 73.4% | Llama-4-Maverick (published Apr 2026) |
+| Mnemosyne v3.0.0 | 65.2% | Llama 3.3 70B + DeepSeek judge |
+| Honcho | 63.0% | Published Dec 2025 |
+| LIGHT (baseline) | 35.8% | BEAM paper |
+| RAG (baseline) | 32.3% | BEAM paper |
+
+Per-ability breakdown (100K):
+IE 91.5% · MR 87.5% · TR 75.0% · ABS 100.0% · CR 50.0% · KU 50.0% · EO 25.0% · IF 62.5% · PF 54.5% · SUM 55.6%
+
+Biggest gains from v2.5: multi-hop reasoning (+70.8pp), temporal reasoning (+45.8pp), knowledge update (+33.3pp).
+
+#### Full Published Leaderboard (all scales — Hindsight Apr 2026)
+
+| Tier | Hindsight | Honcho | LIGHT | RAG |
+|:--|:--|:--|:--|:--|
+| 100K | 73.4% | 63.0% | 35.8% | 32.3% |
+| 500K | 71.1% | 64.9% | 35.9% | 33.0% |
+| 1M | 73.9% | 63.1% | 33.6% | 30.7% |
+| 10M | 64.1% | 40.6% | 26.6% | 24.9% |
+
+Our status: Competitive at 100K scale in a local-first setup. We are actively working on 10M-scale results and will publish them here as soon as they are ready.
+
+#### Reproduce Our Exact 100K Result
+
+```bash
+python tools/evaluate_beam_end_to_end.py \
+  --model "meta-llama/llama-3.3-70b-instruct" \
+  --judge-model "deepseek/deepseek-v4-flash" \
+  --scales 100K \
+  --sample 0
+```
 
 Note: Your scores will vary based on hardware, LLM provider, and model. The benchmark is designed to be reproducible — same dataset, same questions, same scoring rubric.
 
@@ -192,11 +227,11 @@ export OPENROUTER_API_KEY="your-key"
 python tools/evaluate_beam_end_to_end.py \
   --model "meta-llama/llama-3.3-70b-instruct" \
   --judge-model "deepseek/deepseek-v4-flash" \
-  --scales 100K,500K,1M,10M \
+  --scales 100K \
   --sample 0
 ```
 
-This is a full run — expect several hours for all four scales with all conversations.
+This reproduces our exact published 100K result. For multi-scale runs, add additional scales: `--scales 100K,1M,10M`.
 
 ### Pure Recall Mode
 
