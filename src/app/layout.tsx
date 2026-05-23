@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     template: "%s | Mnemosyne Docs",
   },
   description:
-    "Mnemosyne — The native memory system for AI agents. Persistent, structured, and context-aware memory with BEAM architecture.",
+    "Mnemosyne is the native memory system for AI agents. Persistent, structured, and context-aware memory with BEAM architecture.",
   keywords: [
     "AI memory",
     "agent memory",
@@ -55,6 +55,15 @@ export const metadata: Metadata = {
     "Hermes plugin",
   ],
   authors: [{ name: "Abdias Moya", url: "https://github.com/axdsan" }],
+  icons: {
+    icon: [
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+    ],
+    apple: "/apple-touch-icon.png",
+    shortcut: "/favicon.ico",
+  },
+  manifest: "/site.webmanifest",
   openGraph: {
     title: "Mnemosyne Documentation",
     description: "The native memory system for AI agents",
@@ -67,7 +76,7 @@ export const metadata: Metadata = {
         url: "/og-image.svg",
         width: 1200,
         height: 630,
-        alt: "Mnemosyne — AI Agent Memory System",
+        alt: "Mnemosyne - AI Agent Memory System",
       },
     ],
   },
