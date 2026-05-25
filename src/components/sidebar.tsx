@@ -68,7 +68,7 @@ const navigation: NavSection[] = [
     title: "API",
     icon: <Code size={16} />,
     items: [
-      { title: "Overview", href: "/api/overview" },
+      { title: "API Overview", href: "/api/overview" },
       { title: "Python SDK", href: "/api/python-sdk" },
       { title: "Hermes Plugin", href: "/api/hermes-plugin" },
       { title: "REST API", href: "/api/rest" },
@@ -79,7 +79,7 @@ const navigation: NavSection[] = [
     title: "Deployment",
     icon: <Rocket size={16} />,
     items: [
-      { title: "Overview", href: "/deployment/overview" },
+      { title: "Deploy Options", href: "/deployment/overview" },
       { title: "Fly.io", href: "/deployment/fly-io" },
       { title: "Docker", href: "/deployment/docker" },
       { title: "Systemd", href: "/deployment/systemd" },
@@ -102,7 +102,7 @@ const navigation: NavSection[] = [
     title: "Security",
     icon: <Shield size={16} />,
     items: [
-      { title: "Overview", href: "/security/overview" },
+      { title: "Security Overview", href: "/security/overview" },
       { title: "Encryption", href: "/security/encryption" },
       { title: "Access Control", href: "/security/access-control" },
       { title: "Data Privacy", href: "/security/data-privacy" },
@@ -112,7 +112,7 @@ const navigation: NavSection[] = [
     title: "Use Cases",
     icon: <Briefcase size={16} />,
     items: [
-      { title: "Overview", href: "/use-cases/overview" },
+      { title: "Use Case Overview", href: "/use-cases/overview" },
       { title: "Multi-Agent", href: "/use-cases/multi-agent" },
       { title: "Long-Running", href: "/use-cases/long-running" },
       { title: "Knowledge Base", href: "/use-cases/knowledge-base" },
@@ -135,7 +135,7 @@ const navigation: NavSection[] = [
     title: "Migration",
     icon: <ArrowLeftRight size={16} />,
     items: [
-      { title: "Overview", href: "/migration/overview", badge: "new" },
+      { title: "Migration Overview", href: "/migration/overview", badge: "new" },
       { title: "From Mem0", href: "/migration/from-mem0" },
       { title: "From Letta", href: "/migration/from-letta" },
       { title: "From Zep", href: "/migration/from-zep" },
@@ -197,7 +197,7 @@ export function Sidebar({ mobile = false, onClose }: { mobile?: boolean; onClose
   return (
     <div className={`${mobile ? "" : "w-64 shrink-0"} h-full flex flex-col`}>
       <div className="flex items-center justify-between px-4 py-3 border-b border-border-warm dark:border-charcoal-light shrink-0">
-        <Link href="/" className="flex items-center gap-2">
+        <Link href="https://mnemosyne.site" className="flex items-center gap-2">
           <img src="/logo.jpg" alt="Mnemosyne" className="w-7 h-7 rounded-lg object-cover" />
         </Link>
         {mobile && onClose && (

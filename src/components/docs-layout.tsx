@@ -15,7 +15,7 @@ export function DocsLayout({ children }: { children: React.ReactNode }) {
       <header className="h-14 border-b border-border-warm dark:border-charcoal-light bg-warm-white/80 dark:bg-charcoal/80 backdrop-blur-sm flex items-center justify-between px-4 shrink-0 z-30">
         <div className="flex items-center gap-3">
           <MobileSidebar />
-          <Link href="/" className="hidden lg:flex items-center gap-2 font-serif font-semibold text-charcoal dark:text-parchment">
+          <Link href="https://mnemosyne.site" className="hidden lg:flex items-center gap-2 font-serif font-semibold text-charcoal dark:text-parchment">
             <img src="/logo.jpg" alt="Mnemosyne" className="w-6 h-6 rounded-md object-cover" />
             Mnemosyne
           </Link>

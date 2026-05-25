@@ -11,7 +11,7 @@ export default function Home() {
     <div className="flex flex-col">
       {/* Header */}
       <header className="flex items-center justify-between px-6 py-4 max-w-6xl mx-auto w-full">
-        <Link href="/" className="flex items-center gap-2 font-serif font-semibold text-charcoal dark:text-parchment">
+        <Link href="https://mnemosyne.site" className="flex items-center gap-2 font-serif font-semibold text-charcoal dark:text-parchment">
           <img src="/logo.jpg" alt="Mnemosyne" className="w-7 h-7 rounded-md object-cover" />
           Mnemosyne
         </Link>
