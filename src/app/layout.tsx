@@ -73,7 +73,7 @@ export const metadata: Metadata = {
     url: "https://docs.mnemosyne.site",
     images: [
       {
-        url: "/og-image.svg",
+        url: "/og-image.jpg?v=1",
         width: 1200,
         height: 630,
         alt: "Mnemosyne - AI Agent Memory System",
