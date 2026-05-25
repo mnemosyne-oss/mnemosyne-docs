@@ -12,9 +12,7 @@ export default function Home() {
       {/* Header */}
       <header className="flex items-center justify-between px-6 py-4 max-w-6xl mx-auto w-full">
         <Link href="/" className="flex items-center gap-2 font-serif font-semibold text-charcoal dark:text-parchment">
-          <div className="w-7 h-7 rounded-lg bg-charcoal dark:bg-parchment flex items-center justify-center text-cream dark:text-midnight text-sm font-bold">
-            M
-          </div>
+          <img src="/logo.jpg" alt="Mnemosyne" className="w-7 h-7 rounded-md object-cover" />
           Mnemosyne
         </Link>
         <ThemeToggle />
@@ -135,6 +133,9 @@ export default function Home() {
             </a>
           </div>
           <div className="flex items-center gap-4">
+            <a href="https://mnemosyne.site" className="hover:text-warm-gray dark:hover:text-parchment transition-colors">
+              Website
+            </a>
             <a href="https://github.com/axdsan/mnemosyne" className="hover:text-warm-gray dark:hover:text-parchment transition-colors">
               GitHub
             </a>
