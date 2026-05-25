@@ -196,16 +196,18 @@ function SidebarItem({ item, depth = 0 }: { item: NavItem; depth?: number }) {
 export function Sidebar({ mobile = false, onClose }: { mobile?: boolean; onClose?: () => void }) {
   return (
     <div className={`${mobile ? "" : "w-64 shrink-0"} h-full flex flex-col`}>
-      <div className="flex items-center justify-between px-4 py-3 border-b border-border-warm dark:border-charcoal-light shrink-0">
-        <Link href="https://mnemosyne.site" className="flex items-center gap-2">
-          <img src="/logo.jpg" alt="Mnemosyne" className="w-7 h-7 rounded-lg object-cover" />
-        </Link>
-        {mobile && onClose && (
-          <button onClick={onClose} className="text-warm-gray dark:text-warm-gray-muted hover:text-charcoal dark:hover:text-parchment">
-            <X size={20} />
-          </button>
-        )}
-      </div>
+      {mobile && (
+        <div className="flex items-center justify-between px-4 py-3 border-b border-border-warm dark:border-charcoal-light shrink-0">
+          <Link href="https://mnemosyne.site" className="flex items-center gap-2">
+            <img src="/logo.jpg" alt="Mnemosyne" className="w-7 h-7 rounded-lg object-cover" />
+          </Link>
+          {onClose && (
+            <button onClick={onClose} className="text-warm-gray dark:text-warm-gray-muted hover:text-charcoal dark:hover:text-parchment">
+              <X size={20} />
+            </button>
+          )}
+        </div>
+      )}
       <nav className="px-3 py-4 space-y-6 overflow-y-auto flex-1 min-h-0 overscroll-contain">
         {navigation.map((section) => (
           <div key={section.title}>
