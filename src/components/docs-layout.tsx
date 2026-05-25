@@ -59,6 +59,9 @@ export function DocsLayout({ children }: { children: React.ReactNode }) {
                 .
               </div>
               <div className="flex items-center gap-4">
+                <a href="https://mnemosyne.site" className="hover:text-warm-gray dark:hover:text-parchment transition-colors">
+                  Website
+                </a>
                 <a href="https://github.com/axdsan/mnemosyne" className="hover:text-warm-gray dark:hover:text-parchment transition-colors">
                   GitHub
                 </a>
