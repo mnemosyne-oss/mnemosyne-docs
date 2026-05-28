@@ -17,41 +17,54 @@ Complete JSON Schema for Mnemosyne tools exposed to agents.
 
 <CodeBlock code={`{
   "name": "mnemosyne_remember",
-  "description": "Store information in long-term memory. Use for facts, preferences, decisions, and observations that should persist across sessions.",
+  "description": "Store a durable memory in Mnemosyne. Use for ANY fact, preference, identity, insight, or context that should persist across sessions. Higher importance (0.0-1.0) surfaces the memory more often. Use scope='global' for user-level facts; scope='session' for conversation-specific context. Use valid_until (ISO date YYYY-MM-DD) for time-bound facts. Use extract_entities=True to extract named entities for fuzzy recall (e.g. 'Abdias' and 'Abdias J.' will match). Use extract=True to also pull subject-predicate-object fact triples via LLM for fact-aware recall. Use veracity to tag confidence: 'stated' for direct user assertions, 'tool' for deterministic tool output, 'inferred' for derived guesses; 'unknown' (default) gets no recall boost.",
   "parameters": {
     "type": "object",
     "required": ["content"],
     "properties": {
       "content": {
         "type": "string",
-        "description": "The information to store. Be specific and self-contained."
-      },
-      "source": {
-        "type": "string",
-        "description": "Origin of the memory (e.g., 'conversation', 'tool', 'inference')."
+        "description": "The memory content to store."
       },
       "importance": {
         "type": "number",
-        "minimum": 0,
-        "maximum": 1,
-        "description": "0.0 = transient, 1.0 = critical. High importance memories are promoted to Episodic Memory during consolidation."
+        "description": "Importance 0.0-1.0. Default 0.5.",
+        "default": 0.5
+      },
+      "source": {
+        "type": "string",
+        "description": "Source tag: preference, fact, insight, identity, task, etc.",
+        "default": "user"
       },
       "scope": {
         "type": "string",
-        "enum": ["session", "global"],
-        "description": "Session-scoped or globally visible."
+        "description": "'session' (default) or 'global'.",
+        "default": "session"
       },
       "valid_until": {
         "type": "string",
-        "description": "ISO 8601 timestamp for automatic expiry."
+        "description": "Optional expiry date YYYY-MM-DD.",
+        "default": ""
       },
       "extract_entities": {
         "type": "boolean",
-        "description": "Auto-extract named entities into knowledge graph triples."
+        "description": "Extract named entities for fuzzy recall. Default False.",
+        "default": false
       },
       "extract": {
         "type": "boolean",
-        "description": "Auto-extract factual statements into knowledge graph triples."
+        "description": "Extract subject-predicate-object fact triples via LLM for fact-aware recall. Default False.",
+        "default": false
+      },
+      "metadata": {
+        "type": "object",
+        "description": "Optional dict of additional fields (source_doc, tags, page, etc.). Default empty.",
+        "default": {}
+      },
+      "veracity": {
+        "type": "string",
+        "description": "Confidence label: 'stated' | 'inferred' | 'tool' | 'imported' | 'unknown'. Default 'unknown'.",
+        "default": "unknown"
       },
       "author_id": {
         "type": "string",
@@ -68,28 +81,52 @@ Complete JSON Schema for Mnemosyne tools exposed to agents.
       }
     }
   }
-}
-`} language="json" />
+}`} language="json" />
 
 ## mnemosyne_recall
 
 <CodeBlock code={`{
   "name": "mnemosyne_recall",
-  "description": "Retrieve relevant memories from long-term storage. Use when you need context about past interactions, user preferences, or established facts.",
+  "description": "Search Mnemosyne for relevant memories. Uses hybrid ranking: by default 50% vector similarity + 30% FTS5 text rank + 20% importance + optional temporal boost. Tune the per-query weights via vec_weight, fts_weight, importance_weight (omit to use environment defaults). Returns ranked results.",
   "parameters": {
     "type": "object",
     "required": ["query"],
     "properties": {
       "query": {
         "type": "string",
-        "description": "Natural language description of what you're looking for."
+        "description": "Natural language query."
       },
-      "top_k": {
+      "limit": {
         "type": "integer",
-        "minimum": 1,
-        "maximum": 50,
-        "default": 5,
-        "description": "Maximum number of memories to retrieve."
+        "description": "Max results. Default 5.",
+        "default": 5
+      },
+      "temporal_weight": {
+        "type": "number",
+        "description": "How much to boost recent memories (0.0 = ignore time, 0.2 = mild recency bias, 0.5 = strong recency bias). Default 0.0.",
+        "default": 0.0
+      },
+      "query_time": {
+        "type": "string",
+        "description": "ISO timestamp to treat as 'now' for temporal scoring. Default is current time.",
+        "default": ""
+      },
+      "temporal_halflife": {
+        "type": "number",
+        "description": "Hours until temporal boost decays by half. Default 24. Lower = faster decay.",
+        "default": 24
+      },
+      "vec_weight": {
+        "type": "number",
+        "description": "Vector similarity weight in hybrid scoring. Omit (or pass null) to use MNEMOSYNE_VEC_WEIGHT env var or built-in default 0.5."
+      },
+      "fts_weight": {
+        "type": "number",
+        "description": "Full-text search weight in hybrid scoring. Omit (or pass null) to use MNEMOSYNE_FTS_WEIGHT env var or built-in default 0.3."
+      },
+      "importance_weight": {
+        "type": "number",
+        "description": "Importance score weight in hybrid scoring. Omit (or pass null) to use MNEMOSYNE_IMPORTANCE_WEIGHT env var or built-in default 0.2."
       },
       "author_id": {
         "type": "string",
@@ -103,41 +140,115 @@ Complete JSON Schema for Mnemosyne tools exposed to agents.
       "channel_id": {
         "type": "string",
         "description": "Filter by channel for cross-session recall. (v2.1)"
-      },
-      "vec_weight": {
-        "type": "number",
-        "minimum": 0,
-        "maximum": 1,
-        "description": "Weight for vector similarity in scoring."
-      },
-      "fts_weight": {
-        "type": "number",
-        "minimum": 0,
-        "maximum": 1,
-        "description": "Weight for full-text search in scoring."
-      },
-      "importance_weight": {
-        "type": "number",
-        "minimum": 0,
-        "maximum": 1,
-        "description": "Weight for importance score in retrieval ranking."
       }
     }
   }
-}
-`} language="json" />
+}`} language="json" />
+
+## mnemosyne_shared_remember
+
+<CodeBlock code={`{
+  "name": "mnemosyne_shared_remember",
+  "description": "Store compact cross-agent surface memory in a dedicated shared Mnemosyne DB. Use only for stable user/system/workflow metadata or general preferences. Normal mnemosyne_remember writes stay private.",
+  "parameters": {
+    "type": "object",
+    "required": ["content"],
+    "properties": {
+      "content": {
+        "type": "string",
+        "description": "Surface memory content to store."
+      },
+      "kind": {
+        "type": "string",
+        "description": "meta | preference | correction | identity",
+        "default": "meta"
+      },
+      "importance": {
+        "type": "number",
+        "description": "Importance 0.0-1.0. Default 0.8.",
+        "default": 0.8
+      },
+      "veracity": {
+        "type": "string",
+        "description": "stated | inferred | tool | imported | unknown",
+        "default": "unknown"
+      },
+      "metadata": {
+        "type": "object",
+        "description": "Optional metadata object.",
+        "default": {}
+      }
+    }
+  }
+}`} language="json" />
+
+## mnemosyne_shared_recall
+
+<CodeBlock code={`{
+  "name": "mnemosyne_shared_recall",
+  "description": "Search only the shared Mnemosyne surface DB.",
+  "parameters": {
+    "type": "object",
+    "required": ["query"],
+    "properties": {
+      "query": {
+        "type": "string",
+        "description": "Natural language search query."
+      },
+      "limit": {
+        "type": "integer",
+        "description": "Max results. Default 5.",
+        "default": 5
+      }
+    }
+  }
+}`} language="json" />
+
+## mnemosyne_shared_forget
+
+<CodeBlock code={`{
+  "name": "mnemosyne_shared_forget",
+  "description": "Delete one working shared-surface memory by exact ID.",
+  "parameters": {
+    "type": "object",
+    "required": ["memory_id"],
+    "properties": {
+      "memory_id": {
+        "type": "string",
+        "description": "The memory ID to delete from the shared surface."
+      }
+    }
+  }
+}`} language="json" />
+
+## mnemosyne_shared_stats
+
+<CodeBlock code={`{
+  "name": "mnemosyne_shared_stats",
+  "description": "Return shared surface DB path and counts.",
+  "parameters": {
+    "type": "object",
+    "properties": {}
+  }
+}`} language="json" />
 
 ## mnemosyne_sleep
 
 <CodeBlock code={`{
   "name": "mnemosyne_sleep",
-  "description": "Run sleep consolidation to promote Working Memory entries to Episodic and Semantic memory. Triggers summarization and importance-based promotion. Also runs tiered degradation after consolidation.",
+  "description": "Run the Mnemosyne consolidation cycle. Compresses old working memories into episodic summaries. Call after long sessions or when memory feels stale. Set all_sessions=true to consolidate eligible old working memories across inactive sessions.",
   "parameters": {
     "type": "object",
     "properties": {
+      "all_sessions": {
+        "type": "boolean",
+        "description": "If true, consolidate eligible old working memories across all sessions instead of only the current session.",
+        "default": false
+      },
       "dry_run": {
         "type": "boolean",
-        "description": "If true, preview what would happen without making changes."
+        "description": "If true, report what would be consolidated without writing changes.",
+        "default": false
       },
       "bank": {
         "type": "string",
@@ -145,95 +256,148 @@ Complete JSON Schema for Mnemosyne tools exposed to agents.
       }
     }
   }
-}
-`} language="json" />
+}`} language="json" />
 
 ## mnemosyne_stats
 
 <CodeBlock code={`{
   "name": "mnemosyne_stats",
-  "description": "Get memory system statistics including entry counts across all memory stores, database size, and consolidation status.",
+  "description": "Return Mnemosyne memory statistics: working count, episodic count, BEAM tiers.",
   "parameters": {
     "type": "object",
     "properties": {}
   }
-}
-`} language="json" />
+}`} language="json" />
 
 ## mnemosyne_get
-## mnemosyne_forget
 
 <CodeBlock code={`{
-  "name": "mnemosyne_forget",
-  "description": "Delete a specific memory by ID. Use when information is wrong, outdated, or explicitly requested to be removed. Unlike invalidate, this permanently removes the memory.",
+  "name": "mnemosyne_get",
+  "description": "Retrieve a single memory by its primary key. Pure read, no side effects. No semantic search. Returns the exact memory with the given ID or None. Use this when you already know the memory ID from a previous recall response.",
   "parameters": {
     "type": "object",
     "required": ["memory_id"],
     "properties": {
       "memory_id": {
         "type": "string",
-        "description": "The memory ID to permanently delete."
+        "description": "The memory ID to retrieve."
       }
     }
   }
-}
-`} language="json" />
+}`} language="json" />
+
+## mnemosyne_forget
+
+<CodeBlock code={`{
+  "name": "mnemosyne_forget",
+  "description": "Permanently delete a memory by ID.",
+  "parameters": {
+    "type": "object",
+    "required": ["memory_id"],
+    "properties": {
+      "memory_id": {
+        "type": "string",
+        "description": "ID of the memory to delete."
+      }
+    }
+  }
+}`} language="json" />
 
 ## mnemosyne_update
 
 <CodeBlock code={`{
   "name": "mnemosyne_update",
-  "description": "Update an existing memory's content or importance. Only the fields you provide will be changed.",
+  "description": "Update the content or importance of an existing memory by ID.",
   "parameters": {
     "type": "object",
     "required": ["memory_id"],
     "properties": {
       "memory_id": {
         "type": "string",
-        "description": "The memory ID to update."
+        "description": "ID of the memory to update."
       },
       "content": {
         "type": "string",
-        "description": "New content for the memory."
+        "description": "New content for the memory (optional)."
       },
       "importance": {
         "type": "number",
-        "minimum": 0,
-        "maximum": 1,
-        "description": "Updated importance score."
+        "description": "New importance from 0.0 to 1.0 (optional)."
       }
     }
   }
-}
-`} language="json" />
+}`} language="json" />
 
 ## mnemosyne_invalidate
 
 <CodeBlock code={`{
   "name": "mnemosyne_invalidate",
-  "description": "Mark a specific memory as invalidated. Use when information is outdated, incorrect, or explicitly requested to be removed.",
+  "description": "Mark a memory as expired or superseded. Provide memory_id from recall results. Optionally provide replacement_id to chain old → new.",
   "parameters": {
     "type": "object",
     "required": ["memory_id"],
     "properties": {
       "memory_id": {
         "type": "string",
-        "description": "The memory ID to invalidate."
+        "description": "ID of memory to invalidate."
       },
       "replacement_id": {
         "type": "string",
-        "description": "Optional replacement memory ID to supersede the invalidated one."
+        "description": "Optional new memory that replaces this one.",
+        "default": ""
       }
     }
   }
-}
-`} language="json" />
+}`} language="json" />
+
+## mnemosyne_validate
+
+<CodeBlock code={`{
+  "name": "mnemosyne_validate",
+  "description": "Attest, update, or invalidate a memory the caller did not necessarily author. Supports collaborative ownership: any agent can validate any memory in either the private bank or the shared surface. The original author is preserved; validator + validated_at are updated to record the most recent attester. A 3-entry ring buffer keeps lightweight history. Actions: 'attest' (confirm correctness), 'update' (replace content), 'invalidate' (mark superseded), 'delete' (remove).",
+  "parameters": {
+    "type": "object",
+    "required": ["memory_id", "action"],
+    "properties": {
+      "memory_id": {
+        "type": "string",
+        "description": "ID of memory to validate."
+      },
+      "action": {
+        "type": "string",
+        "enum": ["attest", "update", "invalidate", "delete"],
+        "description": "What kind of validation to record."
+      },
+      "validator": {
+        "type": "string",
+        "description": "Agent identifier performing the validation. Defaults to the caller's agent_identity if not set.",
+        "default": ""
+      },
+      "new_content": {
+        "type": "string",
+        "description": "New content (only used with action='update').",
+        "default": ""
+      },
+      "note": {
+        "type": "string",
+        "description": "Optional reason or evidence for this validation.",
+        "default": ""
+      },
+      "bank": {
+        "type": "string",
+        "enum": ["private", "surface"],
+        "description": "Which bank holds the memory. Default 'private'.",
+        "default": "private"
+      }
+    }
+  }
+}`} language="json" />
 
 ## mnemosyne_triple_add
 
 <CodeBlock code={`{
   "name": "mnemosyne_triple_add",
-  "description": "Store a structured fact as a subject-predicate-object triple in the temporal knowledge graph. Use for precise, relational knowledge that benefits from graph queries.",
+  "description": "Add a temporal fact triple (subject, predicate, object) to the knowledge graph. Example: ('user', 'prefers', 'neovim'). Use for structured relationships.",
   "parameters": {
     "type": "object",
     "required": ["subject", "predicate", "object"],
@@ -249,31 +413,38 @@ Complete JSON Schema for Mnemosyne tools exposed to agents.
       "object": {
         "type": "string",
         "description": "The value or target entity."
+      },
+      "valid_from": {
+        "type": "string",
+        "description": "ISO date YYYY-MM-DD",
+        "default": ""
       }
     }
   }
-}
-`} language="json" />
+}`} language="json" />
 
 ## mnemosyne_triple_query
 
 <CodeBlock code={`{
   "name": "mnemosyne_triple_query",
-  "description": "Query the temporal knowledge graph for structured facts. Use for precise lookups and relationship traversal.",
+  "description": "Query the temporal knowledge graph for facts matching subject/predicate/object patterns.",
   "parameters": {
     "type": "object",
     "properties": {
       "subject": {
         "type": "string",
-        "description": "Filter by subject entity."
+        "description": "Filter by subject entity.",
+        "default": ""
       },
       "predicate": {
         "type": "string",
-        "description": "Filter by relationship type."
+        "description": "Filter by relationship type.",
+        "default": ""
       },
       "object": {
         "type": "string",
-        "description": "Filter by value or target entity."
+        "description": "Filter by value or target entity.",
+        "default": ""
       },
       "as_of": {
         "type": "string",
@@ -281,14 +452,13 @@ Complete JSON Schema for Mnemosyne tools exposed to agents.
       }
     }
   }
-}
-`} language="json" />
+}`} language="json" />
 
 ## mnemosyne_scratchpad_write
 
 <CodeBlock code={`{
   "name": "mnemosyne_scratchpad_write",
-  "description": "Write to the temporary scratchpad workspace for chain-of-thought and planning.",
+  "description": "Write a temporary note to the Mnemosyne scratchpad.",
   "parameters": {
     "type": "object",
     "required": ["content"],
@@ -299,99 +469,194 @@ Complete JSON Schema for Mnemosyne tools exposed to agents.
       }
     }
   }
-}
-`} language="json" />
+}`} language="json" />
 
 ## mnemosyne_scratchpad_read
 
 <CodeBlock code={`{
   "name": "mnemosyne_scratchpad_read",
-  "description": "Read all entries from the temporary scratchpad workspace.",
+  "description": "Read the Mnemosyne scratchpad entries.",
   "parameters": {
     "type": "object",
     "properties": {}
   }
-}
-`} language="json" />
+}`} language="json" />
 
 ## mnemosyne_scratchpad_clear
 
 <CodeBlock code={`{
   "name": "mnemosyne_scratchpad_clear",
-  "description": "Clear all entries from the scratchpad workspace.",
+  "description": "Clear all entries from the Mnemosyne scratchpad.",
   "parameters": {
     "type": "object",
     "properties": {}
   }
-}
-`} language="json" />
+}`} language="json" />
 
 ## mnemosyne_export
 
 <CodeBlock code={`{
   "name": "mnemosyne_export",
-  "description": "Export memories to a file for backup or migration.",
+  "description": "Export all Mnemosyne memories to a JSON file for backup or migration.",
   "parameters": {
     "type": "object",
     "required": ["output_path"],
     "properties": {
       "output_path": {
         "type": "string",
-        "description": "File path for export (JSON format)."
+        "description": "File path to write the export JSON (e.g., /tmp/mnemosyne_backup.json)."
       }
     }
   }
-}
-`} language="json" />
+}`} language="json" />
 
 ## mnemosyne_import
 
 <CodeBlock code={`{
   "name": "mnemosyne_import",
-  "description": "Import memories from a previously exported file.",
+  "description": "Import Mnemosyne memories from a JSON file or another memory provider (Hindsight, Mem0). Idempotent by default.",
   "parameters": {
     "type": "object",
-    "required": ["input_path"],
     "properties": {
       "input_path": {
         "type": "string",
-        "description": "File path to import from (JSON format)."
+        "description": "File path to read the export JSON from (for file imports)."
+      },
+      "provider": {
+        "type": "string",
+        "description": "Provider to import from: 'hindsight', 'mem0'. Requires api_key."
+      },
+      "api_key": {
+        "type": "string",
+        "description": "API key for the source provider (can also be set via env var)."
+      },
+      "user_id": {
+        "type": "string",
+        "description": "Filter imported memories by user ID (provider-specific)."
+      },
+      "agent_id": {
+        "type": "string",
+        "description": "Filter imported memories by agent ID (provider-specific)."
+      },
+      "base_url": {
+        "type": "string",
+        "description": "Base URL for self-hosted provider instances."
+      },
+      "dry_run": {
+        "type": "boolean",
+        "description": "If true, validate and transform but don't write any memories.",
+        "default": false
+      },
+      "channel_id": {
+        "type": "string",
+        "description": "Channel to assign imported memories to."
+      },
+      "force": {
+        "type": "boolean",
+        "description": "If true, overwrite existing records instead of skipping.",
+        "default": false
       }
     }
   }
-}
-`} language="json" />
+}`} language="json" />
 
 ## mnemosyne_diagnose
 
 <CodeBlock code={`{
   "name": "mnemosyne_diagnose",
-  "description": "Run diagnostic checks on the memory system: database integrity, index health, storage stats.",
+  "description": "Run PII-safe diagnostics on Mnemosyne installation. Checks dependencies, database state, and vector search readiness. Never includes memory content or API keys.",
   "parameters": {
     "type": "object",
     "properties": {}
   }
-}
-`} language="json" />
+}`} language="json" />
+
+## mnemosyne_graph_query
+
+<CodeBlock code={`{
+  "name": "mnemosyne_graph_query",
+  "description": "Traverse the memory graph to find memories related to a seed memory. Uses multi-hop BFS through graph_edges with optional edge_type and min_weight filtering.",
+  "parameters": {
+    "type": "object",
+    "required": ["seed_memory_id"],
+    "properties": {
+      "seed_memory_id": {
+        "type": "string",
+        "description": "Memory ID to start traversal from."
+      },
+      "max_hops": {
+        "type": "integer",
+        "description": "Maximum traversal depth (default: 2).",
+        "default": 2
+      },
+      "edge_type": {
+        "type": "string",
+        "description": "Filter by edge type (empty = all types, e.g. 'ctx', 'rel', 'syn', 'references', 'caused', 'supersedes').",
+        "default": ""
+      },
+      "min_weight": {
+        "type": "number",
+        "description": "Minimum edge weight threshold (0.0 to 1.0, default: 0.0 = no filter).",
+        "default": 0.0
+      }
+    }
+  }
+}`} language="json" />
+
+## mnemosyne_graph_link
+
+<CodeBlock code={`{
+  "name": "mnemosyne_graph_link",
+  "description": "Declare a semantic edge between two memories in the graph. Use this to explicitly link related memories so graph traversal finds them.",
+  "parameters": {
+    "type": "object",
+    "required": ["source_id", "target_id", "relationship"],
+    "properties": {
+      "source_id": {
+        "type": "string",
+        "description": "Source memory ID."
+      },
+      "target_id": {
+        "type": "string",
+        "description": "Target memory ID."
+      },
+      "relationship": {
+        "type": "string",
+        "description": "Relationship label (e.g. 'references', 'caused', 'supersedes', 'related_to')."
+      },
+      "weight": {
+        "type": "number",
+        "description": "Edge weight from 0.0 to 1.0 (default: 0.5).",
+        "default": 0.5
+      }
+    }
+  }
+}`} language="json" />
 
 ## Tool Selection Guide
 
 <Callout type="info" title="MCP vs Hermes Plugin Tools">
 **All 23 tools** are available via the Hermes Agent plugin. The MCP server exposes a subset (remember, recall, sleep, scratchpad, stats) plus triple tools by name but not by discovery.
 
-> Full tool list: `mnemosyne_remember`, `mnemosyne_recall`, `mnemosyne_sleep`, `mnemosyne_stats`, `mnemosyne_update`, `mnemosyne_forget`, `mnemosyne_invalidate`, `mnemosyne_get`, `mnemosyne_validate`, `mnemosyne_export`, `mnemosyne_import`, `mnemosyne_diagnose`, `mnemosyne_triple_add`, `mnemosyne_triple_query`, `mnemosyne_scratchpad_write`, `mnemosyne_scratchpad_read`, `mnemosyne_scratchpad_clear`, `mnemosyne_shared_remember`, `mnemosyne_shared_recall`, `mnemosyne_shared_forget`, `mnemosyne_shared_stats`, `mnemosyne_graph_query`, `mnemosyne_graph_link`.
+> Full tool list: `mnemosyne_remember`, `mnemosyne_recall`, `mnemosyne_shared_remember`, `mnemosyne_shared_recall`, `mnemosyne_shared_forget`, `mnemosyne_shared_stats`, `mnemosyne_sleep`, `mnemosyne_stats`, `mnemosyne_get`, `mnemosyne_forget`, `mnemosyne_update`, `mnemosyne_invalidate`, `mnemosyne_validate`, `mnemosyne_triple_add`, `mnemosyne_triple_query`, `mnemosyne_scratchpad_write`, `mnemosyne_scratchpad_read`, `mnemosyne_scratchpad_clear`, `mnemosyne_export`, `mnemosyne_import`, `mnemosyne_diagnose`, `mnemosyne_graph_query`, `mnemosyne_graph_link`.
 </Callout>
 
 | Goal | Tool | Example |
 |------|------|---------|
 | Store general info | `mnemosyne_remember` | User preferences, decisions |
 | Retrieve context | `mnemosyne_recall` | "What did we decide?" |
+| Store cross-agent surface info | `mnemosyne_shared_remember` | User metadata, workflow state |
+| Search shared surface | `mnemosyne_shared_recall` | Cross-agent preferences |
+| Delete shared surface memory | `mnemosyne_shared_forget` | Remove stale shared state |
+| Check shared surface health | `mnemosyne_shared_stats` | Shared DB path, counts |
 | Consolidate memories | `mnemosyne_sleep` | End-of-session cleanup |
 | Check system health | `mnemosyne_stats` | Memory counts, DB size |
 | Run diagnostics | `mnemosyne_diagnose` | DB integrity, index health |
 | Remove bad data | `mnemosyne_invalidate` | Outdated information |
 | Permanently delete memory | `mnemosyne_forget` | Wrong information, retractions |
 | Update existing memory | `mnemosyne_update` | Correct facts, promote inferences |
+| Retrieve single memory by ID | `mnemosyne_get` | "Show me memory abc-123" |
+| Cross-agent validation | `mnemosyne_validate` | Attest or correct memory |
 | Store relational facts | `mnemosyne_triple_add` | Team structure, dependencies |
 | Precise lookup | `mnemosyne_triple_query` | "Who reports to Carol?" |
 | Export memories | `mnemosyne_export` | Backup, migration |
@@ -399,6 +664,8 @@ Complete JSON Schema for Mnemosyne tools exposed to agents.
 | Write scratchpad | `mnemosyne_scratchpad_write` | Chain-of-thought planning |
 | Read scratchpad | `mnemosyne_scratchpad_read` | Review planning notes |
 | Clear scratchpad | `mnemosyne_scratchpad_clear` | Reset workspace |
+| Graph traversal | `mnemosyne_graph_query` | Find related memories |
+| Link memories | `mnemosyne_graph_link` | Declare semantic edges |
 
 <Callout type="success" title="Schema Validation">
 Tool calls are validated against these schemas before execution. Invalid parameters return a structured error that the agent can use to self-correct.
