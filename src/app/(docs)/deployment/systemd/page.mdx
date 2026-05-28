@@ -1,14 +1,3 @@
-export const metadata = {
-  title: 'Systemd Service — Linux Daemon Deployment',
-  description: 'Deploy Mnemosyne as a systemd service on Linux: unit file configuration, auto-restart, log management, and resource limits for reliable long-running agents.',
-  openGraph: {
-    images: ['/og-image.jpg?v=1'],
-  },
-  twitter: {
-    card: 'summary_large_image',
-  },
-};
-
 # Systemd Deployment
 
 Run Mnemosyne as a systemd service on Linux.
@@ -27,7 +16,7 @@ User=mnemosyne
 Group=mnemosyne
 WorkingDirectory=/opt/mnemosyne
 Environment="MNEMOSYNE_DATA_DIR=/opt/mnemosyne/data"
-ExecStart=/opt/mnemosyne/venv/bin/python -m mnemosyne --host 0.0.0.0 --port 8090 --db-path /opt/mnemosyne/data/mnemosyne.db
+ExecStart=/opt/mnemosyne/venv/bin/python -m mnemosyne.mcp_server --transport sse --host 0.0.0.0 --port 8080 --db-path /opt/mnemosyne/data/mnemosyne.db
 Restart=always
 RestartSec=5
 

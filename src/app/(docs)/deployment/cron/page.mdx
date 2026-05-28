@@ -1,14 +1,3 @@
-export const metadata = {
-  title: 'Cron Jobs — Scheduled Mnemosyne Tasks',
-  description: 'Configure cron jobs for Mnemosyne: scheduled memory consolidation and automated maintenance using crontab and hermes mnemosyne sleep.',
-  openGraph: {
-    images: ['/og-image.jpg?v=1'],
-  },
-  twitter: {
-    card: 'summary_large_image',
-  },
-};
-
 # Cron Deployment
 
 Run Mnemosyne consolidation and maintenance as scheduled batch processes.
@@ -39,14 +28,14 @@ Consolidation runs through the Hermes plugin command:
 hermes mnemosyne sleep
 
 # Or programmatically in Python
-from mnemosyne import Memory
+from mnemosyne import Mnemosyne
 
-mem = Memory(db_path="/data/mnemosyne.db")
+mem = Mnemosyne(db_path="/data/mnemosyne.db")
 mem.sleep()  # Run consolidation
 `} language="python" />
 
 <Callout type="warning" title="No Standalone Consolidate Command">
-There is no `mnemosyne-consolidate` CLI tool. Consolidation is only available via `hermes mnemosyne sleep` or by calling `mem.sleep()` programmatically.
+There is no `mnemosyne-consolidate` CLI tool. Consolidation is only available via `mnemosyne_sleep` tool or by calling `mem.sleep()` programmatically.
 </Callout>
 
 ## Backup Script

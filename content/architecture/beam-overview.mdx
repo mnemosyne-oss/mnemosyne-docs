@@ -113,9 +113,21 @@ Call `mem.sleep()` to run a consolidation cycle that:
 
 Sleep is triggered explicitly — it does not run automatically on a timer.
 
-## V2 Features
+## MEMORIA (v3.0+)
 
-Mnemosyne v2.8.0 builds on the core BEAM architecture with these capabilities:
+MEMORIA is a structured fact extraction and retrieval layer added in v3.0. It builds five new SQLite tables alongside the standard memory tiers:
+
+| Table | What it stores | Key columns |
+|-------|---------------|-------------|
+| `memoria_facts` | Key-value facts (metrics, dates, versions) | key, value, fact_type, version_id |
+| `memoria_timelines` | Chronological event index | date, description, session_id |
+| `memoria_kg` | Subject-predicate-object triples | subject, predicate, object |
+| `memoria_instructions` | Extracted user instructions | instruction_text, context_snippet |
+| `memoria_preferences` | User preference statements | preference_key, preference_value |
+
+During `remember()`, MEMORIA regex-mining extracts structured data from content and stores it in these tables. Retrieval routes queries by ability type (IE: fact lookups, TR: timeline searches, CR: negation queries, etc.).
+
+## V3 Features
 
 ### Entity Extraction
 

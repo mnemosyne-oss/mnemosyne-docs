@@ -148,23 +148,19 @@ Complete JSON Schema for Mnemosyne tools exposed to agents.
 }
 `} language="json" />
 
-## mnemosyne_get_stats
+## mnemosyne_stats
 
 <CodeBlock code={`{
-  "name": "mnemosyne_get_stats",
+  "name": "mnemosyne_stats",
   "description": "Get memory system statistics including entry counts across all memory stores, database size, and consolidation status.",
   "parameters": {
     "type": "object",
-    "properties": {
-      "bank": {
-        "type": "string",
-        "description": "Target memory bank for statistics (default: all banks)."
-      }
-    }
+    "properties": {}
   }
 }
 `} language="json" />
 
+## mnemosyne_get
 ## mnemosyne_forget
 
 <CodeBlock code={`{
@@ -381,9 +377,9 @@ Complete JSON Schema for Mnemosyne tools exposed to agents.
 ## Tool Selection Guide
 
 <Callout type="info" title="MCP vs Hermes Plugin Tools">
-**MCP-native tools** (available via `mnemosyne serve --mcp`): `mnemosyne_remember`, `mnemosyne_recall`, `mnemosyne_sleep`, `mnemosyne_get_stats`, `mnemosyne_scratchpad_write`, `mnemosyne_scratchpad_read`, `mnemosyne_scratchpad_clear`.
+**All 23 tools** are available via the Hermes Agent plugin. The MCP server exposes a subset (remember, recall, sleep, scratchpad, stats) plus triple tools by name but not by discovery.
 
-**Hermes plugin tools** (available via Hermes Agent plugin): `mnemosyne_forget`, `mnemosyne_update`, `mnemosyne_invalidate`, `mnemosyne_export`, `mnemosyne_import`, `mnemosyne_triple_add`, `mnemosyne_triple_query`, `mnemosyne_diagnose`.
+> Full tool list: `mnemosyne_remember`, `mnemosyne_recall`, `mnemosyne_sleep`, `mnemosyne_stats`, `mnemosyne_update`, `mnemosyne_forget`, `mnemosyne_invalidate`, `mnemosyne_get`, `mnemosyne_validate`, `mnemosyne_export`, `mnemosyne_import`, `mnemosyne_diagnose`, `mnemosyne_triple_add`, `mnemosyne_triple_query`, `mnemosyne_scratchpad_write`, `mnemosyne_scratchpad_read`, `mnemosyne_scratchpad_clear`, `mnemosyne_shared_remember`, `mnemosyne_shared_recall`, `mnemosyne_shared_forget`, `mnemosyne_shared_stats`, `mnemosyne_graph_query`, `mnemosyne_graph_link`.
 </Callout>
 
 | Goal | Tool | Example |
@@ -391,7 +387,7 @@ Complete JSON Schema for Mnemosyne tools exposed to agents.
 | Store general info | `mnemosyne_remember` | User preferences, decisions |
 | Retrieve context | `mnemosyne_recall` | "What did we decide?" |
 | Consolidate memories | `mnemosyne_sleep` | End-of-session cleanup |
-| Check system health | `mnemosyne_get_stats` | Memory counts, DB size |
+| Check system health | `mnemosyne_stats` | Memory counts, DB size |
 | Run diagnostics | `mnemosyne_diagnose` | DB integrity, index health |
 | Remove bad data | `mnemosyne_invalidate` | Outdated information |
 | Permanently delete memory | `mnemosyne_forget` | Wrong information, retractions |

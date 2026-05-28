@@ -1,42 +1,28 @@
-export const metadata = {
-  title: 'Docker Deployment — Containerized Mnemosyne',
-  description: 'Run Mnemosyne in Docker: official images, Docker Compose setup, volume mounting for persistent storage, multi-stage builds, and production best practices.',
-  openGraph: {
-    images: ['/og-image.jpg?v=1'],
-  },
-  twitter: {
-    card: 'summary_large_image',
-  },
-};
-
 # Docker Deployment
 
 Containerized deployment with bind mounts for persistence.
 
 ## Dockerfile
 
-<CodeBlock code={`FROM python:3.12-slim
+|<CodeBlock code={`FROM python:3.12-slim
 
 WORKDIR /app
 
-# Install dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Install mnemosyne from PyPI
+RUN pip install --no-cache-dir mnemosyne-memory
 
 # Install SQLite with FTS5
 RUN apt-get update && apt-get install -y sqlite3 && rm -rf /var/lib/apt/lists/*
 
-# Copy application
-COPY . .
-
 # Create data directory
 RUN mkdir -p /data
 
-EXPOSE 8090
+EXPOSE 8080
 
 ENV MNEMOSYNE_DATA_DIR=/data
 
-CMD ["python", "-m", "mnemosyne"]
+# MCP server over SSE transport
+CMD ["python", "-m", "mnemosyne.mcp_server", "--transport", "sse", "--host", "0.0.0.0", "--port", "8080"]
 `} language="dockerfile" />
 
 ## docker-compose.yml
@@ -47,15 +33,14 @@ services:
   mnemosyne:
     build: .
     ports:
-      - "8090:8090"
+      - "8080:8080"
     volumes:
       - mnemosyne-data:/data
     environment:
       - MNEMOSYNE_DATA_DIR=/data
-      - OPENAI_API_KEY=***
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8090/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -71,7 +56,7 @@ volumes:
 
 ## Health Check
 
-<CodeBlock code={`curl http://localhost:8090/health
+<CodeBlock code={`curl http://localhost:8080/health
 `} language="bash" />
 
 ## Backup Volume
