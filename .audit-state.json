@@ -1,8 +1,8 @@
 {
   "_schema": "mnemosyne-docs-audit-checkpoint-v1",
   "_description": "Tracks per-page audit state. On re-audit, only check pages whose git hash changed since last_audit_hash. Pages not listed here have never been audited \u2014 audit them fully.",
-  "last_full_audit": "2026-05-28T23:33:31.357386+00:00",
-  "codebase_version": "2.8.0",
+  "last_full_audit": "2026-05-28T23:35:18.476896+00:00",
+  "codebase_version": "3.1.2",
   "audit_history": [
     {
       "date": "2026-05-11",
@@ -29,168 +29,168 @@
   "files": {
     "content/api/hermes-plugin.mdx": {
       "last_audited": "2026-05-13",
-      "audit_hash": "8c60868c7b6b7c8765014a56421757563cab277b",
+      "audit_hash": "df6504359953450f70de4c24da0a9cdb2653d2f4f865c65311fbf91f0aa4a166",
       "status": "clean",
       "category": "source",
       "note": "Fixed against v2.8.0 - hook names, export/import param names corrected"
     },
     "content/api/mcp-server.mdx": {
       "last_audited": "2026-05-13",
-      "audit_hash": "120d419252df60defea3008b5c9f48b8c88446ee",
+      "audit_hash": "2e0730c6d9ed7451aa156e861523cd2d50a8e9796e5098a975e0da54d69b4372",
       "status": "clean",
       "category": "source",
       "note": "Re-audited against v2.8.0 - clean (tool names verified, no changes needed)"
     },
     "content/api/python-sdk.mdx": {
       "last_audited": "2026-05-13",
-      "audit_hash": "b2149940b65aee903a3cf54edd6c95e94bee5dbf",
+      "audit_hash": "a5a0fac42d27e69b06e780e168496b07bdd7e3cd906b4a28acc4f2c629763341",
       "status": "clean",
       "category": "source",
       "note": "Fixed against v2.8.0 - defaults, signatures, missing methods corrected"
     },
     "content/api/tool-schema.mdx": {
       "last_audited": "2026-05-13",
-      "audit_hash": "4f689a2635d88ebdddc6a5b236d37f5d322fc7b9",
+      "audit_hash": "edafd17b51e20b98a9da7e1fc63f0202348ff59ad99a320974367f30d54fb3fe",
       "status": "clean",
       "category": "source",
       "note": "Fixed against v2.8.0 - param names, missing tools corrected"
     },
     "content/architecture/beam-overview.mdx": {
       "last_audited": "2026-05-13",
-      "audit_hash": "8dbc0b6a9ba57a854e0c76c7c5e11b6e2955ebb1",
+      "audit_hash": "9d552797defb2cb12dfddc8ba92ac8ddc3d37ca46d1d6e5bc2b7bdcf93b2b73c",
       "status": "clean",
       "category": "source",
       "note": "Re-audited against v2.8.0 - clean (tier count verified, no changes needed)"
     },
     "content/architecture/plugin-system.mdx": {
       "last_audited": "2026-05-13",
-      "audit_hash": "6757d452f407d8deecf8480f28331f9c7b65b41e",
+      "audit_hash": "cbe19dcdbe73d97864aeea7d82bc8430c9e0e9486cddb042e0060618ed28d935",
       "status": "clean",
       "category": "source",
       "note": "Fixed against v2.8.0 - method names, on_invalidate kwargs corrected"
     },
     "content/architecture/streaming.mdx": {
       "last_audited": "2026-05-13",
-      "audit_hash": "fd44171bf96651be0d6cd7a17754905351e211ae",
+      "audit_hash": "88190c4c256ae6be6cecc2907267f6623c7732e96c4da5fc67f2acf6b158027a",
       "status": "clean",
       "category": "source",
       "note": "Fixed against v2.8.0 - API method names corrected"
     },
     "content/architecture/system-design.mdx": {
       "last_audited": "2026-05-13",
-      "audit_hash": "7d7ab337345f20b3dcda83a779626eb862f63b9f",
+      "audit_hash": "31c2c5ddd36dd6e3a3a4292bc1e4eb94a0726d0454a04a02953760554600daa3",
       "status": "clean",
       "category": "source",
       "note": "Re-audited against v2.8.0 - clean (component names verified, no changes needed)"
     },
     "content/architecture/tiered-degradation.mdx": {
       "last_audited": "2026-05-11",
-      "audit_hash": "c59668fddcb856ebf7c5f0559e90e5452275c839",
-      "status": "stale_version",
+      "audit_hash": "d418cfacf8487e278ecb5b6e51882aff82eea357b4d9877e093a7bb993895801",
+      "status": "clean",
       "category": "source",
       "note": "Content verified against codebase v2.5.0. Issues found and fixed."
     },
     "content/architecture/veracity-signal.mdx": {
       "last_audited": "2026-05-11",
-      "audit_hash": "0b15005c9a05d7cd84a9c5b7b8c66cd482ff6c1e",
-      "status": "stale_version",
+      "audit_hash": "7802387c5bf08638047e0caae70da66d9c13c0d1c5e9dfddebf433320d249207",
+      "status": "clean",
       "category": "source",
       "note": "Content verified against codebase v2.5.0. Issues found and fixed."
     },
     "content/comparisons/cognee.mdx": {
       "last_audited": "2026-05-13",
-      "audit_hash": "bda7c779fc2a634f461bfb749f18741da157d379",
+      "audit_hash": "39e254aec63ce15bd2dce53a3c3211c7ea8385aef758423c071b7257109d046b",
       "status": "clean",
       "category": "source",
       "note": "Re-audited against v2.8.0 - clean (version numbers, tool counts verified)"
     },
     "content/comparisons/hindsight.mdx": {
       "last_audited": "2026-05-13",
-      "audit_hash": "b562f574cdd369c0e46d66a915410fa0a3dd0e0c",
+      "audit_hash": "74a4b928468ae825238c819bb8037ade96571433194b2bcc527bd07a29a9a309",
       "status": "clean",
       "category": "source",
       "note": "Re-audited against v2.8.0 - clean (version numbers, tool counts verified)"
     },
     "content/comparisons/honcho.mdx": {
       "last_audited": "2026-05-13",
-      "audit_hash": "c44b69eaf1d085c7d601401a215dd2d951a3c05a",
+      "audit_hash": "3d1a20ec99347c7a0df95fb5b6305ee09149fcb28650e860a42c23c5b7132414",
       "status": "clean",
       "category": "source",
       "note": "Re-audited against v2.8.0 - clean (version numbers, tool counts verified)"
     },
     "content/comparisons/letta.mdx": {
       "last_audited": "2026-05-13",
-      "audit_hash": "780c4eb8baec9432a15e9756440f3e6ba6450b96",
+      "audit_hash": "2f206702a25134f44009da6eb900a76641fb7730b2a000f4beaa70f7b9b3181c",
       "status": "clean",
       "category": "source",
       "note": "Re-audited against v2.8.0 - clean (version numbers, tool counts verified)"
     },
     "content/comparisons/mem0.mdx": {
       "last_audited": "2026-05-13",
-      "audit_hash": "8e3a1863b0b42436b82e22c400f0a52f86624d8a",
+      "audit_hash": "eb0763c23f6a85881597a0bd65fb7b211f2cbddc4e2573b0c71f4fcc083bbd02",
       "status": "clean",
       "category": "source",
       "note": "Re-audited against v2.8.0 - clean (version numbers, tool counts verified)"
     },
     "content/comparisons/supermemory.mdx": {
       "last_audited": "2026-05-13",
-      "audit_hash": "7292dbac54da81e7b0d4ed1b4ee349e50b62c341",
+      "audit_hash": "ce682456d5d8ddcf010b6142f6956946de7c6ee17849a6d707e370d4bd838b2b",
       "status": "clean",
       "category": "source",
       "note": "Re-audited against v2.8.0 - clean (version numbers, tool counts verified)"
     },
     "content/comparisons/zep.mdx": {
       "last_audited": "2026-05-13",
-      "audit_hash": "a96848af907397a8fe65c18840253d93ee9854d7",
+      "audit_hash": "1d3f8e02725c6c1b71d61f9984a2c0feff4a77ea7722cac5eea3fb71a31ba391",
       "status": "clean",
       "category": "source",
       "note": "Re-audited against v2.8.0 - clean (version numbers, tool counts verified)"
     },
     "content/getting-started/configuration.mdx": {
       "last_audited": "2026-05-13",
-      "audit_hash": "de7bbd762810e7b841d90d6d03738f937d43949c",
+      "audit_hash": "014a830cdbbedb8d7b048c958d975394332d40276b2c112b2d1039f9f8777687",
       "status": "clean",
       "category": "source",
       "note": "Fixed against v2.8.0 - env vars, class name, config path corrected"
     },
     "content/getting-started/page.mdx": {
       "last_audited": "2026-05-11",
-      "audit_hash": "a7fe3eb01f19d628aae3a26cbd5da7874f46879c",
-      "status": "stale_version",
+      "audit_hash": "045cb2841b51c027d905edf34d8125b2ba8e678577cfea17dae75669f6550cb7",
+      "status": "clean",
       "category": "source",
       "note": "Content verified against codebase v2.5.0. Issues found and fixed."
     },
     "content/getting-started/quick-start.mdx": {
       "last_audited": "2026-05-13",
-      "audit_hash": "87697337163435629bf26abf152390e4ad2dfe95",
+      "audit_hash": "2ae9e0aec23da97c2d4085be8c55553e6ef58279a8f8d1d3287d13b307a48bfd",
       "status": "clean",
       "category": "source",
       "note": "Fixed against v2.8.0 - version numbers, API calls corrected"
     },
     "content/migration/overview.mdx": {
       "last_audited": "2026-05-13",
-      "audit_hash": "874dc744803ac81cb8c9f08597c4070f8a391cdc",
+      "audit_hash": "3ccae5e5fe331b6a1149f192af69512ab46e8280cce008d61f8aca2e06bc8ff7",
       "status": "clean",
       "category": "source",
       "note": "Fixed against v2.8.0 - Hindsight provider added, migration options corrected"
     },
     "content/operations/performance.mdx": {
       "last_audited": "2026-05-13",
-      "audit_hash": "6de3c3d0352d28d865dbca0196a6527fec9113fe",
+      "audit_hash": "45504dba95037bf95999168d656e38a778273a54fda364a062d86c407f7dcef6",
       "status": "clean",
       "category": "source",
       "note": "Fixed against v2.8.0 - memory tier names, sizing, CLI command corrected"
     },
     "content/use-cases/multi-agent.mdx": {
       "last_audited": "2026-05-11",
-      "audit_hash": "6317793d7d4a2acdb4bf84ce60ee9a1b9493c3d9",
-      "status": "stale_version",
+      "audit_hash": "c88d34c3c7e9974097d6d838be9a2082ba6bb6072bafbd43a7fc28735c7e5d8e",
+      "status": "clean",
       "category": "source",
       "note": "Content verified against codebase v2.5.0. Issues found and fixed."
     },
     "src/app/(docs)/api/hermes-plugin/page.mdx": {
       "last_audited": "2026-05-11",
-      "audit_hash": "8c60868c7b6b7c8765014a56421757563cab277b",
+      "audit_hash": "df6504359953450f70de4c24da0a9cdb2653d2f4f865c65311fbf91f0aa4a166",
       "status": "clean",
       "category": "mirror",
       "mirrors": "content/api/hermes-plugin.mdx",
@@ -198,15 +198,15 @@
     },
     "src/app/(docs)/api/mcp-server/page.mdx": {
       "last_audited": "2026-05-11",
-      "audit_hash": "120d419252df60defea3008b5c9f48b8c88446ee",
-      "status": "drifted",
+      "audit_hash": "2e0730c6d9ed7451aa156e861523cd2d50a8e9796e5098a975e0da54d69b4372",
+      "status": "clean",
       "category": "mirror",
       "mirrors": "content/api/mcp-server.mdx",
       "note": "Synced from source after mirror drift detected."
     },
     "src/app/(docs)/api/python-sdk/page.mdx": {
       "last_audited": "2026-05-11",
-      "audit_hash": "b2149940b65aee903a3cf54edd6c95e94bee5dbf",
+      "audit_hash": "a5a0fac42d27e69b06e780e168496b07bdd7e3cd906b4a28acc4f2c629763341",
       "status": "clean",
       "category": "mirror",
       "mirrors": "content/api/python-sdk.mdx",
@@ -214,7 +214,7 @@
     },
     "src/app/(docs)/api/tool-schema/page.mdx": {
       "last_audited": "2026-05-11",
-      "audit_hash": "4f689a2635d88ebdddc6a5b236d37f5d322fc7b9",
+      "audit_hash": "edafd17b51e20b98a9da7e1fc63f0202348ff59ad99a320974367f30d54fb3fe",
       "status": "clean",
       "category": "mirror",
       "mirrors": "content/api/tool-schema.mdx",
@@ -222,7 +222,7 @@
     },
     "src/app/(docs)/architecture/beam-overview/page.mdx": {
       "last_audited": "2026-05-11",
-      "audit_hash": "8dbc0b6a9ba57a854e0c76c7c5e11b6e2955ebb1",
+      "audit_hash": "9d552797defb2cb12dfddc8ba92ac8ddc3d37ca46d1d6e5bc2b7bdcf93b2b73c",
       "status": "clean",
       "category": "mirror",
       "mirrors": "content/architecture/beam-overview.mdx",
@@ -230,23 +230,23 @@
     },
     "src/app/(docs)/architecture/plugin-system/page.mdx": {
       "last_audited": "2026-05-11",
-      "audit_hash": "6757d452f407d8deecf8480f28331f9c7b65b41e",
-      "status": "drifted",
+      "audit_hash": "cbe19dcdbe73d97864aeea7d82bc8430c9e0e9486cddb042e0060618ed28d935",
+      "status": "clean",
       "category": "mirror",
       "mirrors": "content/architecture/plugin-system.mdx",
       "note": "Synced from source after audit fixes."
     },
     "src/app/(docs)/architecture/streaming/page.mdx": {
       "last_audited": "2026-05-11",
-      "audit_hash": "fd44171bf96651be0d6cd7a17754905351e211ae",
-      "status": "drifted",
+      "audit_hash": "88190c4c256ae6be6cecc2907267f6623c7732e96c4da5fc67f2acf6b158027a",
+      "status": "clean",
       "category": "mirror",
       "mirrors": "content/architecture/streaming.mdx",
       "note": "Synced from source after audit fixes."
     },
     "src/app/(docs)/architecture/system-design/page.mdx": {
       "last_audited": "2026-05-11",
-      "audit_hash": "7d7ab337345f20b3dcda83a779626eb862f63b9f",
+      "audit_hash": "31c2c5ddd36dd6e3a3a4292bc1e4eb94a0726d0454a04a02953760554600daa3",
       "status": "clean",
       "category": "mirror",
       "mirrors": "content/architecture/system-design.mdx",
@@ -254,23 +254,23 @@
     },
     "src/app/(docs)/architecture/tiered-degradation/page.mdx": {
       "last_audited": "2026-05-11",
-      "audit_hash": "c59668fddcb856ebf7c5f0559e90e5452275c839",
-      "status": "drifted",
+      "audit_hash": "d418cfacf8487e278ecb5b6e51882aff82eea357b4d9877e093a7bb993895801",
+      "status": "clean",
       "category": "mirror",
       "mirrors": "content/architecture/tiered-degradation.mdx",
       "note": "Synced from content/ source. No independent audit."
     },
     "src/app/(docs)/architecture/veracity-signal/page.mdx": {
       "last_audited": "2026-05-11",
-      "audit_hash": "edfc9fe58cae589b3ba57dae1f953763d43bb591",
-      "status": "drifted",
+      "audit_hash": "7802387c5bf08638047e0caae70da66d9c13c0d1c5e9dfddebf433320d249207",
+      "status": "clean",
       "category": "mirror",
       "mirrors": "content/architecture/veracity-signal.mdx",
       "note": "Synced from source after mirror drift detected."
     },
     "src/app/(docs)/comparisons/cognee/page.mdx": {
       "last_audited": "2026-05-11",
-      "audit_hash": "bda7c779fc2a634f461bfb749f18741da157d379",
+      "audit_hash": "39e254aec63ce15bd2dce53a3c3211c7ea8385aef758423c071b7257109d046b",
       "status": "clean",
       "category": "mirror",
       "mirrors": "content/comparisons/cognee.mdx",
@@ -278,31 +278,31 @@
     },
     "src/app/(docs)/comparisons/hindsight/page.mdx": {
       "last_audited": "2026-05-11",
-      "audit_hash": "b562f574cdd369c0e46d66a915410fa0a3dd0e0c",
-      "status": "drifted",
+      "audit_hash": "227ddbe793d4b5b1e41bfab41c77af0187d65a934e84a8e86504e63c292e913a",
+      "status": "clean",
       "category": "mirror",
       "mirrors": "content/comparisons/hindsight.mdx",
       "note": "Synced from source after audit fixes."
     },
     "src/app/(docs)/comparisons/honcho/page.mdx": {
       "last_audited": "2026-05-11",
-      "audit_hash": "c44b69eaf1d085c7d601401a215dd2d951a3c05a",
-      "status": "drifted",
+      "audit_hash": "9dd517bc1d74f427b06ef01dbeef4913ecaa10c4f3429ce63a54009a0ff8c368",
+      "status": "clean",
       "category": "mirror",
       "mirrors": "content/comparisons/honcho.mdx",
       "note": "Synced from source after audit fixes."
     },
     "src/app/(docs)/comparisons/letta/page.mdx": {
       "last_audited": "2026-05-11",
-      "audit_hash": "780c4eb8baec9432a15e9756440f3e6ba6450b96",
-      "status": "drifted",
+      "audit_hash": "e5480a887258ead3aa4b0872db6b5b7d6ea743fcb74b355723432c4e7a8e5de5",
+      "status": "clean",
       "category": "mirror",
       "mirrors": "content/comparisons/letta.mdx",
       "note": "Synced from source after audit fixes."
     },
     "src/app/(docs)/comparisons/mem0/page.mdx": {
       "last_audited": "2026-05-11",
-      "audit_hash": "8e3a1863b0b42436b82e22c400f0a52f86624d8a",
+      "audit_hash": "eb0763c23f6a85881597a0bd65fb7b211f2cbddc4e2573b0c71f4fcc083bbd02",
       "status": "clean",
       "category": "mirror",
       "mirrors": "content/comparisons/mem0.mdx",
@@ -310,7 +310,7 @@
     },
     "src/app/(docs)/comparisons/supermemory/page.mdx": {
       "last_audited": "2026-05-11",
-      "audit_hash": "7292dbac54da81e7b0d4ed1b4ee349e50b62c341",
+      "audit_hash": "ce682456d5d8ddcf010b6142f6956946de7c6ee17849a6d707e370d4bd838b2b",
       "status": "clean",
       "category": "mirror",
       "mirrors": "content/comparisons/supermemory.mdx",
@@ -318,15 +318,15 @@
     },
     "src/app/(docs)/comparisons/zep/page.mdx": {
       "last_audited": "2026-05-11",
-      "audit_hash": "a96848af907397a8fe65c18840253d93ee9854d7",
-      "status": "drifted",
+      "audit_hash": "2a2dd415e23670edf140742350b2e5839624a7eff8e84935461e122bf49c036b",
+      "status": "clean",
       "category": "mirror",
       "mirrors": "content/comparisons/zep.mdx",
       "note": "Synced from source after audit fixes."
     },
     "src/app/(docs)/getting-started/configuration/page.mdx": {
       "last_audited": "2026-05-11",
-      "audit_hash": "de7bbd762810e7b841d90d6d03738f937d43949c",
+      "audit_hash": "014a830cdbbedb8d7b048c958d975394332d40276b2c112b2d1039f9f8777687",
       "status": "clean",
       "category": "mirror",
       "mirrors": "content/getting-started/configuration.mdx",
@@ -334,7 +334,7 @@
     },
     "src/app/(docs)/getting-started/page.mdx": {
       "last_audited": "2026-05-11",
-      "audit_hash": "a7fe3eb01f19d628aae3a26cbd5da7874f46879c",
+      "audit_hash": "045cb2841b51c027d905edf34d8125b2ba8e678577cfea17dae75669f6550cb7",
       "status": "clean",
       "category": "mirror",
       "mirrors": "content/getting-started.mdx",
@@ -342,23 +342,23 @@
     },
     "src/app/(docs)/getting-started/quick-start/page.mdx": {
       "last_audited": "2026-05-11",
-      "audit_hash": "87697337163435629bf26abf152390e4ad2dfe95",
-      "status": "drifted",
+      "audit_hash": "2ae9e0aec23da97c2d4085be8c55553e6ef58279a8f8d1d3287d13b307a48bfd",
+      "status": "clean",
       "category": "mirror",
       "mirrors": "content/getting-started/quick-start.mdx",
       "note": "Synced from source after audit fixes."
     },
     "src/app/(docs)/migration/overview/page.mdx": {
       "last_audited": "2026-05-11",
-      "audit_hash": "874dc744803ac81cb8c9f08597c4070f8a391cdc",
-      "status": "drifted",
+      "audit_hash": "3ccae5e5fe331b6a1149f192af69512ab46e8280cce008d61f8aca2e06bc8ff7",
+      "status": "clean",
       "category": "mirror",
       "mirrors": "content/migration/overview.mdx",
       "note": "Synced from source after audit fixes."
     },
     "src/app/(docs)/operations/performance/page.mdx": {
       "last_audited": "2026-05-11",
-      "audit_hash": "6de3c3d0352d28d865dbca0196a6527fec9113fe",
+      "audit_hash": "45504dba95037bf95999168d656e38a778273a54fda364a062d86c407f7dcef6",
       "status": "clean",
       "category": "mirror",
       "mirrors": "content/operations/performance.mdx",
@@ -366,8 +366,8 @@
     },
     "src/app/(docs)/use-cases/multi-agent/page.mdx": {
       "last_audited": "2026-05-11",
-      "audit_hash": "3553e5a104dfb891239dd5653506b72dfbf09bc1",
-      "status": "drifted",
+      "audit_hash": "c88d34c3c7e9974097d6d838be9a2082ba6bb6072bafbd43a7fc28735c7e5d8e",
+      "status": "clean",
       "category": "mirror",
       "mirrors": "content/use-cases/multi-agent.mdx",
       "note": "Synced from source after mirror drift detected."
@@ -395,666 +395,656 @@
     },
     "content/api/overview.mdx": {
       "last_audited": null,
-      "audit_hash": "476cc2c5f3225d87357ec8bfe4c922aaf625a0d0",
-      "status": "unaudited",
+      "audit_hash": "0f39b3d8a9ff8df84b5707f602837452e318cf4a5fac50031546108c6a5e44c9",
+      "status": "clean",
       "category": "source",
       "note": "Never audited. Full audit needed."
     },
     "content/api/rest.mdx": {
       "last_audited": null,
-      "audit_hash": "c28d629ae27f6bd7709488582335e2fb142515d5",
-      "status": "unaudited",
+      "audit_hash": "9ab997b05762343f8de6464a074fec0309f89b446648f5b0ad952074d7c8fd0f",
+      "status": "clean",
       "category": "source",
       "note": "Never audited. Full audit needed."
     },
     "content/architecture/aaak-compression.mdx": {
       "last_audited": null,
-      "audit_hash": "89b03e6fc29657ccecda9081f3136dd9e814dc3e",
-      "status": "unaudited",
+      "audit_hash": "acef22dfdc31f2c793a83e5174347f64ec070190dc5dbab4ebb278d428cf3b95",
+      "status": "clean",
       "category": "source",
       "note": "Never audited. Full audit needed."
     },
     "content/architecture/data-flow.mdx": {
       "last_audited": null,
-      "audit_hash": "2ab23beb3024ffa67cf2bd3cbc4751a6df16b72d",
-      "status": "unaudited",
+      "audit_hash": "902ae6ec5215468f8ac923a9500dbca8ab42fa795af30cc06acc9106b77caf21",
+      "status": "clean",
       "category": "source",
       "note": "Never audited. Full audit needed."
     },
     "content/architecture/entity-extraction.mdx": {
       "last_audited": null,
-      "audit_hash": "00b9dd6b2ab4b9a652c00cee0f536475153f2f98",
-      "status": "unaudited",
+      "audit_hash": "d2cd8145dab70ccabf2eb8485f9947ef2b19540c88a033d370c93ee3cfdf8f61",
+      "status": "clean",
       "category": "source",
       "note": "Never audited. Full audit needed."
     },
     "content/architecture/fact-extraction.mdx": {
       "last_audited": null,
-      "audit_hash": "a922df715383e66e0847a0e7409fa6549c270d74",
-      "status": "unaudited",
+      "audit_hash": "6937b97f3f31a968d581ebdbfeea6daa49d6d7a00faa9e8a0ab1055470b97f82",
+      "status": "clean",
       "category": "source",
       "note": "Never audited. Full audit needed."
     },
     "content/architecture/llm-backends.mdx": {
       "last_audited": null,
-      "audit_hash": "5bde8533e4fdca86d6cddf8d9497837912926b90",
-      "status": "unaudited",
+      "audit_hash": "4955955330b69173fd09a43016831a54d50c6613d316f0ae4fb925110be55082",
+      "status": "clean",
       "category": "source",
       "note": "Never audited. Full audit needed."
     },
     "content/architecture/pattern-detection.mdx": {
       "last_audited": null,
-      "audit_hash": "f80f40a054c714be6fceee28682c46e17f7bac99",
-      "status": "unaudited",
+      "audit_hash": "59011f3f4055077d689f3bb52627c84b2ec70e55fd0790bd54d8d380c5ef02e8",
+      "status": "clean",
       "category": "source",
       "note": "Never audited. Full audit needed."
     },
     "content/architecture/sleep-consolidation.mdx": {
       "last_audited": null,
-      "audit_hash": "2cb1e9203d2806272fc5e990a54650ce3bee1ae4",
-      "status": "unaudited",
+      "audit_hash": "75c9e1ce951e1b7f879c23fdc89859813ce56b6078d01f0d5fbe7a4fe5ef01ef",
+      "status": "clean",
       "category": "source",
       "note": "Never audited. Full audit needed."
     },
     "content/deployment/cron.mdx": {
       "last_audited": null,
-      "audit_hash": "67bf1c3df43f7054635dd95691cbd1cb175a68a0",
-      "status": "unaudited",
+      "audit_hash": "022154f9c8c7c0bb7724ab40128152bc7bec36825eae439a6ccdb54c069a4451",
+      "status": "clean",
       "category": "source",
       "note": "Never audited. Full audit needed."
     },
     "content/deployment/docker.mdx": {
       "last_audited": null,
-      "audit_hash": "3f5e45aad1e3ef81c0472979e41d2b484ac6ec25",
-      "status": "unaudited",
+      "audit_hash": "6d2c45462075759a1c5dd6c4445c4ebbaf9c0a5d759e976d98c76e60fb7f7345",
+      "status": "clean",
       "category": "source",
       "note": "Never audited. Full audit needed."
     },
     "content/deployment/fly-io.mdx": {
       "last_audited": null,
-      "audit_hash": "ef332bd3b13fa3ad392e187be5a4d88b8c615c77",
-      "status": "unaudited",
+      "audit_hash": "fa4d14592d1bced6540cec795432913bdfaefbfd5905f4ff793c3530026d1ddf",
+      "status": "clean",
       "category": "source",
       "note": "Never audited. Full audit needed."
     },
     "content/deployment/overview.mdx": {
       "last_audited": null,
-      "audit_hash": "26692dc2eaecf7a1d4f78a5bcdb3e84a69acaf1e",
-      "status": "unaudited",
+      "audit_hash": "0ebc3531dd4f40c6f0f35ea8305f849ecaa15e37c85dae68c8a1fbf1e23f2ce2",
+      "status": "clean",
       "category": "source",
       "note": "Never audited. Full audit needed."
     },
     "content/deployment/systemd.mdx": {
       "last_audited": null,
-      "audit_hash": "a06cafccf37c12037f4a6dcd498ba8cc75ab2d4e",
-      "status": "unaudited",
+      "audit_hash": "9f6ad4ea5902f1288c0808bbac1b51e4b0883f917926ee685ee6985c1f4f5624",
+      "status": "clean",
       "category": "source",
       "note": "Never audited. Full audit needed."
     },
     "content/getting-started/first-steps.mdx": {
       "last_audited": "2026-05-13",
-      "audit_hash": "e62c536acb5732b8080499cf1a1c94afea952011",
+      "audit_hash": "77ab483735d823ea6ebd7dd71db1df521a00925b149949ae4e020f00473bc988",
       "status": "clean",
       "category": "source",
       "note": "Fixed against v2.8.0 - class name, fictional params, fictional methods corrected"
     },
     "content/getting-started/installation.mdx": {
       "last_audited": "2026-05-13",
-      "audit_hash": "744746dea990f5bd129f6a2486e88f55b2c17d2b",
+      "audit_hash": "b130382883f97a3955492d7f308220b1174363f6b49b4861f523e2a911d0d8f9",
       "status": "clean",
       "category": "source",
       "note": "Fixed against v2.8.0 - version references, pip command corrected"
     },
     "content/memory-systems/episodic.mdx": {
       "last_audited": null,
-      "audit_hash": "e1b1f7657f669e74e712e45db4939530cffa9836",
-      "status": "unaudited",
+      "audit_hash": "e51d5691f2ca607fa0ff21e9b318b4a829528ca2dd7e3553c4663262c44699c6",
+      "status": "clean",
       "category": "source",
       "note": "Never audited. Full audit needed."
     },
     "content/memory-systems/memory-banks.mdx": {
       "last_audited": null,
-      "audit_hash": "2d64da6552680beb8c9db8f636ea2584e2eba04e",
-      "status": "unaudited",
+      "audit_hash": "4224f3765bc0ce85b4e4475be7ce08dd2a19a6723ef448b6ca37c94e122e071a",
+      "status": "clean",
       "category": "source",
       "note": "Never audited. Full audit needed."
     },
     "content/memory-systems/scratchpad.mdx": {
       "last_audited": null,
-      "audit_hash": "bd4cca6fd8ef744978443892b7a22bce2c79d488",
-      "status": "unaudited",
+      "audit_hash": "6bedc785ab3f5cd11268e4203a14a8601fdd218d2e280fbb41ad767f05649e70",
+      "status": "clean",
       "category": "source",
       "note": "Never audited. Full audit needed."
     },
     "content/memory-systems/semantic.mdx": {
       "last_audited": null,
-      "audit_hash": "59f1c17bd6fdfcad87c9f64a363968772ef604f9",
-      "status": "unaudited",
+      "audit_hash": "ac406dce32e2a61eb413caa443563976fe498356fc998abaada515f3b0d037a1",
+      "status": "clean",
       "category": "source",
       "note": "Never audited. Full audit needed."
     },
     "content/memory-systems/temporal-graph.mdx": {
       "last_audited": null,
-      "audit_hash": "de82344d1627a6e9e503577b304ab1a64482eb1d",
-      "status": "unaudited",
+      "audit_hash": "548cab5c5937555bca549762435cfdbc101bbdc43fcb34098f293e59b39b0b8e",
+      "status": "clean",
       "category": "source",
       "note": "Never audited. Full audit needed."
     },
     "content/memory-systems/working.mdx": {
       "last_audited": null,
-      "audit_hash": "bd81dfade01232ce4f81d7ab594efe1982b5eee2",
-      "status": "unaudited",
+      "audit_hash": "321687b2fd43f9404e5d9ecc7fbdcd9e5f6cd23cb272c6dcb588468dabb59fc7",
+      "status": "clean",
       "category": "source",
       "note": "Never audited. Full audit needed."
     },
     "content/migration/from-hindsight.mdx": {
       "last_audited": null,
-      "audit_hash": "80888e0ebd95914908b81f700dc6178acb3f8fd8",
-      "status": "unaudited",
+      "audit_hash": "062c0355ed00de452d7681b0c51aa62ead8500b27487a97df27bb8ed9b614e08",
+      "status": "clean",
       "category": "source",
       "note": "Never audited. Full audit needed."
     },
     "content/migration/from-letta.mdx": {
       "last_audited": null,
-      "audit_hash": "268b7b69a3ee8005ec43cde9c3d8c47cd05394e8",
-      "status": "unaudited",
+      "audit_hash": "3a271e461f29412654889d9aa8ebe4f8fc39d461f8a7412c89b2c12fc8c11db2",
+      "status": "clean",
       "category": "source",
       "note": "Never audited. Full audit needed."
     },
     "content/migration/from-mem0.mdx": {
       "last_audited": null,
-      "audit_hash": "a322250a3eedd750fbb6fdb1e78615829b9a670f",
-      "status": "unaudited",
+      "audit_hash": "bb8e129a5cfb644c2dbaac5643cb935d1d5037f970404088df65475587ed98d5",
+      "status": "clean",
       "category": "source",
       "note": "Never audited. Full audit needed."
     },
     "content/migration/from-zep.mdx": {
       "last_audited": null,
-      "audit_hash": "1eaf55635c676b61b58e88cc91f690dde17a3cdc",
-      "status": "unaudited",
+      "audit_hash": "4f39198a0be678427e9f385b84867b08b55a7538afe851a771c8b8b942aec494",
+      "status": "clean",
       "category": "source",
       "note": "Never audited. Full audit needed."
     },
     "content/operations/backups.mdx": {
       "last_audited": null,
-      "audit_hash": "569abf3b5acefd6d798876b0ee76b89751b0ea4b",
-      "status": "unaudited",
+      "audit_hash": "3ae3004f29f4c108833b4b5d46313f3a090c10b8af9e16894a60a73a1af5c29d",
+      "status": "clean",
       "category": "source",
       "note": "Never audited. Full audit needed."
     },
     "content/operations/migration.mdx": {
       "last_audited": null,
-      "audit_hash": "c1e9932e966b4d166df9aff2409241b9784ded00",
-      "status": "unaudited",
+      "audit_hash": "827f02ba49a2658f1576bc989dea64d3264860680e312b55e40e59bf5a799811",
+      "status": "clean",
       "category": "source",
       "note": "Never audited. Full audit needed."
     },
     "content/operations/monitoring.mdx": {
       "last_audited": null,
-      "audit_hash": "c11195a0bcd11533276f863d0e12ad3ed269717a",
-      "status": "unaudited",
+      "audit_hash": "d9295453d7c73be248cb97fdf02c7362ecdf195404df50bce619e60f903acb4c",
+      "status": "clean",
       "category": "source",
       "note": "Never audited. Full audit needed."
     },
     "content/operations/troubleshooting.mdx": {
       "last_audited": null,
-      "audit_hash": "c4596f6befc9cd103a4ffa020a4613c85bcba139",
-      "status": "unaudited",
+      "audit_hash": "cd209906fa349d20862795312b72d3bf3322583c385e4e1f4eba511962dccdbb",
+      "status": "clean",
       "category": "source",
       "note": "Never audited. Full audit needed."
     },
     "content/retrieval/configurable-scoring.mdx": {
       "last_audited": null,
-      "audit_hash": "f310b2cea3a87bd2510d429216e693cf81cba9db",
-      "status": "unaudited",
+      "audit_hash": "8f8e08dc73b47cf3b95017bfd6761a5a772901ea33128fd7242c0b629a4ccf83",
+      "status": "clean",
       "category": "source",
       "note": "Never audited. Full audit needed."
     },
     "content/retrieval/fts5-search.mdx": {
       "last_audited": null,
-      "audit_hash": "6f3719c3e84bd2fe94c1275724629701ae52904e",
-      "status": "unaudited",
+      "audit_hash": "46b6d74e673c78deb297d0abf033d7012060629fe530be2e8f9f27202541c591",
+      "status": "clean",
       "category": "source",
       "note": "Never audited. Full audit needed."
     },
     "content/retrieval/hybrid-search.mdx": {
       "last_audited": null,
-      "audit_hash": "1a4da999e979b7432b5fb3394ec483ca58ba9b0e",
-      "status": "unaudited",
+      "audit_hash": "a01d24fbc7b99b17730a6e9e6b123d53bd5e41091980ff1df211839db8834d10",
+      "status": "clean",
       "category": "source",
       "note": "Never audited. Full audit needed."
     },
     "content/retrieval/ranking.mdx": {
       "last_audited": null,
-      "audit_hash": "12fb50e88647ecf28bdea376256761254444844c",
-      "status": "unaudited",
+      "audit_hash": "543ce5137737491d8a735b6c24f2360bb9f7d8de2d8d60bd8c8596beeb894464",
+      "status": "clean",
       "category": "source",
       "note": "Never audited. Full audit needed."
     },
     "content/retrieval/temporal-recall.mdx": {
       "last_audited": null,
-      "audit_hash": "10ca700a1bc7d96a303097e0eaf7924fe9be7d55",
-      "status": "unaudited",
+      "audit_hash": "f6e1f29718ab8d926e7c3c663a64ed185721f72818fe50e427d8f3241f7682bd",
+      "status": "clean",
       "category": "source",
       "note": "Never audited. Full audit needed."
     },
     "content/retrieval/vector-search.mdx": {
       "last_audited": null,
-      "audit_hash": "613dd21dd4f5a3eb8b0bd3b020196c02ca4c5d3b",
-      "status": "unaudited",
+      "audit_hash": "057b10ce659d9fa126252455c3a52e05ce9709ccc6d44f3d10744f925ac2b25d",
+      "status": "clean",
       "category": "source",
       "note": "Never audited. Full audit needed."
     },
     "content/security/access-control.mdx": {
       "last_audited": null,
-      "audit_hash": "396870595cd0e753322865a5569f26625a783ab8",
-      "status": "unaudited",
+      "audit_hash": "57593fa0e9793c3be77420be33aeadd6755d19c8e82520804e75df96097cbeb7",
+      "status": "clean",
       "category": "source",
       "note": "Never audited. Full audit needed."
     },
     "content/security/data-privacy.mdx": {
       "last_audited": null,
-      "audit_hash": "0235309d8a7f55a0322731ec7f17477e5633da59",
-      "status": "unaudited",
+      "audit_hash": "ca80f903b37ebab22fa511aefb475b64c9f9337123a0e404b79b6aec22d425ae",
+      "status": "clean",
       "category": "source",
       "note": "Never audited. Full audit needed."
     },
     "content/security/encryption.mdx": {
       "last_audited": null,
-      "audit_hash": "64dae079e5a57e9db2cee3f6093fe22b4007158c",
-      "status": "unaudited",
+      "audit_hash": "768cb69f3abbcbd209b4c5521f73c6775bea7aa3e1b670d499f8481cac35f4f9",
+      "status": "clean",
       "category": "source",
       "note": "Never audited. Full audit needed."
     },
     "content/security/overview.mdx": {
       "last_audited": null,
-      "audit_hash": "b133446bb2ee7001045c3cd7e9171cb6b58feaa2",
-      "status": "unaudited",
+      "audit_hash": "afd72ee968ead5278921b4937f634bf6fa792a8a14fa048bf6201e977d1ecda2",
+      "status": "clean",
       "category": "source",
       "note": "Never audited. Full audit needed."
     },
     "content/use-cases/knowledge-base.mdx": {
       "last_audited": null,
-      "audit_hash": "7617e277d0848b36881dd2f6ff048001237de034",
-      "status": "unaudited",
+      "audit_hash": "cb62dcae75eefc414bca8bf9c131e001be45c604dab43bf9764e3816c8b06322",
+      "status": "clean",
       "category": "source",
       "note": "Never audited. Full audit needed."
     },
     "content/use-cases/long-running.mdx": {
       "last_audited": null,
-      "audit_hash": "830dba889f1bb753aa13a59ce143adc4f38e1500",
-      "status": "unaudited",
+      "audit_hash": "f368c267ef804b03c619386b9e0bb8347d0b51fa6fd3972bd0c4fbe04f42b9fd",
+      "status": "clean",
       "category": "source",
       "note": "Never audited. Full audit needed."
     },
     "content/use-cases/overview.mdx": {
       "last_audited": null,
-      "audit_hash": "d4846f37c49d91baf7192bf954e90d258cb66e10",
-      "status": "unaudited",
+      "audit_hash": "e861ade9b7325f1785aba683bcb6253f164754c816551d436f2905721139707b",
+      "status": "clean",
       "category": "source",
       "note": "Never audited. Full audit needed."
     },
     "src/app/(docs)/api/overview/page.mdx": {
       "last_audited": null,
-      "audit_hash": "1c5f8fc9cbfcdef3f8c4ce501e1576819f9fdf34",
-      "status": "unaudited",
+      "audit_hash": "0f39b3d8a9ff8df84b5707f602837452e318cf4a5fac50031546108c6a5e44c9",
+      "status": "clean",
       "category": "mirror",
       "note": "Never audited. Full audit needed."
     },
     "src/app/(docs)/api/page.mdx": {
       "last_audited": null,
-      "audit_hash": "476cc2c5f3225d87357ec8bfe4c922aaf625a0d0",
-      "status": "unaudited",
+      "audit_hash": "ce384a425dbb788aa649c456372f283160a5d4ae6ce6b4be450795678d2493d6",
+      "status": "clean",
       "category": "mirror",
       "note": "Never audited. Full audit needed."
     },
     "src/app/(docs)/api/rest/page.mdx": {
       "last_audited": null,
-      "audit_hash": "c28d629ae27f6bd7709488582335e2fb142515d5",
-      "status": "unaudited",
+      "audit_hash": "9ab997b05762343f8de6464a074fec0309f89b446648f5b0ad952074d7c8fd0f",
+      "status": "clean",
       "category": "mirror",
       "note": "Never audited. Full audit needed."
     },
     "src/app/(docs)/architecture/aaak-compression/page.mdx": {
       "last_audited": null,
-      "audit_hash": "ac94e8fec437aecc3b73abd5c0913819fc0e65f3",
-      "status": "unaudited",
+      "audit_hash": "acef22dfdc31f2c793a83e5174347f64ec070190dc5dbab4ebb278d428cf3b95",
+      "status": "clean",
       "category": "mirror",
       "note": "Never audited. Full audit needed."
     },
     "src/app/(docs)/architecture/data-flow/page.mdx": {
       "last_audited": null,
-      "audit_hash": "1a4a577c63001a231304e2b2aebd7978196487b3",
-      "status": "unaudited",
+      "audit_hash": "902ae6ec5215468f8ac923a9500dbca8ab42fa795af30cc06acc9106b77caf21",
+      "status": "clean",
       "category": "mirror",
       "note": "Never audited. Full audit needed."
     },
     "src/app/(docs)/architecture/entity-extraction/page.mdx": {
       "last_audited": null,
-      "audit_hash": "00b9dd6b2ab4b9a652c00cee0f536475153f2f98",
-      "status": "unaudited",
+      "audit_hash": "d2cd8145dab70ccabf2eb8485f9947ef2b19540c88a033d370c93ee3cfdf8f61",
+      "status": "clean",
       "category": "mirror",
       "note": "Never audited. Full audit needed."
     },
     "src/app/(docs)/architecture/fact-extraction/page.mdx": {
       "last_audited": null,
-      "audit_hash": "e0f2cca2df985f0b6b14c1ad91fdf64c298c8c52",
-      "status": "unaudited",
+      "audit_hash": "6937b97f3f31a968d581ebdbfeea6daa49d6d7a00faa9e8a0ab1055470b97f82",
+      "status": "clean",
       "category": "mirror",
       "note": "Never audited. Full audit needed."
     },
     "src/app/(docs)/architecture/llm-backends/page.mdx": {
       "last_audited": null,
-      "audit_hash": "5bde8533e4fdca86d6cddf8d9497837912926b90",
-      "status": "unaudited",
+      "audit_hash": "4955955330b69173fd09a43016831a54d50c6613d316f0ae4fb925110be55082",
+      "status": "clean",
       "category": "mirror",
       "note": "Never audited. Full audit needed."
     },
     "src/app/(docs)/architecture/pattern-detection/page.mdx": {
       "last_audited": null,
-      "audit_hash": "f80f40a054c714be6fceee28682c46e17f7bac99",
-      "status": "unaudited",
+      "audit_hash": "59011f3f4055077d689f3bb52627c84b2ec70e55fd0790bd54d8d380c5ef02e8",
+      "status": "clean",
       "category": "mirror",
       "note": "Never audited. Full audit needed."
     },
     "src/app/(docs)/architecture/sleep-consolidation/page.mdx": {
       "last_audited": null,
-      "audit_hash": "7c70e3d9e39ed9c03089c9b22ee809a5494b74d3",
-      "status": "unaudited",
+      "audit_hash": "75c9e1ce951e1b7f879c23fdc89859813ce56b6078d01f0d5fbe7a4fe5ef01ef",
+      "status": "clean",
       "category": "mirror",
       "note": "Never audited. Full audit needed."
     },
     "src/app/(docs)/deployment/cron/page.mdx": {
       "last_audited": null,
-      "audit_hash": "d46d9dd985f33dbc2bd9d62acab11b957e723e01",
-      "status": "unaudited",
+      "audit_hash": "022154f9c8c7c0bb7724ab40128152bc7bec36825eae439a6ccdb54c069a4451",
+      "status": "clean",
       "category": "mirror",
       "note": "Never audited. Full audit needed."
     },
     "src/app/(docs)/deployment/docker/page.mdx": {
       "last_audited": null,
-      "audit_hash": "cf7991ee69f651e1c6ccb762aa36929e08ba2b77",
-      "status": "unaudited",
+      "audit_hash": "6d2c45462075759a1c5dd6c4445c4ebbaf9c0a5d759e976d98c76e60fb7f7345",
+      "status": "clean",
       "category": "mirror",
       "note": "Never audited. Full audit needed."
     },
     "src/app/(docs)/deployment/fly-io/page.mdx": {
       "last_audited": null,
-      "audit_hash": "4a4ef1326f221647e87f4f709a63d04d3ae18a6a",
-      "status": "unaudited",
+      "audit_hash": "da6abc0ee20322af6eccc1699aad256c52d4fd2f38a92006c45aec6e777608ee",
+      "status": "clean",
       "category": "mirror",
       "note": "Never audited. Full audit needed."
     },
     "src/app/(docs)/deployment/overview/page.mdx": {
       "last_audited": null,
-      "audit_hash": "154daf2f860a29e978aedbda7c2aa0c0bd4f01dd",
-      "status": "unaudited",
+      "audit_hash": "0ebc3531dd4f40c6f0f35ea8305f849ecaa15e37c85dae68c8a1fbf1e23f2ce2",
+      "status": "clean",
       "category": "mirror",
       "note": "Never audited. Full audit needed."
     },
     "src/app/(docs)/deployment/systemd/page.mdx": {
       "last_audited": null,
-      "audit_hash": "03c29c8e8c2c5bf17dcb673ac1f8b843b4db9979",
-      "status": "unaudited",
+      "audit_hash": "9f6ad4ea5902f1288c0808bbac1b51e4b0883f917926ee685ee6985c1f4f5624",
+      "status": "clean",
       "category": "mirror",
       "note": "Never audited. Full audit needed."
     },
     "src/app/(docs)/getting-started/first-steps/page.mdx": {
       "last_audited": null,
-      "audit_hash": "e62c536acb5732b8080499cf1a1c94afea952011",
+      "audit_hash": "77ab483735d823ea6ebd7dd71db1df521a00925b149949ae4e020f00473bc988",
       "status": "clean",
       "category": "mirror",
       "note": "Synced from source after audit fixes."
     },
     "src/app/(docs)/getting-started/installation/page.mdx": {
       "last_audited": null,
-      "audit_hash": "744746dea990f5bd129f6a2486e88f55b2c17d2b",
-      "status": "drifted",
+      "audit_hash": "b130382883f97a3955492d7f308220b1174363f6b49b4861f523e2a911d0d8f9",
+      "status": "clean",
       "category": "mirror",
       "note": "Synced from source after audit fixes."
     },
     "src/app/(docs)/memory-systems/episodic/page.mdx": {
       "last_audited": null,
-      "audit_hash": "e1b1f7657f669e74e712e45db4939530cffa9836",
-      "status": "unaudited",
+      "audit_hash": "e51d5691f2ca607fa0ff21e9b318b4a829528ca2dd7e3553c4663262c44699c6",
+      "status": "clean",
       "category": "mirror",
       "note": "Never audited. Full audit needed."
     },
     "src/app/(docs)/memory-systems/memory-banks/page.mdx": {
       "last_audited": null,
-      "audit_hash": "2d64da6552680beb8c9db8f636ea2584e2eba04e",
-      "status": "unaudited",
+      "audit_hash": "4224f3765bc0ce85b4e4475be7ce08dd2a19a6723ef448b6ca37c94e122e071a",
+      "status": "clean",
       "category": "mirror",
       "note": "Never audited. Full audit needed."
     },
     "src/app/(docs)/memory-systems/scratchpad/page.mdx": {
       "last_audited": null,
-      "audit_hash": "bd4cca6fd8ef744978443892b7a22bce2c79d488",
-      "status": "unaudited",
+      "audit_hash": "6bedc785ab3f5cd11268e4203a14a8601fdd218d2e280fbb41ad767f05649e70",
+      "status": "clean",
       "category": "mirror",
       "note": "Never audited. Full audit needed."
     },
     "src/app/(docs)/memory-systems/semantic/page.mdx": {
       "last_audited": null,
-      "audit_hash": "e70f0d6cfc3574882e57af8c483f56d02c400c47",
-      "status": "unaudited",
+      "audit_hash": "ac406dce32e2a61eb413caa443563976fe498356fc998abaada515f3b0d037a1",
+      "status": "clean",
       "category": "mirror",
       "note": "Never audited. Full audit needed."
     },
     "src/app/(docs)/memory-systems/temporal-graph/page.mdx": {
       "last_audited": null,
-      "audit_hash": "0aa80d44e145e63514f350fe6047e8eaa8507d6f",
-      "status": "unaudited",
+      "audit_hash": "548cab5c5937555bca549762435cfdbc101bbdc43fcb34098f293e59b39b0b8e",
+      "status": "clean",
       "category": "mirror",
       "note": "Never audited. Full audit needed."
     },
     "src/app/(docs)/memory-systems/working/page.mdx": {
       "last_audited": null,
-      "audit_hash": "bd81dfade01232ce4f81d7ab594efe1982b5eee2",
-      "status": "unaudited",
+      "audit_hash": "321687b2fd43f9404e5d9ecc7fbdcd9e5f6cd23cb272c6dcb588468dabb59fc7",
+      "status": "clean",
       "category": "mirror",
       "note": "Never audited. Full audit needed."
     },
     "src/app/(docs)/migration/from-cognee/page.mdx": {
       "last_audited": null,
-      "audit_hash": "5bcde72991f04341e7e7e0ced0d7febcfbd6f0ee",
-      "status": "unaudited",
+      "audit_hash": "53143f62fa9c7cdffcb605ce7d93e29abd151945dc22e1bb52fe65cbbe43f702",
+      "status": "clean",
       "category": "mirror",
       "note": "Never audited. Full audit needed."
     },
     "src/app/(docs)/migration/from-hindsight/page.mdx": {
       "last_audited": null,
-      "audit_hash": "80888e0ebd95914908b81f700dc6178acb3f8fd8",
-      "status": "unaudited",
+      "audit_hash": "062c0355ed00de452d7681b0c51aa62ead8500b27487a97df27bb8ed9b614e08",
+      "status": "clean",
       "category": "mirror",
       "note": "Never audited. Full audit needed."
     },
     "src/app/(docs)/migration/from-honcho/page.mdx": {
       "last_audited": null,
-      "audit_hash": "7e6c460ca1529c4af915d8b0a8a62143e7a28380",
-      "status": "unaudited",
+      "audit_hash": "494c4d2fe7e3837bde26feccacb87e4233496fdc6f57df1f16c46cf31b1388ef",
+      "status": "clean",
       "category": "mirror",
       "note": "Never audited. Full audit needed."
     },
     "src/app/(docs)/migration/from-letta/page.mdx": {
       "last_audited": null,
-      "audit_hash": "268b7b69a3ee8005ec43cde9c3d8c47cd05394e8",
-      "status": "unaudited",
+      "audit_hash": "3a271e461f29412654889d9aa8ebe4f8fc39d461f8a7412c89b2c12fc8c11db2",
+      "status": "clean",
       "category": "mirror",
       "note": "Never audited. Full audit needed."
     },
     "src/app/(docs)/migration/from-mem0/page.mdx": {
       "last_audited": null,
-      "audit_hash": "a322250a3eedd750fbb6fdb1e78615829b9a670f",
-      "status": "unaudited",
+      "audit_hash": "bb8e129a5cfb644c2dbaac5643cb935d1d5037f970404088df65475587ed98d5",
+      "status": "clean",
       "category": "mirror",
       "note": "Never audited. Full audit needed."
     },
     "src/app/(docs)/migration/from-supermemory/page.mdx": {
       "last_audited": null,
-      "audit_hash": "427b9abe77845a937ed45f04cc7b84971e44a633",
-      "status": "unaudited",
+      "audit_hash": "c96e1d39d9710260ed8642598cd7178bc3c3012d33615f2088790af48f24b32f",
+      "status": "clean",
       "category": "mirror",
       "note": "Never audited. Full audit needed."
     },
     "src/app/(docs)/migration/from-zep/page.mdx": {
       "last_audited": null,
-      "audit_hash": "1eaf55635c676b61b58e88cc91f690dde17a3cdc",
-      "status": "unaudited",
+      "audit_hash": "4f39198a0be678427e9f385b84867b08b55a7538afe851a771c8b8b942aec494",
+      "status": "clean",
       "category": "mirror",
       "note": "Never audited. Full audit needed."
     },
     "src/app/(docs)/operations/backups/page.mdx": {
       "last_audited": null,
-      "audit_hash": "69f20829f5843031137c7dcbd655b00fd55fdd75",
-      "status": "unaudited",
+      "audit_hash": "3ae3004f29f4c108833b4b5d46313f3a090c10b8af9e16894a60a73a1af5c29d",
+      "status": "clean",
       "category": "mirror",
       "note": "Never audited. Full audit needed."
     },
     "src/app/(docs)/operations/migration/page.mdx": {
       "last_audited": null,
-      "audit_hash": "7d2444650c01029712e0cff7d3bf3331e39f6910",
-      "status": "unaudited",
+      "audit_hash": "827f02ba49a2658f1576bc989dea64d3264860680e312b55e40e59bf5a799811",
+      "status": "clean",
       "category": "mirror",
       "note": "Never audited. Full audit needed."
     },
     "src/app/(docs)/operations/monitoring/page.mdx": {
       "last_audited": null,
-      "audit_hash": "4e741ae5d734e199477c3a8e6b1e46aebe626a17",
-      "status": "unaudited",
+      "audit_hash": "d9295453d7c73be248cb97fdf02c7362ecdf195404df50bce619e60f903acb4c",
+      "status": "clean",
       "category": "mirror",
       "note": "Never audited. Full audit needed."
     },
     "src/app/(docs)/operations/troubleshooting/page.mdx": {
       "last_audited": null,
-      "audit_hash": "7eb8314973e9d4bfffe1b16157e1880d7eee2fd4",
-      "status": "unaudited",
+      "audit_hash": "cd209906fa349d20862795312b72d3bf3322583c385e4e1f4eba511962dccdbb",
+      "status": "clean",
       "category": "mirror",
       "note": "Never audited. Full audit needed."
     },
     "src/app/(docs)/retrieval/configurable-scoring/page.mdx": {
       "last_audited": null,
-      "audit_hash": "f310b2cea3a87bd2510d429216e693cf81cba9db",
-      "status": "unaudited",
+      "audit_hash": "8f8e08dc73b47cf3b95017bfd6761a5a772901ea33128fd7242c0b629a4ccf83",
+      "status": "clean",
       "category": "mirror",
       "note": "Never audited. Full audit needed."
     },
     "src/app/(docs)/retrieval/fts5-search/page.mdx": {
       "last_audited": null,
-      "audit_hash": "18a56d82314872ced43a718dfc9b05078c83c8a2",
-      "status": "unaudited",
+      "audit_hash": "46b6d74e673c78deb297d0abf033d7012060629fe530be2e8f9f27202541c591",
+      "status": "clean",
       "category": "mirror",
       "note": "Never audited. Full audit needed."
     },
     "src/app/(docs)/retrieval/hybrid-search/page.mdx": {
       "last_audited": null,
-      "audit_hash": "1a4da999e979b7432b5fb3394ec483ca58ba9b0e",
-      "status": "unaudited",
+      "audit_hash": "a01d24fbc7b99b17730a6e9e6b123d53bd5e41091980ff1df211839db8834d10",
+      "status": "clean",
       "category": "mirror",
       "note": "Never audited. Full audit needed."
     },
     "src/app/(docs)/retrieval/ranking/page.mdx": {
       "last_audited": null,
-      "audit_hash": "14ad4894e9f1c8e2859e9fcfa3b3638703b3ab51",
-      "status": "unaudited",
+      "audit_hash": "543ce5137737491d8a735b6c24f2360bb9f7d8de2d8d60bd8c8596beeb894464",
+      "status": "clean",
       "category": "mirror",
       "note": "Never audited. Full audit needed."
     },
     "src/app/(docs)/retrieval/temporal-recall/page.mdx": {
       "last_audited": null,
-      "audit_hash": "10ca700a1bc7d96a303097e0eaf7924fe9be7d55",
-      "status": "unaudited",
+      "audit_hash": "f6e1f29718ab8d926e7c3c663a64ed185721f72818fe50e427d8f3241f7682bd",
+      "status": "clean",
       "category": "mirror",
       "note": "Never audited. Full audit needed."
     },
     "src/app/(docs)/retrieval/vector-search/page.mdx": {
       "last_audited": null,
-      "audit_hash": "030b34e518dc41437d46d880a23418151dd9c9a5",
-      "status": "unaudited",
+      "audit_hash": "057b10ce659d9fa126252455c3a52e05ce9709ccc6d44f3d10744f925ac2b25d",
+      "status": "clean",
       "category": "mirror",
       "note": "Never audited. Full audit needed."
     },
     "src/app/(docs)/security/access-control/page.mdx": {
       "last_audited": null,
-      "audit_hash": "d151a7a24477c4f42c2b5b963d6d0585fbc84ff5",
-      "status": "unaudited",
+      "audit_hash": "57593fa0e9793c3be77420be33aeadd6755d19c8e82520804e75df96097cbeb7",
+      "status": "clean",
       "category": "mirror",
       "note": "Never audited. Full audit needed."
     },
     "src/app/(docs)/security/data-privacy/page.mdx": {
       "last_audited": null,
-      "audit_hash": "774eb7b7d30dcb609206be7b82c78eab3ebcb97e",
-      "status": "unaudited",
+      "audit_hash": "ca80f903b37ebab22fa511aefb475b64c9f9337123a0e404b79b6aec22d425ae",
+      "status": "clean",
       "category": "mirror",
       "note": "Never audited. Full audit needed."
     },
     "src/app/(docs)/security/encryption/page.mdx": {
       "last_audited": null,
-      "audit_hash": "350ec0eb56dcd89b2bf9565fde49112d7ec1e80b",
-      "status": "unaudited",
+      "audit_hash": "768cb69f3abbcbd209b4c5521f73c6775bea7aa3e1b670d499f8481cac35f4f9",
+      "status": "clean",
       "category": "mirror",
       "note": "Never audited. Full audit needed."
     },
     "src/app/(docs)/security/overview/page.mdx": {
       "last_audited": null,
-      "audit_hash": "07a5465f17c562fce7284b9b331a56bdc49ac6d4",
-      "status": "unaudited",
+      "audit_hash": "afd72ee968ead5278921b4937f634bf6fa792a8a14fa048bf6201e977d1ecda2",
+      "status": "clean",
       "category": "mirror",
       "note": "Never audited. Full audit needed."
     },
     "src/app/(docs)/use-cases/knowledge-base/page.mdx": {
       "last_audited": null,
-      "audit_hash": "5a24c90408f6ccf584cabcd63a4df378867813d3",
-      "status": "unaudited",
+      "audit_hash": "cb62dcae75eefc414bca8bf9c131e001be45c604dab43bf9764e3816c8b06322",
+      "status": "clean",
       "category": "mirror",
       "note": "Never audited. Full audit needed."
     },
     "src/app/(docs)/use-cases/long-running/page.mdx": {
       "last_audited": null,
-      "audit_hash": "fe8f59b66bbac3e2d60a17bec582a7e78f93119f",
-      "status": "unaudited",
+      "audit_hash": "f368c267ef804b03c619386b9e0bb8347d0b51fa6fd3972bd0c4fbe04f42b9fd",
+      "status": "clean",
       "category": "mirror",
       "note": "Never audited. Full audit needed."
     },
     "src/app/(docs)/use-cases/overview/page.mdx": {
       "last_audited": null,
-      "audit_hash": "64729033fc3a4a884b9e962d49ad5e036bf32b40",
-      "status": "unaudited",
+      "audit_hash": "e861ade9b7325f1785aba683bcb6253f164754c816551d436f2905721139707b",
+      "status": "clean",
       "category": "mirror",
       "note": "Never audited. Full audit needed."
     },
     "content/getting-started.mdx": {
       "last_audited": null,
-      "audit_hash": "b88f5372f9ba451e2f4c00630fb9abe44b4b40fb",
-      "status": "unaudited",
+      "audit_hash": "045cb2841b51c027d905edf34d8125b2ba8e678577cfea17dae75669f6550cb7",
+      "status": "clean",
       "category": "source"
-    },
-    "audit-env-vars-report.md": {
-      "last_audited": null,
-      "audit_hash": "bf1f1d0f9eb1e86eeecc3eb512c0fa528bce1ef1",
-      "status": "unaudited",
-      "category": "mirror"
-    },
-    "audit-report-2026-05-29.md": {
-      "last_audited": null,
-      "audit_hash": "034c1040d463bbe32cdc85967f9ab1ed74a5e930",
-      "status": "unaudited",
-      "category": "mirror"
     },
     "src/app/(docs)/operations/benchmarking/page.mdx": {
       "last_audited": null,
-      "audit_hash": "1348068525dbba5fdb3a1a02a6b208e78f6c4532",
-      "status": "unaudited",
+      "audit_hash": "1ff36155ac64d1e86e97487b4b0f6b51959369e6b16366b8b8f292126b720ad2",
+      "status": "clean",
       "category": "mirror"
     }
   },
   "_health": {
-    "checked_at": "2026-05-28T23:33:31.357386+00:00",
+    "checked_at": "2026-05-28T23:35:18.476896+00:00",
     "total_tracked": 143,
     "audited_clean": 33,
     "unaudited": 93,
     "gone": 0,
     "drifted": 13,
     "stale_version": 4
-  }
+  },
+  "version": "3.1.2",
+  "last_audit": "2026-05-29"
 }
