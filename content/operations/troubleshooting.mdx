@@ -33,7 +33,7 @@ python -c "import sqlite3; conn = sqlite3.connect(':memory:'); conn.execute('CRE
 sqlite3 mnemosyne.db "PRAGMA journal_mode=WAL;"
 
 # Or in Python
-mem = Memory(wal_mode=True)
+mem = Mnemosyne(db_path=\"./mnemosyne.db\", session_id=\"diagnostic\")
 `} language="bash" />
 
 ### Slow Queries

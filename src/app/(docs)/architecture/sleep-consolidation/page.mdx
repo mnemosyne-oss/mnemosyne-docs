@@ -11,7 +11,7 @@ export const metadata = {
 
 # Sleep Consolidation
 
-Mnemosyne's background process that promotes aged Working Memory entries to Episodic Memory, inspired by human sleep's role in memory consolidation.
+Mnemosyne's background process that promotes aged Working Memory entries to Episodic Memory, inspired by human sleep's role in memory consolidation. In v3.0+ this also integrates with MEMORIA structured tables — fact extraction feeds `memoria_facts` and `memoria_timelines` during `remember()`, and these tables persist independently of the Working Memory lifecycle.
 
 ## What Sleep Does
 
@@ -21,7 +21,7 @@ During each consolidation cycle, Mnemosyne:
 2. **Groups** candidates by `source`
 3. **Summarizes** each group via local LLM (TinyLlama) or AAAK text substitution
 4. **Promotes** summaries to Episodic Memory (with `summary_of` tracking originals)
-5. **Evicts** original Working Memory entries
+5. **Evicts** original Working Memory entries (MEMORIA `memoria_*` tables persist independently)
 
 ## Trigger Conditions
 

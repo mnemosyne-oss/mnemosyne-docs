@@ -1,7 +1,7 @@
 {
   "_schema": "mnemosyne-docs-audit-checkpoint-v1",
   "_description": "Tracks per-page audit state. On re-audit, only check pages whose git hash changed since last_audit_hash. Pages not listed here have never been audited \u2014 audit them fully.",
-  "last_full_audit": "2026-05-28T23:32:55.159023+00:00",
+  "last_full_audit": "2026-05-28T23:33:31.357386+00:00",
   "codebase_version": "2.8.0",
   "audit_history": [
     {
@@ -279,7 +279,7 @@
     "src/app/(docs)/comparisons/hindsight/page.mdx": {
       "last_audited": "2026-05-11",
       "audit_hash": "b562f574cdd369c0e46d66a915410fa0a3dd0e0c",
-      "status": "clean",
+      "status": "drifted",
       "category": "mirror",
       "mirrors": "content/comparisons/hindsight.mdx",
       "note": "Synced from source after audit fixes."
@@ -287,7 +287,7 @@
     "src/app/(docs)/comparisons/honcho/page.mdx": {
       "last_audited": "2026-05-11",
       "audit_hash": "c44b69eaf1d085c7d601401a215dd2d951a3c05a",
-      "status": "clean",
+      "status": "drifted",
       "category": "mirror",
       "mirrors": "content/comparisons/honcho.mdx",
       "note": "Synced from source after audit fixes."
@@ -295,7 +295,7 @@
     "src/app/(docs)/comparisons/letta/page.mdx": {
       "last_audited": "2026-05-11",
       "audit_hash": "780c4eb8baec9432a15e9756440f3e6ba6450b96",
-      "status": "clean",
+      "status": "drifted",
       "category": "mirror",
       "mirrors": "content/comparisons/letta.mdx",
       "note": "Synced from source after audit fixes."
@@ -319,7 +319,7 @@
     "src/app/(docs)/comparisons/zep/page.mdx": {
       "last_audited": "2026-05-11",
       "audit_hash": "a96848af907397a8fe65c18840253d93ee9854d7",
-      "status": "clean",
+      "status": "drifted",
       "category": "mirror",
       "mirrors": "content/comparisons/zep.mdx",
       "note": "Synced from source after audit fixes."
@@ -1049,12 +1049,12 @@
     }
   },
   "_health": {
-    "checked_at": "2026-05-28T23:32:55.159023+00:00",
+    "checked_at": "2026-05-28T23:33:31.357386+00:00",
     "total_tracked": 143,
-    "audited_clean": 37,
+    "audited_clean": 33,
     "unaudited": 93,
     "gone": 0,
-    "drifted": 9,
+    "drifted": 13,
     "stale_version": 4
   }
 }
