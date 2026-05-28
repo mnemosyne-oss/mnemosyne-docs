@@ -1,7 +1,7 @@
 {
   "_schema": "mnemosyne-docs-audit-checkpoint-v1",
   "_description": "Tracks per-page audit state. On re-audit, only check pages whose git hash changed since last_audit_hash. Pages not listed here have never been audited \u2014 audit them fully.",
-  "last_full_audit": "2026-05-14T20:23:28.908333+00:00",
+  "last_full_audit": "2026-05-28T23:27:07.201224+00:00",
   "codebase_version": "2.8.0",
   "audit_history": [
     {
@@ -199,7 +199,7 @@
     "src/app/(docs)/api/mcp-server/page.mdx": {
       "last_audited": "2026-05-11",
       "audit_hash": "120d419252df60defea3008b5c9f48b8c88446ee",
-      "status": "clean",
+      "status": "drifted",
       "category": "mirror",
       "mirrors": "content/api/mcp-server.mdx",
       "note": "Synced from source after mirror drift detected."
@@ -231,7 +231,7 @@
     "src/app/(docs)/architecture/plugin-system/page.mdx": {
       "last_audited": "2026-05-11",
       "audit_hash": "6757d452f407d8deecf8480f28331f9c7b65b41e",
-      "status": "clean",
+      "status": "drifted",
       "category": "mirror",
       "mirrors": "content/architecture/plugin-system.mdx",
       "note": "Synced from source after audit fixes."
@@ -239,7 +239,7 @@
     "src/app/(docs)/architecture/streaming/page.mdx": {
       "last_audited": "2026-05-11",
       "audit_hash": "fd44171bf96651be0d6cd7a17754905351e211ae",
-      "status": "clean",
+      "status": "drifted",
       "category": "mirror",
       "mirrors": "content/architecture/streaming.mdx",
       "note": "Synced from source after audit fixes."
@@ -255,7 +255,7 @@
     "src/app/(docs)/architecture/tiered-degradation/page.mdx": {
       "last_audited": "2026-05-11",
       "audit_hash": "c59668fddcb856ebf7c5f0559e90e5452275c839",
-      "status": "clean",
+      "status": "drifted",
       "category": "mirror",
       "mirrors": "content/architecture/tiered-degradation.mdx",
       "note": "Synced from content/ source. No independent audit."
@@ -263,7 +263,7 @@
     "src/app/(docs)/architecture/veracity-signal/page.mdx": {
       "last_audited": "2026-05-11",
       "audit_hash": "edfc9fe58cae589b3ba57dae1f953763d43bb591",
-      "status": "clean",
+      "status": "drifted",
       "category": "mirror",
       "mirrors": "content/architecture/veracity-signal.mdx",
       "note": "Synced from source after mirror drift detected."
@@ -343,7 +343,7 @@
     "src/app/(docs)/getting-started/quick-start/page.mdx": {
       "last_audited": "2026-05-11",
       "audit_hash": "87697337163435629bf26abf152390e4ad2dfe95",
-      "status": "clean",
+      "status": "drifted",
       "category": "mirror",
       "mirrors": "content/getting-started/quick-start.mdx",
       "note": "Synced from source after audit fixes."
@@ -351,7 +351,7 @@
     "src/app/(docs)/migration/overview/page.mdx": {
       "last_audited": "2026-05-11",
       "audit_hash": "874dc744803ac81cb8c9f08597c4070f8a391cdc",
-      "status": "clean",
+      "status": "drifted",
       "category": "mirror",
       "mirrors": "content/migration/overview.mdx",
       "note": "Synced from source after audit fixes."
@@ -367,7 +367,7 @@
     "src/app/(docs)/use-cases/multi-agent/page.mdx": {
       "last_audited": "2026-05-11",
       "audit_hash": "3553e5a104dfb891239dd5653506b72dfbf09bc1",
-      "status": "clean",
+      "status": "drifted",
       "category": "mirror",
       "mirrors": "content/use-cases/multi-agent.mdx",
       "note": "Synced from source after mirror drift detected."
@@ -809,7 +809,7 @@
     "src/app/(docs)/getting-started/installation/page.mdx": {
       "last_audited": null,
       "audit_hash": "744746dea990f5bd129f6a2486e88f55b2c17d2b",
-      "status": "clean",
+      "status": "drifted",
       "category": "mirror",
       "note": "Synced from source after audit fixes."
     },
@@ -1028,15 +1028,33 @@
       "audit_hash": "b88f5372f9ba451e2f4c00630fb9abe44b4b40fb",
       "status": "unaudited",
       "category": "source"
+    },
+    "audit-env-vars-report.md": {
+      "last_audited": null,
+      "audit_hash": "bf1f1d0f9eb1e86eeecc3eb512c0fa528bce1ef1",
+      "status": "unaudited",
+      "category": "mirror"
+    },
+    "audit-report-2026-05-29.md": {
+      "last_audited": null,
+      "audit_hash": "034c1040d463bbe32cdc85967f9ab1ed74a5e930",
+      "status": "unaudited",
+      "category": "mirror"
+    },
+    "src/app/(docs)/operations/benchmarking/page.mdx": {
+      "last_audited": null,
+      "audit_hash": "1348068525dbba5fdb3a1a02a6b208e78f6c4532",
+      "status": "unaudited",
+      "category": "mirror"
     }
   },
   "_health": {
-    "checked_at": "2026-05-14T20:23:28.908333+00:00",
-    "total_tracked": 140,
-    "audited_clean": 46,
-    "unaudited": 90,
+    "checked_at": "2026-05-28T23:27:07.201224+00:00",
+    "total_tracked": 143,
+    "audited_clean": 37,
+    "unaudited": 93,
     "gone": 0,
-    "drifted": 0,
+    "drifted": 9,
     "stale_version": 4
   }
 }
