@@ -1,14 +1,3 @@
-export const metadata = {
-  title: 'Data Privacy — Privacy by Default for Agent Memory',
-  description: 'Understand Mnemosyne\'s privacy model: local-first storage, data retention via TTL, scope-based isolation, and best practices for privacy-sensitive deployments.',
-  openGraph: {
-    images: ['/og-image.jpg?v=1'],
-  },
-  twitter: {
-    card: 'summary_large_image',
-  },
-};
-
 # Data Privacy
 
 Mnemosyne's privacy-first design ensures your data stays under your control.
@@ -22,7 +11,8 @@ Mnemosyne's privacy-first design ensures your data stays under your control.
 
 ## Data Flow
 
-<MermaidDiagram chart={`
+<MermaidDiagram>
+
 flowchart LR
     U[User Input] -->|Local| M[Mnemosyne]
     M -->|Local| E[fastembed Embeddings]
@@ -30,7 +20,8 @@ flowchart LR
     
     style M fill:#e0f2fe,stroke:#0284c7
     style DB fill:#f0fdf4,stroke:#16a34a
-`} />
+
+</MermaidDiagram>
 
 ## Minimizing External Calls
 

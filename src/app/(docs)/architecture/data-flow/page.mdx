@@ -1,21 +1,11 @@
-export const metadata = {
-  title: 'Data Flow — How Memories Move Through Mnemosyne',
-  description: 'Trace the lifecycle of a memory from agent input through storage, indexing, consolidation, and retrieval. Understand Mnemosyne\'s data flow and processing stages.',
-  openGraph: {
-    images: ['/og-image.jpg?v=1'],
-  },
-  twitter: {
-    card: 'summary_large_image',
-  },
-};
-
 # Data Flow
 
 How information moves through Mnemosyne's memory tiers.
 
 ## Write Path
 
-<MermaidDiagram chart={`
+<MermaidDiagram>
+
 flowchart LR
     A[Agent Input] -->|remember| WM[Working Memory]
     WM -->|index| FI[FTS5 Index]
@@ -23,7 +13,8 @@ flowchart LR
     SC -->|promote| EM[Episodic Memory]
     EM -->|index| VI[Vector Index + FTS5]
     SC -->|evict| DEL[Deleted]
-`} />
+
+</MermaidDiagram>
 
 1. **Agent calls `remember()`** with content, source, importance, and optional metadata
 2. **Working Memory** stores the raw entry with metadata in SQLite
@@ -35,7 +26,8 @@ flowchart LR
 
 ## Read Path
 
-<MermaidDiagram chart={`
+<MermaidDiagram>
+
 flowchart LR
     Q[Query] -->|recall| RE[Retrieval Engine]
     RE -->|vector search| VI[sqlite-vec Index]
@@ -43,7 +35,8 @@ flowchart LR
     VI -->|scores| RF[Rank Fusion]
     FI -->|scores| RF
     RF -->|ranked results| A[Agent]
-`} />
+
+</MermaidDiagram>
 
 1. **Agent calls `recall(query, top_k=5)`**
 2. **Query is embedded** using BAAI/bge-small-en-v1.5 (384 dims) for vector search
@@ -53,7 +46,8 @@ flowchart LR
 
 ## Consolidation Flow
 
-<MermaidDiagram chart={`
+<MermaidDiagram>
+
 flowchart TD
     START[sleep called] --> SELECT[Select entries older than TTL/2]
     SELECT --> GROUP[Group by source]
@@ -61,7 +55,8 @@ flowchart TD
     SUMMARIZE --> PROMOTE[Store summary in Episodic Memory]
     PROMOTE --> INDEX[Index new episodic entry]
     INDEX --> EVICT[Evict originals from Working Memory]
-`} />
+
+</MermaidDiagram>
 
 Consolidation is triggered explicitly by calling `mem.sleep()`:
 

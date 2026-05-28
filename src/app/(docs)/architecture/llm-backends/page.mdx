@@ -1,7 +1,7 @@
 export const metadata = {
   title: 'LLM Backends — Host Adapter for Authenticated Providers',
   description: 'Route Mnemosyne consolidation and fact extraction through a host-provided LLM backend, such as Hermes authenticated auxiliary client.',
-  openGraph: { images: ['/og-image.jpg?v=1'] },
+  openGraph: { images: ['/og-image.svg'] },
   twitter: { card: 'summary_large_image' },
 };
 
@@ -114,6 +114,6 @@ Mnemosyne's `on_session_end()` hook runs sleep/consolidation in a **daemon threa
 
 ## Related
 
-- [Hermes LLM Integration](/getting-started/hermes-llm) — full behavior model and session-shutdown semantics
+- [Host LLM Configuration](/getting-started/configuration#host-llm-backend-hermes-integration) — env vars for the host LLM backend
 - [Sleep Consolidation](/architecture/sleep-consolidation) — how consolidation uses the LLM backend
 - [Fact Extraction](/architecture/fact-extraction) — structured fact extraction with host routing

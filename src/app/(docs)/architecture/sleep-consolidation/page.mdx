@@ -2,7 +2,7 @@ export const metadata = {
   title: 'Sleep Consolidation — Automatic Memory Optimization',
   description: 'Learn how Mnemosyne\'s sleep consolidation process promotes aged Working Memory entries to Episodic Memory via grouping, summarization, and eviction.',
   openGraph: {
-    images: ['/og-image.jpg?v=1'],
+    images: ['/og-image.svg'],
   },
   twitter: {
     card: 'summary_large_image',
@@ -28,8 +28,7 @@ During each consolidation cycle, Mnemosyne:
 Consolidation triggers on:
 
 - **Age threshold**: When Working Memory entries exceed TTL/2 (default: 12 hours with 24h TTL)
-- **Explicit call**: `mem.sleep()` or `mem.consolidate()` for manual consolidation
-- **auto_sleep**: Background thread that periodically runs consolidation without explicit calls (configure via `config.yaml` or `MNEMOSYNE_AUTO_SLEEP` env var)
+- **Explicit call**: `mem.consolidate()` for manual consolidation
 - **Shutdown**: Graceful process exit
 
 ## Consolidation Pipeline
@@ -47,9 +46,11 @@ flowchart LR
 
 1. **Candidate selection**: Find all Working Memory entries where `created_at < now - TTL/2`
 2. **Group by source**: Cluster candidates by their `source` field
-3. **Summarize**: For each group, generate a summary using:
-   - Local LLM (TinyLlama) if available
-   - AAAK `encode()` text substitution as fallback
+3. **Summarize** each group using the LLM fallback chain:
+   - **Host backend** (Hermes auxiliary client) — when `MNEMOSYNE_HOST_LLM_ENABLED=true`
+   - **Remote OpenAI-compatible API** — if `MNEMOSYNE_LLM_BASE_URL` is set
+   - **Local LLM** (TinyLlama GGUF) — offline, no API key
+   - **AAAK encoding** — keyword-based text substitution as final fallback
 4. **Promote**: Insert summary into `episodic_memory` with `summary_of` referencing the original IDs
 5. **Evict**: Delete the original entries from `working_memory`
 6. **Log**: Record the consolidation in `consolidation_log`

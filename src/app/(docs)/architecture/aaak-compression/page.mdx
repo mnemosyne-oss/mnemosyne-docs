@@ -1,17 +1,6 @@
-export const metadata = {
-  title: 'AAAK Compression — Text Substitution for Memory Compaction',
-  description: 'Understand AAAK compression in Mnemosyne: a text substitution system that reduces memory content size by applying category prefixes, phrase compression, and structural patterns.',
-  openGraph: {
-    images: ['/og-image.jpg?v=1'],
-  },
-  twitter: {
-    card: 'summary_large_image',
-  },
-};
-
 # AAAK Compression
 
-Adaptive Associative Abstraction Kernel (AAAK) is Mnemosyne's text substitution system for reducing memory content size. It is **not** a method on the `Memory` class — it is a standalone utility used during consolidation.
+Adaptive Associative Abstraction Kernel (AAAK) is Mnemosyne's text substitution system for reducing memory content size. It is **not** a method on the `Mnemosyne` class — it is a standalone utility used during consolidation.
 
 ## The Problem
 
@@ -53,12 +42,14 @@ print(f"Compressed: {len(compressed)} chars")
 
 AAAK is applied automatically during sleep consolidation when summarizing groups of Working Memory entries:
 
-<MermaidDiagram chart={`
+<MermaidDiagram>
+
 flowchart LR
     WM[Working Memory Entries] -->|group by source| G[Grouped]
     G -->|encode via AAAK| C[Compressed Summary]
     C -->|promote| EM[Episodic Memory]
-`} />
+
+</MermaidDiagram>
 
 ## Important Notes
 

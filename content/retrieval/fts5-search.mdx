@@ -13,9 +13,9 @@ SQLite's built-in full-text search engine for exact term matching, boolean queri
 
 FTS5 search is performed automatically as part of the `recall()` method. There is no separate `text_search()` API. The FTS5 index is queried internally and its results are fused with vector search results.
 
-<CodeBlock code={`from mnemosyne import Memory
+<CodeBlock code={`from mnemosyne import Mnemosyne
 
-mem = Memory()
+mem = Mnemosyne()
 
 # recall() internally performs vector + FTS5 hybrid search
 results = mem.recall("database migration strategy", top_k=5)
@@ -37,13 +37,13 @@ Where:
 
 ## Integration with Hybrid Search
 
-FTS5 scores are normalized and fused with vector scores using a fixed weighting:
+FTS5 scores are normalized and fused with vector scores using configurable weighting:
 
-- **Vector score**: weight 0.5
-- **FTS5 score**: weight 0.3
-- **Importance**: weight 0.2
+- **Vector score**: weight 0.5 (configurable via `vec_weight` parameter in `recall()`)
+- **FTS5 score**: weight 0.3 (configurable via `fts_weight` parameter in `recall()`)
+- **Importance**: weight 0.2 (configurable via `importance_weight` parameter in `recall()`)
 
-These weights are not configurable through the `recall()` API. `recall()` accepts only `query` and `top_k` parameters.
+These weights are per-query configurable through the `recall()` API. See the [Configurable Scoring](/retrieval/configurable-scoring) guide for details.
 
 ## Performance
 

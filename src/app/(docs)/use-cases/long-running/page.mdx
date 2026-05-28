@@ -1,14 +1,3 @@
-export const metadata = {
-  title: 'Long-Running Agents — Persistent Memory Across Sessions',
-  description: 'Enable long-running AI agents with Mnemosyne: session-based persistence, context recovery, and resumable multi-day agent workflows.',
-  openGraph: {
-    images: ['/og-image.jpg?v=1'],
-  },
-  twitter: {
-    card: 'summary_large_image',
-  },
-};
-
 # Long-Running Tasks
 
 Maintain context across sessions for projects that span hours, days, or weeks.
@@ -25,7 +14,8 @@ Without persistent memory, context is lost.
 
 ## Solution
 
-<MermaidDiagram chart={`
+<MermaidDiagram>
+
 flowchart LR
     S1[Session 1
     Day 1] -->|remember| DB[(Mnemosyne)]
@@ -35,7 +25,8 @@ flowchart LR
     Day 7] -->|recall| DB
     
     style DB fill:#f0fdf4,stroke:#16a34a
-`} />
+
+</MermaidDiagram>
 
 ## Session Persistence
 

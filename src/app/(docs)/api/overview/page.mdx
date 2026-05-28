@@ -1,17 +1,6 @@
-export const metadata = {
-  title: 'API Overview — Mnemosyne Integration Interfaces',
-  description: 'Overview of all Mnemosyne API interfaces: Python SDK, Hermes plugin, MCP server, and legacy REST API. Choose the right integration method for your AI agent project.',
-  openGraph: {
-    images: ['/og-image.jpg?v=1'],
-  },
-  twitter: {
-    card: 'summary_large_image',
-  },
-};
-
 # API Overview
 
-Mnemosyne v2.5.0 exposes four interfaces: Python SDK, Hermes plugin tools, MCP server, and a legacy REST API.
+Mnemosyne exposes multiple interfaces: Python SDK, Hermes plugin tools, MCP server, and more.
 
 ## Interface Comparison
 
@@ -19,82 +8,53 @@ Mnemosyne v2.5.0 exposes four interfaces: Python SDK, Hermes plugin tools, MCP s
 |-----------|----------|---------|-------|
 | Python SDK | Direct integration, scripts | Lowest | `pip install` |
 | Hermes Plugin | Agent frameworks | Low | Plugin config |
-| MCP Server | Claude Desktop, Cursor, MCP clients | Low | `mnemosyne mcp` |
-| REST API (Legacy) | Remote services, microservices | Medium | `python -m mnemosyne` |
+| MCP Server | Claude Desktop, LLM clients | Low | `mnemosyne mcp` |
 
 ## Python SDK
 
-The primary interface. v2.5.0 supports multi-agent identity, tiered degradation, veracity signals, and cross-provider importers.
+The primary interface for Python applications:
 
-```python
-from mnemosyne import Mnemosyne
+<CodeBlock code={`from mnemosyne import Mnemosyne
 
-mem = Mnemosyne(session_id="agent-42", author_id="alice", author_type="human")
-
-# Store with veracity confidence
-mem.remember("PostgreSQL migration completed.", veracity="stated")
-
-# Multi-agent channel recall
-results = mem.recall("migration status", channel_id="team-db")
-
-# Tiered degradation runs automatically
-mem.sleep()  # consolidates + degrades old memories
-```
+mem = Mnemosyne()
+mem.remember("User prefers dark mode.")
+results = mem.recall("user preferences")
+`} language="python" />
 
 ## Hermes Plugin
 
-First-class Hermes integration with 15 tools: `mnemosyne_remember`, `mnemosyne_recall`, `mnemosyne_stats`, `mnemosyne_sleep`, `mnemosyne_invalidate`, `mnemosyne_triple_add`, `mnemosyne_triple_query`, and more.
+First-class integration with the Hermes agent framework:
 
-```yaml
-# hermes.yaml
+<CodeBlock code={`# hermes.yaml
 plugins:
   - name: mnemosyne-memory
     source: pip
     config:
-      data_dir: ~/.hermes/mnemosyne/data
+      db_path: ./memory.db
+      embedding_model: text-embedding-3-small
       auto_context: true
       context_injection:
         enabled: true
         max_memories: 5
         min_relevance: 0.7
-```
+`} language="yaml" />
 
 ## MCP Server
 
-Connect from Claude Desktop, Cursor, or any MCP client:
+Mnemosyne ships a built-in Model Context Protocol (MCP) server for integration with Claude Desktop and other MCP-compatible clients:
 
-```bash
-# Add to claude_desktop_config.json
-{
-  "mcpServers": {
-    "mnemosyne": {
-      "command": "mnemosyne",
-      "args": ["mcp"]
-    }
-  }
-}
-```
+<CodeBlock code={`# stdio transport (Claude Desktop, etc.)
+mnemosyne mcp
 
-For SSE transport (web clients):
-
-```bash
+# SSE transport (web clients)
 mnemosyne mcp --transport sse --port 8080
-```
 
-## REST API (Legacy)
+# Scoped to a specific memory bank
+mnemosyne mcp --bank project_a
+`} language="bash" />
 
-The FastAPI server embedded in `mnemosyne/cli.py`. Port 8090. Endpoints: `POST /store`, `GET /recall`, `GET /stats`, `DELETE /forget/{id}`, `PUT /update/{id}`, `POST /consolidate`.
-
-```bash
-python -m mnemosyne --port 8090
-```
-
-```bash
-curl -X POST http://localhost:8090/store \
-  -H "Content-Type: application/json" \
-  -d '{"content": "User prefers dark mode."}'
-```
+The MCP server exposes 6 tools: `mnemosyne_remember`, `mnemosyne_recall`, `mnemosyne_sleep`, `mnemosyne_scratchpad_read`, `mnemosyne_scratchpad_write`, and `mnemosyne_stats`.
 
 <Callout type="info" title="SDK Version Compatibility">
-Python SDK, Hermes plugin, MCP server, and REST API share the same core version. Use matching versions across all components.
+Python SDK, Hermes plugin, and MCP server share the same core version. Ensure all components use matching versions for full compatibility.
 </Callout>

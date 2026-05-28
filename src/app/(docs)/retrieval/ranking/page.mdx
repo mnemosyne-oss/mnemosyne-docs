@@ -1,21 +1,11 @@
-export const metadata = {
-  title: 'Ranking & Relevance — Scoring Retrieved Memories',
-  description: 'Learn how Mnemosyne scores and ranks retrieved memories using vector similarity, FTS5 relevance, importance weighting, and recency decay.',
-  openGraph: {
-    images: ['/og-image.jpg?v=1'],
-  },
-  twitter: {
-    card: 'summary_large_image',
-  },
-};
-
 # Ranking & Scoring
 
 How Mnemosyne ranks and scores retrieval results across different search modes.
 
 ## Scoring Pipeline
 
-<MermaidDiagram chart={`
+<MermaidDiagram>
+
 flowchart LR
     Q[Query] -->|embed| V[Vector Score]
     Q -->|tokenize| T[FTS5 Score]
@@ -25,7 +15,8 @@ flowchart LR
     I -->|0.2| F
     F -->|recency| R[Recency Multiplier]
     R -->|sort| S[Ranked Results]
-`} />
+
+</MermaidDiagram>
 
 ## Individual Scorers
 
@@ -51,7 +42,7 @@ Each memory has an `importance` field (set at ingestion time, range 0.0–1.0). 
 
 ## Rank Fusion
 
-The three components are combined with **fixed weights** (not configurable per-query):
+The three components are combined with **configurable weights**:
 
 <CodeBlock code={`# Fixed-weight fusion for episodic memory
 base_score = (vector_score * 0.5) + (fts_score * 0.3) + (importance * 0.2)
@@ -85,6 +76,6 @@ for result in all_results:
         yield result
 `} language="python" />
 
-<Callout type="info" title="Fixed Weights">
-The scoring weights (0.5 / 0.3 / 0.2) are fixed and not configurable through the `recall()` API. `recall()` accepts only `query` and `top_k` parameters.
+<Callout type="info" title="Configurable Weights">
+The scoring weights (0.5 / 0.3 / 0.2) are per-query configurable through the `recall()` API via `vec_weight`, `fts_weight`, and `importance_weight` parameters. See [Configurable Scoring](/retrieval/configurable-scoring).
 </Callout>

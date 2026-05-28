@@ -1,21 +1,11 @@
-export const metadata = {
-  title: 'Knowledge Base — Building Agent Knowledge with Mnemosyne',
-  description: 'Build AI-powered knowledge bases with Mnemosyne: semantic indexing, TripleStore for structured relationships, and intelligent retrieval for research and analysis.',
-  openGraph: {
-    images: ['/og-image.jpg?v=1'],
-  },
-  twitter: {
-    card: 'summary_large_image',
-  },
-};
-
 # Knowledge Base
 
 Build a structured knowledge base from agent interactions and external sources.
 
 ## Architecture
 
-<MermaidDiagram chart={`
+<MermaidDiagram>
+
 flowchart LR
     S[Sources] -->|remember| M[Mnemosyne]
     M -->|index| SM[Semantic Memory]
@@ -23,7 +13,8 @@ flowchart LR
     A -->|remember| M
     
     style SM fill:#f0fdf4,stroke:#16a34a
-`} />
+
+</MermaidDiagram>
 
 ## Storing Knowledge
 

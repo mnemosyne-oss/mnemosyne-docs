@@ -18,7 +18,7 @@ cp mnemosyne.db mnemosyne-pre-upgrade.db
 pip install --upgrade mnemosyne-memory
 
 # 3. Verify (schema migrations run automatically on first connection)
-python -c "from mnemosyne import Memory; m = Memory(); print(m.stats())"
+python -c "from mnemosyne import Mnemosyne; m = Mnemosyne(); print(m.stats())"
 `} language="bash" />
 
 <Callout type="info" title="Automatic Migrations">
@@ -41,14 +41,14 @@ Migrations run automatically on first connection. No manual intervention needed.
 
 Export from old instance, import to new using the Python SDK:
 
-<CodeBlock code={`from mnemosyne import Memory
+<CodeBlock code={`from mnemosyne import Mnemosyne
 
 # Export from old database
-old_mem = Memory(db_path="old.db")
+old_mem = Mnemosyne(db_path="old.db")
 old_mem.export_to_file("export.json")
 
 # Import into new database
-new_mem = Memory(db_path="new.db")
+new_mem = Mnemosyne(db_path="new.db")
 new_mem.import_from_file("export.json")
 
 # Verify

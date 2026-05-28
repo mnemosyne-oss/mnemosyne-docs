@@ -37,9 +37,9 @@ CREATE VIRTUAL TABLE vec_episodes USING vec0(
 
 Vector search is performed automatically as part of the `recall()` method. There is no separate `vector_search()` API:
 
-<CodeBlock code={`from mnemosyne import Memory
+<CodeBlock code={`from mnemosyne import Mnemosyne
 
-mem = Memory()
+mem = Mnemosyne()
 
 # recall() internally performs vector + FTS5 hybrid search
 results = mem.recall("deployment strategy", top_k=5)
