@@ -26,6 +26,7 @@ const navigation: NavSection[] = [
     items: [
       { title: "Quick Start", href: "/getting-started/quick-start" },
       { title: "Installation", href: "/getting-started/installation" },
+      { title: "Updating Mnemosyne", href: "/operations/migration" },
       { title: "Configuration", href: "/getting-started/configuration" },
       { title: "First Steps", href: "/getting-started/first-steps" },
     ],
@@ -92,7 +93,6 @@ const navigation: NavSection[] = [
     items: [
       { title: "Monitoring", href: "/operations/monitoring" },
       { title: "Backups", href: "/operations/backups" },
-      { title: "Upgrades", href: "/operations/migration" },
       { title: "Performance", href: "/operations/performance" },
       { title: "Benchmarking", href: "/operations/benchmarking", badge: "new" },
       { title: "Troubleshooting", href: "/operations/troubleshooting" },
