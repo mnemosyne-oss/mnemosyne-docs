@@ -166,10 +166,10 @@ export const RELATED_PAGES: Record<string, string[]> = {
   ],
   "/operations/backups": [
     "/operations/monitoring",
-    "/operations/migration",
+    "/operations/performance",
     "/security/encryption",
   ],
-  "/operations/migration": [
+  "/getting-started/updating": [
     "/operations/backups",
     "/getting-started/installation",
     "/deployment/overview",

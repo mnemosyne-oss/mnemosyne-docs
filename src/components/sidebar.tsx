@@ -26,7 +26,7 @@ const navigation: NavSection[] = [
     items: [
       { title: "Quick Start", href: "/getting-started/quick-start" },
       { title: "Installation", href: "/getting-started/installation" },
-      { title: "Updating Mnemosyne", href: "/operations/migration" },
+      { title: "Updating Mnemosyne", href: "/getting-started/updating" },
       { title: "Configuration", href: "/getting-started/configuration" },
       { title: "First Steps", href: "/getting-started/first-steps" },
     ],

@@ -553,7 +553,7 @@ export const PAGE_METADATA: Record<string, PageMeta> = {
     priority: 0.7,
     changeFreq: "monthly",
   },
-  "/operations/migration": {
+  "/getting-started/updating": {
     title: "Updating Mnemosyne — Version Upgrades & Data Migration",
     description:
       "Complete guide to updating Mnemosyne from any version. Covers v2.7 through v3.1.2, schema migrations, data export/import, rollback procedures, and troubleshooting.",
@@ -566,8 +566,8 @@ export const PAGE_METADATA: Record<string, PageMeta> = {
       "pip install upgrade",
       "data migration",
     ],
-    section: "operations",
-    slug: "/operations/migration",
+    section: "getting-started",
+    slug: "/getting-started/updating",
     priority: 0.7,
     changeFreq: "monthly",
   },
