@@ -65,19 +65,6 @@ Complete JSON Schema for Mnemosyne tools exposed to agents.
         "type": "string",
         "description": "Confidence label: 'stated' | 'inferred' | 'tool' | 'imported' | 'unknown'. Default 'unknown'.",
         "default": "unknown"
-      },
-      "author_id": {
-        "type": "string",
-        "description": "Identifier of the author who created this memory."
-      },
-      "author_type": {
-        "type": "string",
-        "enum": ["human", "agent", "system"],
-        "description": "Category of the author who created this memory."
-      },
-      "channel_id": {
-        "type": "string",
-        "description": "Channel identifier for contextual scoping."
       }
     }
   }
@@ -127,19 +114,6 @@ Complete JSON Schema for Mnemosyne tools exposed to agents.
       "importance_weight": {
         "type": "number",
         "description": "Importance score weight in hybrid scoring. Omit (or pass null) to use MNEMOSYNE_IMPORTANCE_WEIGHT env var or built-in default 0.2."
-      },
-      "author_id": {
-        "type": "string",
-        "description": "Filter by specific author. (v2.1)"
-      },
-      "author_type": {
-        "type": "string",
-        "enum": ["human", "agent", "system"],
-        "description": "Filter by author category. (v2.1)"
-      },
-      "channel_id": {
-        "type": "string",
-        "description": "Filter by channel for cross-session recall. (v2.1)"
       }
     }
   }
@@ -249,10 +223,6 @@ Complete JSON Schema for Mnemosyne tools exposed to agents.
         "type": "boolean",
         "description": "If true, report what would be consolidated without writing changes.",
         "default": false
-      },
-      "bank": {
-        "type": "string",
-        "description": "Target memory bank for consolidation (default: the active bank)."
       }
     }
   }

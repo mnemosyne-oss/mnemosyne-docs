@@ -53,11 +53,13 @@ flowchart LR
 
 Mnemosyne registers the following Hermes hooks:
 
-| Hook | Timing | Action |
-|------|--------|--------|
-| `pre_llm_call` | Before LLM call | Inject relevant memories |
-| `on_session_start` | Session start | Store conversation |
-| `post_tool_call` | After tool execution | Store tool results |
+|| Hook | Timing | Action |
+||------|--------|--------|
+|| `prefetch` (MemoryProvider) | Before LLM call | Inject Mnemosyne context into agent prompt |
+|| `on_turn_start` | Turn start | Track turn count for auto-save |
+|| `sync_turn` | Turn end | Persist filtered conversation turn to working memory |
+|| `on_session_end` | Session end | Run consolidation cycle |
+|| `on_memory_write` | Built-in memory write | Mirror Hermes's native memory writes to Mnemosyne |
 
 ## Tool Schema
 
@@ -90,9 +92,6 @@ Mnemosyne exposes these tools to agents:
     "properties": {
       "query": { "type": "string", "description": "Natural language search query" },
       "top_k": { "type": "integer", "default": 5, "description": "Max memories to return" },
-      "author_id": { "type": "string", "description": "Filter by author" },
-      "author_type": { "type": "string", "enum": ["human", "agent", "system"] },
-      "channel_id": { "type": "string", "description": "Filter by channel" },
       "temporal_weight": { "type": "number", "description": "Weight for recency in scoring" },
       "query_time": { "type": "string", "description": "Point-in-time query (ISO 8601)" },
       "temporal_halflife": { "type": "number", "description": "Recency decay half-life in hours" },
