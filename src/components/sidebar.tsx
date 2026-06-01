@@ -92,7 +92,7 @@ const navigation: NavSection[] = [
     icon: <Settings size={16} />,
     items: [
       { title: "Monitoring", href: "/operations/monitoring" },
-      { title: "Backups", href: "/operations/backups" },
+      { title: "Disaster Recovery", href: "/operations/backups" },
       { title: "Performance", href: "/operations/performance" },
       { title: "Benchmarking", href: "/operations/benchmarking", badge: "new" },
       { title: "Troubleshooting", href: "/operations/troubleshooting" },

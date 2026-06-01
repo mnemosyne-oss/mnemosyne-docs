@@ -538,15 +538,18 @@ export const PAGE_METADATA: Record<string, PageMeta> = {
     changeFreq: "monthly",
   },
   "/operations/backups": {
-    title: "Backups — Mnemosyne Data Backup & Restore Strategies",
+    title: "Disaster Recovery — Backup, Restore & Integrity Verification",
     description:
-      "Implement backup strategies for Mnemosyne: SQLite file snapshots, incremental backups, automated restore procedures, and disaster recovery planning.",
+      "Mnemosyne disaster recovery module: compressed gzip backups with checksums, automated emergency restore, integrity verification, health checks, backup rotation, and CLI cheat sheet.",
     keywords: [
+      "disaster recovery",
       "backups",
       "data recovery",
       "SQLite backup",
-      "disaster recovery",
-      "restore",
+      "emergency restore",
+      "integrity check",
+      "health check",
+      "backup rotation",
     ],
     section: "operations",
     slug: "/operations/backups",
