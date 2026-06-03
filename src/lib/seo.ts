@@ -740,6 +740,24 @@ export const PAGE_METADATA: Record<string, PageMeta> = {
     priority: 0.7,
     changeFreq: "monthly",
   },
+
+  // ── Integration ────────────────────────────────────────────
+  "/integration/hermes": {
+    title: "Hermes Integration — Using Mnemosyne as Your Memory Provider",
+    description:
+      "Complete guide to integrating Mnemosyne with the Hermes Agent framework. Covers installation, config, memory control, profile isolation, and troubleshooting.",
+    keywords: [
+      "hermes integration",
+      "mnemosyne provider",
+      "memory setup",
+      "profile isolation",
+      "hermes memory",
+    ],
+    section: "integration",
+    slug: "/integration/hermes",
+    priority: 0.8,
+    changeFreq: "monthly",
+  },
 };
 
 // ─────────────────────────────────────────────────────────────

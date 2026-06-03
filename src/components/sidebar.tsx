@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronRight, BookOpen, Layers, Brain, Search, Code, Rocket, Shield, Briefcase, Settings, Menu, X, Scale, ArrowLeftRight } from "lucide-react";
+import { ChevronRight, BookOpen, Layers, Brain, Search, Code, Rocket, Shield, Briefcase, Settings, Menu, X, Scale, ArrowLeftRight, Cable } from "lucide-react";
 
 interface NavItem {
   title: string;
@@ -139,6 +139,13 @@ const navigation: NavSection[] = [
       { title: "From Mem0", href: "/migration/from-mem0" },
       { title: "From Letta", href: "/migration/from-letta" },
       { title: "From Zep", href: "/migration/from-zep" },
+    ],
+  },
+  {
+    title: "Integration",
+    icon: <Cable size={16} />,
+    items: [
+      { title: "Hermes", href: "/integration/hermes", badge: "new" },
     ],
   },
 ];

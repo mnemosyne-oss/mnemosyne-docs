@@ -40,6 +40,7 @@ export const pageOrder: string[] = [
   "api/hermes-plugin",
   "api/rest",
   "api/tool-schema",
+  "integration/hermes",
   "deployment/overview",
   "deployment/fly-io",
   "deployment/docker",
@@ -83,6 +84,7 @@ const sectionMap: Record<string, string> = {
   "use-cases": "Use Cases",
   "comparisons": "Comparisons",
   "migration": "Migration",
+  "integration": "Integration",
 };
 
 export function pageExists(path: string): boolean {

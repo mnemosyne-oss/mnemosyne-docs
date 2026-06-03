@@ -44,6 +44,7 @@ const searchIndex: SearchResult[] = [
   { title: "From Mem0", href: "/migration/from-mem0", excerpt: "Migrate memories from Mem0 cloud or self-hosted", section: "Migration" },
   { title: "From Letta (MemGPT)", href: "/migration/from-letta", excerpt: "Import AgentFile (.af) or API memories from Letta", section: "Migration" },
   { title: "From Zep", href: "/migration/from-zep", excerpt: "Session-by-session extraction from Zep temporal graph", section: "Migration" },
+  { title: "Hermes Integration", href: "/integration/hermes", excerpt: "Using Mnemosyne as your Hermes Agent memory provider", section: "Integration" },
 ];
 
 export function Search() {

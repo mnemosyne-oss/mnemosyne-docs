@@ -21,6 +21,7 @@ export const RELATED_PAGES: Record<string, string[]> = {
     "/getting-started/installation",
     "/getting-started/first-steps",
     "/operations/performance",
+    "/integration/hermes",
   ],
   "/getting-started/first-steps": [
     "/getting-started/quick-start",
@@ -129,6 +130,7 @@ export const RELATED_PAGES: Record<string, string[]> = {
     "/api/overview",
     "/api/hermes-plugin",
     "/api/python-sdk",
+    "/integration/hermes",
   ],
 
   // Deployment
@@ -227,6 +229,12 @@ export const RELATED_PAGES: Record<string, string[]> = {
     "/use-cases/overview",
     "/memory-systems/semantic",
     "/retrieval/hybrid-search",
+  ],
+
+  // Integration
+  "/integration/hermes": [
+    "/getting-started/configuration",
+    "/api/tool-schema",
   ],
 };
 
