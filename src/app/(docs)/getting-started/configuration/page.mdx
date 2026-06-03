@@ -191,6 +191,28 @@ memory:
       - "skill.*refined"          # Wildcard match
 ```
 
+{/* GENERATED: config-table */}
+
+<Callout type="info" title="Auto-generated from code">
+This table is generated from `MnemosyneMemoryProvider.get_config_schema()`.
+If the provider adds or changes config keys, this updates automatically.
+</Callout>
+
+| Key | Default | Description |
+|-----|---------|-------------|
+| `auto_sleep` | `False` | Auto-run sleep() when working memory exceeds threshold. Set true to enable. Backward-compatible with MNEMOSYNE_AUTO_SLEEP_ENABLED env var. |
+| `sleep_threshold` | `50` | Working memory count before auto-sleep triggers |
+| `vector_type` | `int8` | Vector storage type (note: not yet wired to BeamMemory at runtime; reserved for future use) Choices: float32 | int8 | bit |
+| `ignore_patterns` | `[]` | Regex patterns to filter from memory storage (one per line in config, or comma-separated). Memories matching any pattern are skipped. |
+| `profile_isolation` | `False` | Enable per-profile memory isolation via Mnemosyne banks. Each Hermes profile gets its own SQLite database under mnemosyne/data/banks/&lt;profile&gt;/. Default false for backward compatibility. |
+| `shared_surface_path` | `data/shared/mnemosyne.db` | SQLite path for shared surface memories. Default is &lt;mnemosyne&gt;/data/shared/mnemosyne.db. |
+| `shared_surface_read` | `False` | When true, mnemosyne_recall merges shared-surface results into private bank recall, tagging each result with its bank ('private' or 'surface'). Default false. |
+| `skip_contexts` | `cron,flush,subagent,background,skill_loop` | Agent contexts where Mnemosyne should skip initialization. Comma-separated list. Defaults to 'cron,flush,subagent,background,skill_loop'. Set to empty string to enable all contexts. Also configurable via MNEMOSYNE_SKIP_CONTEXTS env var. |
+| `sync_roles` | `['user', 'assistant']` | Conversation roles to autosave in sync_turn(). List of role names: 'user', 'assistant'. Default ['user', 'assistant'] saves both. Set to ['user'] for user turns only, or [] to disable conversation autosave entirely. Does not affect explicit mnemosyne_remember calls. Identity signal capture is gated by user sync — excluding 'user' also disables identity extraction. Also configurable via MNEMOSYNE_SYNC_ROLES env var. |
+
+{/* /GENERATED: config-table */}
+
+
 Config file lookup order (first found wins):
 1. `./config.yaml` (current working directory)
 2. `~/.hermes/mnemosyne/config.yaml` (user-level)
