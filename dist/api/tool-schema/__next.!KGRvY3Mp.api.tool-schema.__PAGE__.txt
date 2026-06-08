@@ -1,268 +1,322 @@
 1:"$Sreact.fragment"
-2:I[73892,["/_next/static/chunks/146uonv6bn6sr.js","/_next/static/chunks/0n4z.7yu76je-.js","/_next/static/chunks/0lwhrut0t.n2r.js","/_next/static/chunks/0q94db9z~qch1.js","/_next/static/chunks/09vsub61~3cmu.js"],"AnchorHeading"]
-3:I[52947,["/_next/static/chunks/146uonv6bn6sr.js","/_next/static/chunks/0n4z.7yu76je-.js","/_next/static/chunks/0lwhrut0t.n2r.js","/_next/static/chunks/0q94db9z~qch1.js","/_next/static/chunks/09vsub61~3cmu.js"],"CodeBlock"]
-38:I[5014,["/_next/static/chunks/146uonv6bn6sr.js","/_next/static/chunks/0n4z.7yu76je-.js","/_next/static/chunks/0lwhrut0t.n2r.js","/_next/static/chunks/0q94db9z~qch1.js","/_next/static/chunks/09vsub61~3cmu.js"],"default"]
-3c:I[97367,["/_next/static/chunks/146uonv6bn6sr.js","/_next/static/chunks/0n4z.7yu76je-.js"],"OutletBoundary"]
-3d:"$Sreact.suspense"
-4:Ta54,{
-"name": "mnemosyne_remember",
-"description": "Store a durable memory in Mnemosyne. Use for ANY fact, preference, identity, insight, or context that should persist across sessions. Higher importance (0.0-1.0) surfaces the memory more often. Use scope='global' for user-level facts; scope='session' for conversation-specific context. Use valid_until (ISO date YYYY-MM-DD) for time-bound facts. Use extract_entities=True to extract named entities for fuzzy recall (e.g. 'Abdias' and 'Abdias J.' will match). Use extract=True to also pull subject-predicate-object fact triples via LLM for fact-aware recall. Use veracity to tag confidence: 'stated' for direct user assertions, 'tool' for deterministic tool output, 'inferred' for derived guesses; 'unknown' (default) gets no recall boost.",
-"parameters": {
-  "type": "object",
-  "required": ["content"],
-  "properties": {
-    "content": {
-      "type": "string",
-      "description": "The memory content to store."
+2:I[11276,["/_next/static/chunks/076f1ogf-il.v.js","/_next/static/chunks/11u.26kh8kw...js","/_next/static/chunks/09-wudx97fkxd.js","/_next/static/chunks/0b57chlhtixj9.js","/_next/static/chunks/01o_465-h6ryu.js"],"AnchorHeading"]
+56:I[10752,["/_next/static/chunks/076f1ogf-il.v.js","/_next/static/chunks/11u.26kh8kw...js"],"OutletBoundary"]
+57:"$Sreact.suspense"
+0:{"rsc":["$","$1","c",{"children":[[["$","hr",null,{}],"\n",["$","$L2",null,{"as":"h2","children":["title: Tool Schema Reference\ndescription: Auto-generated reference for all Mnemosyne tool schemas.\ngenerated: true\nsource: hermes_memory_provider/",["$","strong",null,{"children":"init"}],".py:568\ncode_version: 3.4.0"]}],"\n",["$","p",null,{"children":["This page is ",["$","strong",null,{"children":"auto-generated"}]," from the actual tool schema definitions\nin the provider code. Do not hand-edit."]}],"\n",["$","p",null,{"children":["There are ",["$","strong",null,{"children":"23"}]," tools available."]}],"\n",["$","$L2",null,{"as":"h2","children":"Tool Index"}],"\n",["$","ul",null,{"children":["\n",["$","li",null,{"children":[["$","strong",null,{"children":["$","code",null,{"children":"mnemosyne_remember"}]}]," — Store a durable memory in Mnemosyne. Use for ANY fact, preference, identity, insight, or context that should persist acr"]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":["$","code",null,{"children":"mnemosyne_recall"}]}]," — Search Mnemosyne for relevant memories. Uses hybrid ranking: by default 50% vector similarity + 30% FTS5 text rank + 20%"]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":["$","code",null,{"children":"mnemosyne_shared_remember"}]}]," — Store compact cross-agent surface memory in a dedicated shared Mnemosyne DB. Use only for stable user/system/workflow me"]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":["$","code",null,{"children":"mnemosyne_shared_recall"}]}]," — Search only the shared Mnemosyne surface DB."]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":["$","code",null,{"children":"mnemosyne_shared_forget"}]}]," — Delete one working shared-surface memory by exact ID."]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":["$","code",null,{"children":"mnemosyne_shared_stats"}]}]," — Return shared surface DB path and counts."]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":["$","code",null,{"children":"mnemosyne_sleep"}]}]," — Run the Mnemosyne consolidation cycle. Compresses old working memories into episodic summaries. Call after long sessions"]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":["$","code",null,{"children":"mnemosyne_stats"}]}]," — Return Mnemosyne memory statistics: working count, episodic count, BEAM tiers."]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":["$","code",null,{"children":"mnemosyne_invalidate"}]}]," — Mark a memory as expired or superseded. Provide memory_id from recall results. Optionally provide replacement_id to chai"]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":["$","code",null,{"children":"mnemosyne_validate"}]}]," — Attest, update, or invalidate a memory the caller did not necessarily author. Supports collaborative ownership: any agen"]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":["$","code",null,{"children":"mnemosyne_get"}]}]," — Retrieve a single memory by its primary key. Pure read, no side effects. No semantic search. Returns the exact memory wi"]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":["$","code",null,{"children":"mnemosyne_triple_add"}]}]," — Add a temporal fact triple (subject, predicate, object) to the knowledge graph. Example: ('user', 'prefers', 'neovim')."]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":["$","code",null,{"children":"mnemosyne_triple_query"}]}]," — Query the temporal knowledge graph for facts matching subject/predicate/object patterns."]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":["$","code",null,{"children":"mnemosyne_scratchpad_write"}]}]," — Write a temporary note to the Mnemosyne scratchpad."]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":["$","code",null,{"children":"mnemosyne_scratchpad_read"}]}]," — Read the Mnemosyne scratchpad entries."]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":["$","code",null,{"children":"mnemosyne_scratchpad_clear"}]}]," — Clear all entries from the Mnemosyne scratchpad."]}],"\n",["$","li",null,{"children":[["$","strong",null,{"children":["$","code",null,{"children":"mnemosyne_export"}]}]," — Export all Mnemosyne memories to a JSON file for backup or migration."]}],"\n","$L3","\n","$L4","\n","$L5","\n","$L6","\n","$L7","\n","$L8","\n"]}],"\n","$L9","\n","$La","\n","$Lb","\n","$Lc","\n","$Ld","\n","$Le","\n","$Lf","\n","$L10","\n","$L11","\n","$L12","\n","$L13","\n","$L14","\n","$L15","\n","$L16","\n","$L17","\n","$L18","\n","$L19","\n","$L1a","\n","$L1b","\n","$L1c","\n","$L1d","\n","$L1e","\n","$L1f","\n","$L20","\n","$L21","\n","$L22","\n","$L23","\n","$L24","\n","$L25","\n","$L26","\n","$L27","\n","$L28","\n","$L29","\n","$L2a","\n","$L2b","\n","$L2c","\n","$L2d","\n","$L2e","\n","$L2f","\n","$L30","\n","$L31","\n","$L32","\n","$L33","\n","$L34","\n","$L35","\n","$L36","\n","$L37","\n","$L38","\n","$L39","\n","$L3a","\n","$L3b","\n","$L3c","\n","$L3d","\n","$L3e","\n","$L3f","\n","$L40","\n","$L41","\n","$L42","\n","$L43","\n","$L44","\n","$L45","\n","$L46","\n","$L47","\n","$L48","\n","$L49","\n","$L4a","\n","$L4b","\n","$L4c","\n","$L4d","\n","$L4e"],["$L4f"],"$L50"]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"rL0kYsxstwPZl4oDnLrmK"}
+3:["$","li",null,{"children":[["$","strong",null,{"children":["$","code",null,{"children":"mnemosyne_update"}]}]," — Update the content or importance of an existing memory by ID."]}]
+4:["$","li",null,{"children":[["$","strong",null,{"children":["$","code",null,{"children":"mnemosyne_forget"}]}]," — Permanently delete a memory by ID."]}]
+5:["$","li",null,{"children":[["$","strong",null,{"children":["$","code",null,{"children":"mnemosyne_import"}]}]," — Import Mnemosyne memories from a JSON file or another memory provider (Hindsight, Mem0). Idempotent by default."]}]
+6:["$","li",null,{"children":[["$","strong",null,{"children":["$","code",null,{"children":"mnemosyne_diagnose"}]}]," — Run PII-safe diagnostics on Mnemosyne installation. Checks dependencies, database state, and vector search readiness. Ne"]}]
+7:["$","li",null,{"children":[["$","strong",null,{"children":["$","code",null,{"children":"mnemosyne_graph_query"}]}]," — Traverse the memory graph to find memories related to a seed memory. Uses multi-hop BFS through graph_edges with optiona"]}]
+8:["$","li",null,{"children":[["$","strong",null,{"children":["$","code",null,{"children":"mnemosyne_graph_link"}]}]," — Declare a semantic edge between two memories in the graph. Use this to explicitly link related memories so graph travers"]}]
+9:["$","$L2",null,{"as":"h2","children":"Schema Definitions"}]
+a:["$","$L2",null,{"as":"h3","children":"mnemosyne_remember"}]
+b:["$","p",null,{"children":"Store a durable memory in Mnemosyne. Use for ANY fact, preference, identity, insight, or context that should persist across sessions. Higher importance (0.0-1.0) surfaces the memory more often. Use scope='global' for user-level facts; scope='session' for conversation-specific context. Use valid_until (ISO date YYYY-MM-DD) for time-bound facts. Use extract_entities=True to extract named entities for fuzzy recall (e.g. 'Abdias' and 'Abdias J.' will match). Use extract=True to also pull subject-predicate-object fact triples via LLM for fact-aware recall. Use veracity to tag confidence: 'stated' for direct user assertions, 'tool' for deterministic tool output, 'inferred' for derived guesses; 'unknown' (default) gets no recall boost."}]
+51:T932,{
+  "name": "mnemosyne_remember",
+  "description": "Store a durable memory in Mnemosyne. Use for ANY fact, preference, identity, insight, or context that should persist across sessions. Higher importance (0.0-1.0) surfaces the memory more often. Use scope='global' for user-level facts; scope='session' for conversation-specific context. Use valid_until (ISO date YYYY-MM-DD) for time-bound facts. Use extract_entities=True to extract named entities for fuzzy recall (e.g. 'Abdias' and 'Abdias J.' will match). Use extract=True to also pull subject-predicate-object fact triples via LLM for fact-aware recall. Use veracity to tag confidence: 'stated' for direct user assertions, 'tool' for deterministic tool output, 'inferred' for derived guesses; 'unknown' (default) gets no recall boost.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "content": {
+        "type": "string",
+        "description": "The memory content to store."
+      },
+      "importance": {
+        "type": "number",
+        "description": "Importance 0.0-1.0. Default 0.5.",
+        "default": 0.5
+      },
+      "source": {
+        "type": "string",
+        "description": "Source tag: preference, fact, insight, identity, task, etc.",
+        "default": "user"
+      },
+      "scope": {
+        "type": "string",
+        "description": "'session' (default) or 'global'.",
+        "default": "session"
+      },
+      "valid_until": {
+        "type": "string",
+        "description": "Optional expiry date YYYY-MM-DD.",
+        "default": ""
+      },
+      "extract_entities": {
+        "type": "boolean",
+        "description": "Extract named entities for fuzzy recall. Default False.",
+        "default": false
+      },
+      "extract": {
+        "type": "boolean",
+        "description": "Extract subject-predicate-object fact triples via LLM for fact-aware recall. Default False.",
+        "default": false
+      },
+      "metadata": {
+        "type": "object",
+        "description": "Optional dict of additional fields (source_doc, tags, page, etc.). Default empty.",
+        "default": {}
+      },
+      "veracity": {
+        "type": "string",
+        "description": "Confidence label: 'stated' | 'inferred' | 'tool' | 'imported' | 'unknown'. Default 'unknown'.",
+        "default": "unknown"
+      }
     },
-    "importance": {
-      "type": "number",
-      "description": "Importance 0.0-1.0. Default 0.5.",
-      "default": 0.5
+    "required": [
+      "content"
+    ]
+  }
+}
+c:["$","pre",null,{"children":["$","code",null,{"className":"language-json","children":"$51"}]}]
+d:["$","$L2",null,{"as":"h3","children":"mnemosyne_recall"}]
+e:["$","p",null,{"children":"Search Mnemosyne for relevant memories. Uses hybrid ranking: by default 50% vector similarity + 30% FTS5 text rank + 20% importance + optional temporal boost. Tune the per-query weights via vec_weight, fts_weight, importance_weight (omit to use environment defaults). Returns ranked results."}]
+52:T77c,{
+  "name": "mnemosyne_recall",
+  "description": "Search Mnemosyne for relevant memories. Uses hybrid ranking: by default 50% vector similarity + 30% FTS5 text rank + 20% importance + optional temporal boost. Tune the per-query weights via vec_weight, fts_weight, importance_weight (omit to use environment defaults). Returns ranked results.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "query": {
+        "type": "string",
+        "description": "Natural language query."
+      },
+      "limit": {
+        "type": "integer",
+        "description": "Max results. Default 5.",
+        "default": 5
+      },
+      "temporal_weight": {
+        "type": "number",
+        "description": "How much to boost recent memories (0.0 = ignore time, 0.2 = mild recency bias, 0.5 = strong recency bias). Default 0.0.",
+        "default": 0.0
+      },
+      "query_time": {
+        "type": "string",
+        "description": "ISO timestamp to treat as 'now' for temporal scoring. Default is current time.",
+        "default": ""
+      },
+      "temporal_halflife": {
+        "type": "number",
+        "description": "Hours until temporal boost decays by half. Default 24. Lower = faster decay.",
+        "default": 24
+      },
+      "vec_weight": {
+        "type": "number",
+        "description": "Vector similarity weight in hybrid scoring. Omit (or pass null) to use MNEMOSYNE_VEC_WEIGHT env var or built-in default 0.5."
+      },
+      "fts_weight": {
+        "type": "number",
+        "description": "Full-text search weight in hybrid scoring. Omit (or pass null) to use MNEMOSYNE_FTS_WEIGHT env var or built-in default 0.3."
+      },
+      "importance_weight": {
+        "type": "number",
+        "description": "Importance score weight in hybrid scoring. Omit (or pass null) to use MNEMOSYNE_IMPORTANCE_WEIGHT env var or built-in default 0.2."
+      }
     },
-    "source": {
-      "type": "string",
-      "description": "Source tag: preference, fact, insight, identity, task, etc.",
-      "default": "user"
+    "required": [
+      "query"
+    ]
+  }
+}
+f:["$","pre",null,{"children":["$","code",null,{"className":"language-json","children":"$52"}]}]
+10:["$","$L2",null,{"as":"h3","children":"mnemosyne_shared_remember"}]
+11:["$","p",null,{"children":"Store compact cross-agent surface memory in a dedicated shared Mnemosyne DB. Use only for stable user/system/workflow metadata or general preferences. Normal mnemosyne_remember writes stay private."}]
+53:T41c,{
+  "name": "mnemosyne_shared_remember",
+  "description": "Store compact cross-agent surface memory in a dedicated shared Mnemosyne DB. Use only for stable user/system/workflow metadata or general preferences. Normal mnemosyne_remember writes stay private.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "content": {
+        "type": "string",
+        "description": "Surface memory content to store."
+      },
+      "kind": {
+        "type": "string",
+        "description": "meta | preference | correction | identity",
+        "default": "meta"
+      },
+      "importance": {
+        "type": "number",
+        "description": "Importance 0.0-1.0. Default 0.8.",
+        "default": 0.8
+      },
+      "veracity": {
+        "type": "string",
+        "description": "stated | inferred | tool | imported | unknown",
+        "default": "unknown"
+      },
+      "metadata": {
+        "type": "object",
+        "description": "Optional metadata object.",
+        "default": {}
+      }
     },
-    "scope": {
-      "type": "string",
-      "description": "'session' (default) or 'global'.",
-      "default": "session"
+    "required": [
+      "content"
+    ]
+  }
+}
+12:["$","pre",null,{"children":["$","code",null,{"className":"language-json","children":"$53"}]}]
+13:["$","$L2",null,{"as":"h3","children":"mnemosyne_shared_recall"}]
+14:["$","p",null,{"children":"Search only the shared Mnemosyne surface DB."}]
+15:["$","pre",null,{"children":["$","code",null,{"className":"language-json","children":"{\n  \"name\": \"mnemosyne_shared_recall\",\n  \"description\": \"Search only the shared Mnemosyne surface DB.\",\n  \"parameters\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"query\": {\n        \"type\": \"string\"\n      },\n      \"limit\": {\n        \"type\": \"integer\",\n        \"default\": 5\n      }\n    },\n    \"required\": [\n      \"query\"\n    ]\n  }\n}\n"}]}]
+16:["$","$L2",null,{"as":"h3","children":"mnemosyne_shared_forget"}]
+17:["$","p",null,{"children":"Delete one working shared-surface memory by exact ID."}]
+18:["$","pre",null,{"children":["$","code",null,{"className":"language-json","children":"{\n  \"name\": \"mnemosyne_shared_forget\",\n  \"description\": \"Delete one working shared-surface memory by exact ID.\",\n  \"parameters\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"memory_id\": {\n        \"type\": \"string\"\n      }\n    },\n    \"required\": [\n      \"memory_id\"\n    ]\n  }\n}\n"}]}]
+19:["$","$L2",null,{"as":"h3","children":"mnemosyne_shared_stats"}]
+1a:["$","p",null,{"children":"Return shared surface DB path and counts."}]
+1b:["$","pre",null,{"children":["$","code",null,{"className":"language-json","children":"{\n  \"name\": \"mnemosyne_shared_stats\",\n  \"description\": \"Return shared surface DB path and counts.\",\n  \"parameters\": {\n    \"type\": \"object\",\n    \"properties\": {}\n  }\n}\n"}]}]
+1c:["$","$L2",null,{"as":"h3","children":"mnemosyne_sleep"}]
+1d:["$","p",null,{"children":"Run the Mnemosyne consolidation cycle. Compresses old working memories into episodic summaries. Call after long sessions or when memory feels stale. Set all_sessions=true to consolidate eligible old working memories across inactive sessions."}]
+1e:["$","pre",null,{"children":["$","code",null,{"className":"language-json","children":"{\n  \"name\": \"mnemosyne_sleep\",\n  \"description\": \"Run the Mnemosyne consolidation cycle. Compresses old working memories into episodic summaries. Call after long sessions or when memory feels stale. Set all_sessions=true to consolidate eligible old working memories across inactive sessions.\",\n  \"parameters\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"all_sessions\": {\n        \"type\": \"boolean\",\n        \"description\": \"If true, consolidate eligible old working memories across all sessions instead of only the current session.\",\n        \"default\": false\n      },\n      \"dry_run\": {\n        \"type\": \"boolean\",\n        \"description\": \"If true, report what would be consolidated without writing changes.\",\n        \"default\": false\n      }\n    }\n  }\n}\n"}]}]
+1f:["$","$L2",null,{"as":"h3","children":"mnemosyne_stats"}]
+20:["$","p",null,{"children":"Return Mnemosyne memory statistics: working count, episodic count, BEAM tiers."}]
+21:["$","pre",null,{"children":["$","code",null,{"className":"language-json","children":"{\n  \"name\": \"mnemosyne_stats\",\n  \"description\": \"Return Mnemosyne memory statistics: working count, episodic count, BEAM tiers.\",\n  \"parameters\": {\n    \"type\": \"object\",\n    \"properties\": {}\n  }\n}\n"}]}]
+22:["$","$L2",null,{"as":"h3","children":"mnemosyne_invalidate"}]
+23:["$","p",null,{"children":"Mark a memory as expired or superseded. Provide memory_id from recall results. Optionally provide replacement_id to chain old → new."}]
+24:["$","pre",null,{"children":["$","code",null,{"className":"language-json","children":"{\n  \"name\": \"mnemosyne_invalidate\",\n  \"description\": \"Mark a memory as expired or superseded. Provide memory_id from recall results. Optionally provide replacement_id to chain old \\u2192 new.\",\n  \"parameters\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"memory_id\": {\n        \"type\": \"string\",\n        \"description\": \"ID of memory to invalidate.\"\n      },\n      \"replacement_id\": {\n        \"type\": \"string\",\n        \"description\": \"Optional new memory that replaces this one.\",\n        \"default\": \"\"\n      }\n    },\n    \"required\": [\n      \"memory_id\"\n    ]\n  }\n}\n"}]}]
+25:["$","$L2",null,{"as":"h3","children":"mnemosyne_validate"}]
+26:["$","p",null,{"children":"Attest, update, or invalidate a memory the caller did not necessarily author. Supports collaborative ownership: any agent can validate any memory in either the private bank or the shared surface. The original author is preserved; validator + validated_at are updated to record the most recent attester. A 3-entry ring buffer keeps lightweight history. Actions: 'attest' (confirm correctness), 'update' (replace content), 'invalidate' (mark superseded), 'delete' (remove)."}]
+54:T6b0,{
+  "name": "mnemosyne_validate",
+  "description": "Attest, update, or invalidate a memory the caller did not necessarily author. Supports collaborative ownership: any agent can validate any memory in either the private bank or the shared surface. The original author is preserved; validator + validated_at are updated to record the most recent attester. A 3-entry ring buffer keeps lightweight history. Actions: 'attest' (confirm correctness), 'update' (replace content), 'invalidate' (mark superseded), 'delete' (remove).",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "memory_id": {
+        "type": "string",
+        "description": "ID of memory to validate."
+      },
+      "action": {
+        "type": "string",
+        "enum": [
+          "attest",
+          "update",
+          "invalidate",
+          "delete"
+        ],
+        "description": "What kind of validation to record."
+      },
+      "validator": {
+        "type": "string",
+        "description": "Agent identifier performing the validation. Defaults to the caller's agent_identity if not set.",
+        "default": ""
+      },
+      "new_content": {
+        "type": "string",
+        "description": "New content (only used with action='update').",
+        "default": ""
+      },
+      "note": {
+        "type": "string",
+        "description": "Optional reason or evidence for this validation.",
+        "default": ""
+      },
+      "bank": {
+        "type": "string",
+        "enum": [
+          "private",
+          "surface"
+        ],
+        "description": "Which bank holds the memory. Default 'private'.",
+        "default": "private"
+      }
     },
-    "valid_until": {
-      "type": "string",
-      "description": "Optional expiry date YYYY-MM-DD.",
-      "default": ""
-    },
-    "extract_entities": {
-      "type": "boolean",
-      "description": "Extract named entities for fuzzy recall. Default False.",
-      "default": false
-    },
-    "extract": {
-      "type": "boolean",
-      "description": "Extract subject-predicate-object fact triples via LLM for fact-aware recall. Default False.",
-      "default": false
-    },
-    "metadata": {
-      "type": "object",
-      "description": "Optional dict of additional fields (source_doc, tags, page, etc.). Default empty.",
-      "default": {}
-    },
-    "veracity": {
-      "type": "string",
-      "description": "Confidence label: 'stated' | 'inferred' | 'tool' | 'imported' | 'unknown'. Default 'unknown'.",
-      "default": "unknown"
-    },
-    "author_id": {
-      "type": "string",
-      "description": "Identifier of the author who created this memory."
-    },
-    "author_type": {
-      "type": "string",
-      "enum": ["human", "agent", "system"],
-      "description": "Category of the author who created this memory."
-    },
-    "channel_id": {
-      "type": "string",
-      "description": "Channel identifier for contextual scoping."
+    "required": [
+      "memory_id",
+      "action"
+    ]
+  }
+}
+27:["$","pre",null,{"children":["$","code",null,{"className":"language-json","children":"$54"}]}]
+28:["$","$L2",null,{"as":"h3","children":"mnemosyne_get"}]
+29:["$","p",null,{"children":"Retrieve a single memory by its primary key. Pure read, no side effects. No semantic search. Returns the exact memory with the given ID or None. Use this when you already know the memory ID from a previous recall response."}]
+2a:["$","pre",null,{"children":["$","code",null,{"className":"language-json","children":"{\n  \"name\": \"mnemosyne_get\",\n  \"description\": \"Retrieve a single memory by its primary key. Pure read, no side effects. No semantic search. Returns the exact memory with the given ID or None. Use this when you already know the memory ID from a previous recall response.\",\n  \"parameters\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"memory_id\": {\n        \"type\": \"string\",\n        \"description\": \"The memory ID to retrieve.\"\n      }\n    },\n    \"required\": [\n      \"memory_id\"\n    ]\n  }\n}\n"}]}]
+2b:["$","$L2",null,{"as":"h3","children":"mnemosyne_triple_add"}]
+2c:["$","p",null,{"children":"Add a temporal fact triple (subject, predicate, object) to the knowledge graph. Example: ('user', 'prefers', 'neovim'). Use for structured relationships."}]
+2d:["$","pre",null,{"children":["$","code",null,{"className":"language-json","children":"{\n  \"name\": \"mnemosyne_triple_add\",\n  \"description\": \"Add a temporal fact triple (subject, predicate, object) to the knowledge graph. Example: ('user', 'prefers', 'neovim'). Use for structured relationships.\",\n  \"parameters\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"subject\": {\n        \"type\": \"string\"\n      },\n      \"predicate\": {\n        \"type\": \"string\"\n      },\n      \"object\": {\n        \"type\": \"string\"\n      },\n      \"valid_from\": {\n        \"type\": \"string\",\n        \"description\": \"ISO date YYYY-MM-DD\",\n        \"default\": \"\"\n      }\n    },\n    \"required\": [\n      \"subject\",\n      \"predicate\",\n      \"object\"\n    ]\n  }\n}\n"}]}]
+2e:["$","$L2",null,{"as":"h3","children":"mnemosyne_triple_query"}]
+2f:["$","p",null,{"children":"Query the temporal knowledge graph for facts matching subject/predicate/object patterns."}]
+30:["$","pre",null,{"children":["$","code",null,{"className":"language-json","children":"{\n  \"name\": \"mnemosyne_triple_query\",\n  \"description\": \"Query the temporal knowledge graph for facts matching subject/predicate/object patterns.\",\n  \"parameters\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"subject\": {\n        \"type\": \"string\",\n        \"default\": \"\"\n      },\n      \"predicate\": {\n        \"type\": \"string\",\n        \"default\": \"\"\n      },\n      \"object\": {\n        \"type\": \"string\",\n        \"default\": \"\"\n      }\n    }\n  }\n}\n"}]}]
+31:["$","$L2",null,{"as":"h3","children":"mnemosyne_scratchpad_write"}]
+32:["$","p",null,{"children":"Write a temporary note to the Mnemosyne scratchpad."}]
+33:["$","pre",null,{"children":["$","code",null,{"className":"language-json","children":"{\n  \"name\": \"mnemosyne_scratchpad_write\",\n  \"description\": \"Write a temporary note to the Mnemosyne scratchpad.\",\n  \"parameters\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"content\": {\n        \"type\": \"string\",\n        \"description\": \"Content to write\"\n      }\n    },\n    \"required\": [\n      \"content\"\n    ]\n  }\n}\n"}]}]
+34:["$","$L2",null,{"as":"h3","children":"mnemosyne_scratchpad_read"}]
+35:["$","p",null,{"children":"Read the Mnemosyne scratchpad entries."}]
+36:["$","pre",null,{"children":["$","code",null,{"className":"language-json","children":"{\n  \"name\": \"mnemosyne_scratchpad_read\",\n  \"description\": \"Read the Mnemosyne scratchpad entries.\",\n  \"parameters\": {\n    \"type\": \"object\",\n    \"properties\": {}\n  }\n}\n"}]}]
+37:["$","$L2",null,{"as":"h3","children":"mnemosyne_scratchpad_clear"}]
+38:["$","p",null,{"children":"Clear all entries from the Mnemosyne scratchpad."}]
+39:["$","pre",null,{"children":["$","code",null,{"className":"language-json","children":"{\n  \"name\": \"mnemosyne_scratchpad_clear\",\n  \"description\": \"Clear all entries from the Mnemosyne scratchpad.\",\n  \"parameters\": {\n    \"type\": \"object\",\n    \"properties\": {}\n  }\n}\n"}]}]
+3a:["$","$L2",null,{"as":"h3","children":"mnemosyne_export"}]
+3b:["$","p",null,{"children":"Export all Mnemosyne memories to a JSON file for backup or migration."}]
+3c:["$","pre",null,{"children":["$","code",null,{"className":"language-json","children":"{\n  \"name\": \"mnemosyne_export\",\n  \"description\": \"Export all Mnemosyne memories to a JSON file for backup or migration.\",\n  \"parameters\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"output_path\": {\n        \"type\": \"string\",\n        \"description\": \"File path to write the export JSON (e.g., /tmp/mnemosyne_backup.json)\"\n      }\n    },\n    \"required\": [\n      \"output_path\"\n    ]\n  }\n}\n"}]}]
+3d:["$","$L2",null,{"as":"h3","children":"mnemosyne_update"}]
+3e:["$","p",null,{"children":"Update the content or importance of an existing memory by ID."}]
+3f:["$","pre",null,{"children":["$","code",null,{"className":"language-json","children":"{\n  \"name\": \"mnemosyne_update\",\n  \"description\": \"Update the content or importance of an existing memory by ID.\",\n  \"parameters\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"memory_id\": {\n        \"type\": \"string\",\n        \"description\": \"ID of the memory to update\"\n      },\n      \"content\": {\n        \"type\": \"string\",\n        \"description\": \"New content for the memory (optional)\"\n      },\n      \"importance\": {\n        \"type\": \"number\",\n        \"description\": \"New importance from 0.0 to 1.0 (optional)\"\n      }\n    },\n    \"required\": [\n      \"memory_id\"\n    ]\n  }\n}\n"}]}]
+40:["$","$L2",null,{"as":"h3","children":"mnemosyne_forget"}]
+41:["$","p",null,{"children":"Permanently delete a memory by ID."}]
+42:["$","pre",null,{"children":["$","code",null,{"className":"language-json","children":"{\n  \"name\": \"mnemosyne_forget\",\n  \"description\": \"Permanently delete a memory by ID.\",\n  \"parameters\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"memory_id\": {\n        \"type\": \"string\",\n        \"description\": \"ID of the memory to delete\"\n      }\n    },\n    \"required\": [\n      \"memory_id\"\n    ]\n  }\n}\n"}]}]
+43:["$","$L2",null,{"as":"h3","children":"mnemosyne_import"}]
+44:["$","p",null,{"children":"Import Mnemosyne memories from a JSON file or another memory provider (Hindsight, Mem0). Idempotent by default."}]
+55:T5e0,{
+  "name": "mnemosyne_import",
+  "description": "Import Mnemosyne memories from a JSON file or another memory provider (Hindsight, Mem0). Idempotent by default.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "input_path": {
+        "type": "string",
+        "description": "File path to read the export JSON from (for file imports)"
+      },
+      "provider": {
+        "type": "string",
+        "description": "Provider to import from: 'hindsight', 'mem0'. Requires api_key."
+      },
+      "api_key": {
+        "type": "string",
+        "description": "API key for the source provider (can also be set via env var)"
+      },
+      "user_id": {
+        "type": "string",
+        "description": "Filter imported memories by user ID (provider-specific)"
+      },
+      "agent_id": {
+        "type": "string",
+        "description": "Filter imported memories by agent ID (provider-specific)"
+      },
+      "base_url": {
+        "type": "string",
+        "description": "Base URL for self-hosted provider instances"
+      },
+      "dry_run": {
+        "type": "boolean",
+        "description": "If true, validate and transform but don't write any memories",
+        "default": false
+      },
+      "channel_id": {
+        "type": "string",
+        "description": "Channel to assign imported memories to"
+      },
+      "force": {
+        "type": "boolean",
+        "description": "If true, overwrite existing records instead of skipping",
+        "default": false
+      }
     }
   }
 }
-}5:T898,{
-"name": "mnemosyne_recall",
-"description": "Search Mnemosyne for relevant memories. Uses hybrid ranking: by default 50% vector similarity + 30% FTS5 text rank + 20% importance + optional temporal boost. Tune the per-query weights via vec_weight, fts_weight, importance_weight (omit to use environment defaults). Returns ranked results.",
-"parameters": {
-  "type": "object",
-  "required": ["query"],
-  "properties": {
-    "query": {
-      "type": "string",
-      "description": "Natural language query."
-    },
-    "limit": {
-      "type": "integer",
-      "description": "Max results. Default 5.",
-      "default": 5
-    },
-    "temporal_weight": {
-      "type": "number",
-      "description": "How much to boost recent memories (0.0 = ignore time, 0.2 = mild recency bias, 0.5 = strong recency bias). Default 0.0.",
-      "default": 0.0
-    },
-    "query_time": {
-      "type": "string",
-      "description": "ISO timestamp to treat as 'now' for temporal scoring. Default is current time.",
-      "default": ""
-    },
-    "temporal_halflife": {
-      "type": "number",
-      "description": "Hours until temporal boost decays by half. Default 24. Lower = faster decay.",
-      "default": 24
-    },
-    "vec_weight": {
-      "type": "number",
-      "description": "Vector similarity weight in hybrid scoring. Omit (or pass null) to use MNEMOSYNE_VEC_WEIGHT env var or built-in default 0.5."
-    },
-    "fts_weight": {
-      "type": "number",
-      "description": "Full-text search weight in hybrid scoring. Omit (or pass null) to use MNEMOSYNE_FTS_WEIGHT env var or built-in default 0.3."
-    },
-    "importance_weight": {
-      "type": "number",
-      "description": "Importance score weight in hybrid scoring. Omit (or pass null) to use MNEMOSYNE_IMPORTANCE_WEIGHT env var or built-in default 0.2."
-    },
-    "author_id": {
-      "type": "string",
-      "description": "Filter by specific author. (v2.1)"
-    },
-    "author_type": {
-      "type": "string",
-      "enum": ["human", "agent", "system"],
-      "description": "Filter by author category. (v2.1)"
-    },
-    "channel_id": {
-      "type": "string",
-      "description": "Filter by channel for cross-session recall. (v2.1)"
-    }
-  }
-}
-}0:{"rsc":["$","$1","c",{"children":[[["$","$L2",null,{"as":"h1","children":"Tool Schema"}],"\n",["$","p",null,{"children":"Complete JSON Schema for Mnemosyne tools exposed to agents."}],"\n",["$","$L2",null,{"as":"h2","children":"mnemosyne_remember"}],"\n",["$","$L3",null,{"code":"$4","language":"json"}],"\n",["$","$L2",null,{"as":"h2","children":"mnemosyne_recall"}],"\n",["$","$L3",null,{"code":"$5","language":"json"}],"\n","$L6","\n","$L7","\n","$L8","\n","$L9","\n","$La","\n","$Lb","\n","$Lc","\n","$Ld","\n","$Le","\n","$Lf","\n","$L10","\n","$L11","\n","$L12","\n","$L13","\n","$L14","\n","$L15","\n","$L16","\n","$L17","\n","$L18","\n","$L19","\n","$L1a","\n","$L1b","\n","$L1c","\n","$L1d","\n","$L1e","\n","$L1f","\n","$L20","\n","$L21","\n","$L22","\n","$L23","\n","$L24","\n","$L25","\n","$L26","\n","$L27","\n","$L28","\n","$L29","\n","$L2a","\n","$L2b","\n","$L2c","\n","$L2d","\n","$L2e","\n","$L2f","\n","$L30","\n","$L31","\n","$L32","\n","$L33"],["$L34"],"$L35"]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"Sb8Pv6LF3kvebTSlufmqO"}
-6:["$","$L2",null,{"as":"h2","children":"mnemosyne_shared_remember"}]
-7:["$","$L3",null,{"code":"{\n\"name\": \"mnemosyne_shared_remember\",\n\"description\": \"Store compact cross-agent surface memory in a dedicated shared Mnemosyne DB. Use only for stable user/system/workflow metadata or general preferences. Normal mnemosyne_remember writes stay private.\",\n\"parameters\": {\n  \"type\": \"object\",\n  \"required\": [\"content\"],\n  \"properties\": {\n    \"content\": {\n      \"type\": \"string\",\n      \"description\": \"Surface memory content to store.\"\n    },\n    \"kind\": {\n      \"type\": \"string\",\n      \"description\": \"meta | preference | correction | identity\",\n      \"default\": \"meta\"\n    },\n    \"importance\": {\n      \"type\": \"number\",\n      \"description\": \"Importance 0.0-1.0. Default 0.8.\",\n      \"default\": 0.8\n    },\n    \"veracity\": {\n      \"type\": \"string\",\n      \"description\": \"stated | inferred | tool | imported | unknown\",\n      \"default\": \"unknown\"\n    },\n    \"metadata\": {\n      \"type\": \"object\",\n      \"description\": \"Optional metadata object.\",\n      \"default\": {}\n    }\n  }\n}\n}","language":"json"}]
-8:["$","$L2",null,{"as":"h2","children":"mnemosyne_shared_recall"}]
-9:["$","$L3",null,{"code":"{\n\"name\": \"mnemosyne_shared_recall\",\n\"description\": \"Search only the shared Mnemosyne surface DB.\",\n\"parameters\": {\n  \"type\": \"object\",\n  \"required\": [\"query\"],\n  \"properties\": {\n    \"query\": {\n      \"type\": \"string\",\n      \"description\": \"Natural language search query.\"\n    },\n    \"limit\": {\n      \"type\": \"integer\",\n      \"description\": \"Max results. Default 5.\",\n      \"default\": 5\n    }\n  }\n}\n}","language":"json"}]
-a:["$","$L2",null,{"as":"h2","children":"mnemosyne_shared_forget"}]
-b:["$","$L3",null,{"code":"{\n\"name\": \"mnemosyne_shared_forget\",\n\"description\": \"Delete one working shared-surface memory by exact ID.\",\n\"parameters\": {\n  \"type\": \"object\",\n  \"required\": [\"memory_id\"],\n  \"properties\": {\n    \"memory_id\": {\n      \"type\": \"string\",\n      \"description\": \"The memory ID to delete from the shared surface.\"\n    }\n  }\n}\n}","language":"json"}]
-c:["$","$L2",null,{"as":"h2","children":"mnemosyne_shared_stats"}]
-d:["$","$L3",null,{"code":"{\n\"name\": \"mnemosyne_shared_stats\",\n\"description\": \"Return shared surface DB path and counts.\",\n\"parameters\": {\n  \"type\": \"object\",\n  \"properties\": {}\n}\n}","language":"json"}]
-e:["$","$L2",null,{"as":"h2","children":"mnemosyne_sleep"}]
-f:["$","$L3",null,{"code":"{\n\"name\": \"mnemosyne_sleep\",\n\"description\": \"Run the Mnemosyne consolidation cycle. Compresses old working memories into episodic summaries. Call after long sessions or when memory feels stale. Set all_sessions=true to consolidate eligible old working memories across inactive sessions.\",\n\"parameters\": {\n  \"type\": \"object\",\n  \"properties\": {\n    \"all_sessions\": {\n      \"type\": \"boolean\",\n      \"description\": \"If true, consolidate eligible old working memories across all sessions instead of only the current session.\",\n      \"default\": false\n    },\n    \"dry_run\": {\n      \"type\": \"boolean\",\n      \"description\": \"If true, report what would be consolidated without writing changes.\",\n      \"default\": false\n    },\n    \"bank\": {\n      \"type\": \"string\",\n      \"description\": \"Target memory bank for consolidation (default: the active bank).\"\n    }\n  }\n}\n}","language":"json"}]
-10:["$","$L2",null,{"as":"h2","children":"mnemosyne_stats"}]
-11:["$","$L3",null,{"code":"{\n\"name\": \"mnemosyne_stats\",\n\"description\": \"Return Mnemosyne memory statistics: working count, episodic count, BEAM tiers.\",\n\"parameters\": {\n  \"type\": \"object\",\n  \"properties\": {}\n}\n}","language":"json"}]
-12:["$","$L2",null,{"as":"h2","children":"mnemosyne_get"}]
-13:["$","$L3",null,{"code":"{\n\"name\": \"mnemosyne_get\",\n\"description\": \"Retrieve a single memory by its primary key. Pure read, no side effects. No semantic search. Returns the exact memory with the given ID or None. Use this when you already know the memory ID from a previous recall response.\",\n\"parameters\": {\n  \"type\": \"object\",\n  \"required\": [\"memory_id\"],\n  \"properties\": {\n    \"memory_id\": {\n      \"type\": \"string\",\n      \"description\": \"The memory ID to retrieve.\"\n    }\n  }\n}\n}","language":"json"}]
-14:["$","$L2",null,{"as":"h2","children":"mnemosyne_forget"}]
-15:["$","$L3",null,{"code":"{\n\"name\": \"mnemosyne_forget\",\n\"description\": \"Permanently delete a memory by ID.\",\n\"parameters\": {\n  \"type\": \"object\",\n  \"required\": [\"memory_id\"],\n  \"properties\": {\n    \"memory_id\": {\n      \"type\": \"string\",\n      \"description\": \"ID of the memory to delete.\"\n    }\n  }\n}\n}","language":"json"}]
-16:["$","$L2",null,{"as":"h2","children":"mnemosyne_update"}]
-17:["$","$L3",null,{"code":"{\n\"name\": \"mnemosyne_update\",\n\"description\": \"Update the content or importance of an existing memory by ID.\",\n\"parameters\": {\n  \"type\": \"object\",\n  \"required\": [\"memory_id\"],\n  \"properties\": {\n    \"memory_id\": {\n      \"type\": \"string\",\n      \"description\": \"ID of the memory to update.\"\n    },\n    \"content\": {\n      \"type\": \"string\",\n      \"description\": \"New content for the memory (optional).\"\n    },\n    \"importance\": {\n      \"type\": \"number\",\n      \"description\": \"New importance from 0.0 to 1.0 (optional).\"\n    }\n  }\n}\n}","language":"json"}]
-18:["$","$L2",null,{"as":"h2","children":"mnemosyne_invalidate"}]
-19:["$","$L3",null,{"code":"{\n\"name\": \"mnemosyne_invalidate\",\n\"description\": \"Mark a memory as expired or superseded. Provide memory_id from recall results. Optionally provide replacement_id to chain old → new.\",\n\"parameters\": {\n  \"type\": \"object\",\n  \"required\": [\"memory_id\"],\n  \"properties\": {\n    \"memory_id\": {\n      \"type\": \"string\",\n      \"description\": \"ID of memory to invalidate.\"\n    },\n    \"replacement_id\": {\n      \"type\": \"string\",\n      \"description\": \"Optional new memory that replaces this one.\",\n      \"default\": \"\"\n    }\n  }\n}\n}","language":"json"}]
-1a:["$","$L2",null,{"as":"h2","children":"mnemosyne_validate"}]
-36:T601,{
-"name": "mnemosyne_validate",
-"description": "Attest, update, or invalidate a memory the caller did not necessarily author. Supports collaborative ownership: any agent can validate any memory in either the private bank or the shared surface. The original author is preserved; validator + validated_at are updated to record the most recent attester. A 3-entry ring buffer keeps lightweight history. Actions: 'attest' (confirm correctness), 'update' (replace content), 'invalidate' (mark superseded), 'delete' (remove).",
-"parameters": {
-  "type": "object",
-  "required": ["memory_id", "action"],
-  "properties": {
-    "memory_id": {
-      "type": "string",
-      "description": "ID of memory to validate."
-    },
-    "action": {
-      "type": "string",
-      "enum": ["attest", "update", "invalidate", "delete"],
-      "description": "What kind of validation to record."
-    },
-    "validator": {
-      "type": "string",
-      "description": "Agent identifier performing the validation. Defaults to the caller's agent_identity if not set.",
-      "default": ""
-    },
-    "new_content": {
-      "type": "string",
-      "description": "New content (only used with action='update').",
-      "default": ""
-    },
-    "note": {
-      "type": "string",
-      "description": "Optional reason or evidence for this validation.",
-      "default": ""
-    },
-    "bank": {
-      "type": "string",
-      "enum": ["private", "surface"],
-      "description": "Which bank holds the memory. Default 'private'.",
-      "default": "private"
-    }
-  }
-}
-}1b:["$","$L3",null,{"code":"$36","language":"json"}]
-1c:["$","$L2",null,{"as":"h2","children":"mnemosyne_triple_add"}]
-1d:["$","$L3",null,{"code":"{\n\"name\": \"mnemosyne_triple_add\",\n\"description\": \"Add a temporal fact triple (subject, predicate, object) to the knowledge graph. Example: ('user', 'prefers', 'neovim'). Use for structured relationships.\",\n\"parameters\": {\n  \"type\": \"object\",\n  \"required\": [\"subject\", \"predicate\", \"object\"],\n  \"properties\": {\n    \"subject\": {\n      \"type\": \"string\",\n      \"description\": \"The entity the fact is about.\"\n    },\n    \"predicate\": {\n      \"type\": \"string\",\n      \"description\": \"The relationship or property. Use consistent predicates for the same concept.\"\n    },\n    \"object\": {\n      \"type\": \"string\",\n      \"description\": \"The value or target entity.\"\n    },\n    \"valid_from\": {\n      \"type\": \"string\",\n      \"description\": \"ISO date YYYY-MM-DD\",\n      \"default\": \"\"\n    }\n  }\n}\n}","language":"json"}]
-1e:["$","$L2",null,{"as":"h2","children":"mnemosyne_triple_query"}]
-1f:["$","$L3",null,{"code":"{\n\"name\": \"mnemosyne_triple_query\",\n\"description\": \"Query the temporal knowledge graph for facts matching subject/predicate/object patterns.\",\n\"parameters\": {\n  \"type\": \"object\",\n  \"properties\": {\n    \"subject\": {\n      \"type\": \"string\",\n      \"description\": \"Filter by subject entity.\",\n      \"default\": \"\"\n    },\n    \"predicate\": {\n      \"type\": \"string\",\n      \"description\": \"Filter by relationship type.\",\n      \"default\": \"\"\n    },\n    \"object\": {\n      \"type\": \"string\",\n      \"description\": \"Filter by value or target entity.\",\n      \"default\": \"\"\n    },\n    \"as_of\": {\n      \"type\": \"string\",\n      \"description\": \"ISO 8601 timestamp for point-in-time query. Returns facts valid as of this time.\"\n    }\n  }\n}\n}","language":"json"}]
-20:["$","$L2",null,{"as":"h2","children":"mnemosyne_scratchpad_write"}]
-21:["$","$L3",null,{"code":"{\n\"name\": \"mnemosyne_scratchpad_write\",\n\"description\": \"Write a temporary note to the Mnemosyne scratchpad.\",\n\"parameters\": {\n  \"type\": \"object\",\n  \"required\": [\"content\"],\n  \"properties\": {\n    \"content\": {\n      \"type\": \"string\",\n      \"description\": \"Content to write to the scratchpad.\"\n    }\n  }\n}\n}","language":"json"}]
-22:["$","$L2",null,{"as":"h2","children":"mnemosyne_scratchpad_read"}]
-23:["$","$L3",null,{"code":"{\n\"name\": \"mnemosyne_scratchpad_read\",\n\"description\": \"Read the Mnemosyne scratchpad entries.\",\n\"parameters\": {\n  \"type\": \"object\",\n  \"properties\": {}\n}\n}","language":"json"}]
-24:["$","$L2",null,{"as":"h2","children":"mnemosyne_scratchpad_clear"}]
-25:["$","$L3",null,{"code":"{\n\"name\": \"mnemosyne_scratchpad_clear\",\n\"description\": \"Clear all entries from the Mnemosyne scratchpad.\",\n\"parameters\": {\n  \"type\": \"object\",\n  \"properties\": {}\n}\n}","language":"json"}]
-26:["$","$L2",null,{"as":"h2","children":"mnemosyne_export"}]
-27:["$","$L3",null,{"code":"{\n\"name\": \"mnemosyne_export\",\n\"description\": \"Export all Mnemosyne memories to a JSON file for backup or migration.\",\n\"parameters\": {\n  \"type\": \"object\",\n  \"required\": [\"output_path\"],\n  \"properties\": {\n    \"output_path\": {\n      \"type\": \"string\",\n      \"description\": \"File path to write the export JSON (e.g., /tmp/mnemosyne_backup.json).\"\n    }\n  }\n}\n}","language":"json"}]
-28:["$","$L2",null,{"as":"h2","children":"mnemosyne_import"}]
-37:T58d,{
-"name": "mnemosyne_import",
-"description": "Import Mnemosyne memories from a JSON file or another memory provider (Hindsight, Mem0). Idempotent by default.",
-"parameters": {
-  "type": "object",
-  "properties": {
-    "input_path": {
-      "type": "string",
-      "description": "File path to read the export JSON from (for file imports)."
-    },
-    "provider": {
-      "type": "string",
-      "description": "Provider to import from: 'hindsight', 'mem0'. Requires api_key."
-    },
-    "api_key": {
-      "type": "string",
-      "description": "API key for the source provider (can also be set via env var)."
-    },
-    "user_id": {
-      "type": "string",
-      "description": "Filter imported memories by user ID (provider-specific)."
-    },
-    "agent_id": {
-      "type": "string",
-      "description": "Filter imported memories by agent ID (provider-specific)."
-    },
-    "base_url": {
-      "type": "string",
-      "description": "Base URL for self-hosted provider instances."
-    },
-    "dry_run": {
-      "type": "boolean",
-      "description": "If true, validate and transform but don't write any memories.",
-      "default": false
-    },
-    "channel_id": {
-      "type": "string",
-      "description": "Channel to assign imported memories to."
-    },
-    "force": {
-      "type": "boolean",
-      "description": "If true, overwrite existing records instead of skipping.",
-      "default": false
-    }
-  }
-}
-}29:["$","$L3",null,{"code":"$37","language":"json"}]
-2a:["$","$L2",null,{"as":"h2","children":"mnemosyne_diagnose"}]
-2b:["$","$L3",null,{"code":"{\n\"name\": \"mnemosyne_diagnose\",\n\"description\": \"Run PII-safe diagnostics on Mnemosyne installation. Checks dependencies, database state, and vector search readiness. Never includes memory content or API keys.\",\n\"parameters\": {\n  \"type\": \"object\",\n  \"properties\": {}\n}\n}","language":"json"}]
-2c:["$","$L2",null,{"as":"h2","children":"mnemosyne_graph_query"}]
-2d:["$","$L3",null,{"code":"{\n\"name\": \"mnemosyne_graph_query\",\n\"description\": \"Traverse the memory graph to find memories related to a seed memory. Uses multi-hop BFS through graph_edges with optional edge_type and min_weight filtering.\",\n\"parameters\": {\n  \"type\": \"object\",\n  \"required\": [\"seed_memory_id\"],\n  \"properties\": {\n    \"seed_memory_id\": {\n      \"type\": \"string\",\n      \"description\": \"Memory ID to start traversal from.\"\n    },\n    \"max_hops\": {\n      \"type\": \"integer\",\n      \"description\": \"Maximum traversal depth (default: 2).\",\n      \"default\": 2\n    },\n    \"edge_type\": {\n      \"type\": \"string\",\n      \"description\": \"Filter by edge type (empty = all types, e.g. 'ctx', 'rel', 'syn', 'references', 'caused', 'supersedes').\",\n      \"default\": \"\"\n    },\n    \"min_weight\": {\n      \"type\": \"number\",\n      \"description\": \"Minimum edge weight threshold (0.0 to 1.0, default: 0.0 = no filter).\",\n      \"default\": 0.0\n    }\n  }\n}\n}","language":"json"}]
-2e:["$","$L2",null,{"as":"h2","children":"mnemosyne_graph_link"}]
-2f:["$","$L3",null,{"code":"{\n\"name\": \"mnemosyne_graph_link\",\n\"description\": \"Declare a semantic edge between two memories in the graph. Use this to explicitly link related memories so graph traversal finds them.\",\n\"parameters\": {\n  \"type\": \"object\",\n  \"required\": [\"source_id\", \"target_id\", \"relationship\"],\n  \"properties\": {\n    \"source_id\": {\n      \"type\": \"string\",\n      \"description\": \"Source memory ID.\"\n    },\n    \"target_id\": {\n      \"type\": \"string\",\n      \"description\": \"Target memory ID.\"\n    },\n    \"relationship\": {\n      \"type\": \"string\",\n      \"description\": \"Relationship label (e.g. 'references', 'caused', 'supersedes', 'related_to').\"\n    },\n    \"weight\": {\n      \"type\": \"number\",\n      \"description\": \"Edge weight from 0.0 to 1.0 (default: 0.5).\",\n      \"default\": 0.5\n    }\n  }\n}\n}","language":"json"}]
-30:["$","$L2",null,{"as":"h2","children":"Tool Selection Guide"}]
-31:["$","div",null,{"className":"callout callout-info","children":["$","div",null,{"className":"flex items-start gap-3","children":[["$","$L38",null,{"iconNode":[["circle",{"cx":"12","cy":"12","r":"10","key":"1mglay"}],["path",{"d":"M12 16v-4","key":"1dtifu"}],["path",{"d":"M12 8h.01","key":"e9boi3"}]],"className":"lucide-info shrink-0 mt-0.5","size":18}],["$","div",null,{"children":[["$","strong",null,{"className":"block mb-1","children":"MCP vs Hermes Plugin Tools"}],["$","div",null,{"className":"text-sm leading-relaxed","children":[["$","p",null,{"children":[["$","strong",null,{"children":"All 23 tools"}]," are available via the Hermes Agent plugin. The MCP server exposes a subset (remember, recall, sleep, scratchpad, stats) plus triple tools by name but not by discovery."]}],["$","blockquote",null,{"children":["\n",["$","p",null,{"children":["Full tool list: ",["$","code",null,{"children":"mnemosyne_remember"}],", ",["$","code",null,{"children":"mnemosyne_recall"}],", ",["$","code",null,{"children":"mnemosyne_shared_remember"}],", ",["$","code",null,{"children":"mnemosyne_shared_recall"}],", ",["$","code",null,{"children":"mnemosyne_shared_forget"}],", ",["$","code",null,{"children":"mnemosyne_shared_stats"}],", ",["$","code",null,{"children":"mnemosyne_sleep"}],", ",["$","code",null,{"children":"mnemosyne_stats"}],", ",["$","code",null,{"children":"mnemosyne_get"}],", ",["$","code",null,{"children":"mnemosyne_forget"}],", ",["$","code",null,{"children":"mnemosyne_update"}],", ",["$","code",null,{"children":"mnemosyne_invalidate"}],", ",["$","code",null,{"children":"mnemosyne_validate"}],", ",["$","code",null,{"children":"mnemosyne_triple_add"}],", ",["$","code",null,{"children":"mnemosyne_triple_query"}],", ",["$","code",null,{"children":"mnemosyne_scratchpad_write"}],", ",["$","code",null,{"children":"mnemosyne_scratchpad_read"}],", ",["$","code",null,{"children":"mnemosyne_scratchpad_clear"}],", ",["$","code",null,{"children":"mnemosyne_export"}],", ",["$","code",null,{"children":"mnemosyne_import"}],", ",["$","code",null,{"children":"mnemosyne_diagnose"}],", ",["$","code",null,{"children":"mnemosyne_graph_query"}],", ",["$","code",null,{"children":"mnemosyne_graph_link"}],"."]}],"\n"]}]]}]]}]]}]}]
-32:["$","table",null,{"children":[["$","thead",null,{"children":["$","tr",null,{"children":[["$","th",null,{"children":"Goal"}],["$","th",null,{"children":"Tool"}],["$","th",null,{"children":"Example"}]]}]}],["$","tbody",null,{"children":[["$","tr",null,{"children":[["$","td",null,{"children":"Store general info"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_remember"}]}],["$","td",null,{"children":"User preferences, decisions"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Retrieve context"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_recall"}]}],["$","td",null,{"children":"\"What did we decide?\""}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Store cross-agent surface info"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_shared_remember"}]}],["$","td",null,{"children":"User metadata, workflow state"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Search shared surface"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_shared_recall"}]}],["$","td",null,{"children":"Cross-agent preferences"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Delete shared surface memory"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_shared_forget"}]}],["$","td",null,{"children":"Remove stale shared state"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Check shared surface health"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_shared_stats"}]}],["$","td",null,{"children":"Shared DB path, counts"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Consolidate memories"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_sleep"}]}],["$","td",null,{"children":"End-of-session cleanup"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Check system health"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_stats"}]}],["$","td",null,{"children":"Memory counts, DB size"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Run diagnostics"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_diagnose"}]}],["$","td",null,{"children":"DB integrity, index health"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Remove bad data"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_invalidate"}]}],["$","td",null,{"children":"Outdated information"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Permanently delete memory"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_forget"}]}],["$","td",null,{"children":"Wrong information, retractions"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Update existing memory"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_update"}]}],["$","td",null,{"children":"Correct facts, promote inferences"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Retrieve single memory by ID"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_get"}]}],["$","td",null,{"children":"\"Show me memory abc-123\""}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Cross-agent validation"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_validate"}]}],["$","td",null,{"children":"Attest or correct memory"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Store relational facts"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_triple_add"}]}],["$","td",null,{"children":"Team structure, dependencies"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Precise lookup"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_triple_query"}]}],["$","td",null,{"children":"\"Who reports to Carol?\""}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Export memories"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_export"}]}],["$","td",null,{"children":"Backup, migration"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Import memories"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_import"}]}],["$","td",null,{"children":"Restore from backup"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Write scratchpad"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_scratchpad_write"}]}],["$","td",null,{"children":"Chain-of-thought planning"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Read scratchpad"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_scratchpad_read"}]}],["$","td",null,{"children":"Review planning notes"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Clear scratchpad"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_scratchpad_clear"}]}],["$","td",null,{"children":"Reset workspace"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Graph traversal"}],["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_graph_query"}]}],["$","td",null,{"children":"Find related memories"}]]}],["$","tr",null,{"children":["$L39","$L3a","$L3b"]}]]}]]}]
-33:["$","div",null,{"className":"callout callout-success","children":["$","div",null,{"className":"flex items-start gap-3","children":[["$","$L38",null,{"iconNode":[["path",{"d":"M21.801 10A10 10 0 1 1 17 3.335","key":"yps3ct"}],["path",{"d":"m9 11 3 3L22 4","key":"1pflzl"}]],"className":"lucide-circle-check-big shrink-0 mt-0.5","size":18}],["$","div",null,{"children":[["$","strong",null,{"className":"block mb-1","children":"Schema Validation"}],["$","div",null,{"className":"text-sm leading-relaxed","children":["$","p",null,{"children":"Tool calls are validated against these schemas before execution. Invalid parameters return a structured error that the agent can use to self-correct."}]}]]}]]}]}]
-34:["$","script","script-0",{"src":"/_next/static/chunks/09vsub61~3cmu.js","async":true}]
-35:["$","$L3c",null,{"children":["$","$3d",null,{"name":"Next.MetadataOutlet","children":"$@3e"}]}]
-39:["$","td",null,{"children":"Link memories"}]
-3a:["$","td",null,{"children":["$","code",null,{"children":"mnemosyne_graph_link"}]}]
-3b:["$","td",null,{"children":"Declare semantic edges"}]
-3e:null
+45:["$","pre",null,{"children":["$","code",null,{"className":"language-json","children":"$55"}]}]
+46:["$","$L2",null,{"as":"h3","children":"mnemosyne_diagnose"}]
+47:["$","p",null,{"children":"Run PII-safe diagnostics on Mnemosyne installation. Checks dependencies, database state, and vector search readiness. Never includes memory content or API keys."}]
+48:["$","pre",null,{"children":["$","code",null,{"className":"language-json","children":"{\n  \"name\": \"mnemosyne_diagnose\",\n  \"description\": \"Run PII-safe diagnostics on Mnemosyne installation. Checks dependencies, database state, and vector search readiness. Never includes memory content or API keys.\",\n  \"parameters\": {\n    \"type\": \"object\",\n    \"properties\": {}\n  }\n}\n"}]}]
+49:["$","$L2",null,{"as":"h3","children":"mnemosyne_graph_query"}]
+4a:["$","p",null,{"children":"Traverse the memory graph to find memories related to a seed memory. Uses multi-hop BFS through graph_edges with optional edge_type and min_weight filtering."}]
+4b:["$","pre",null,{"children":["$","code",null,{"className":"language-json","children":"{\n  \"name\": \"mnemosyne_graph_query\",\n  \"description\": \"Traverse the memory graph to find memories related to a seed memory. Uses multi-hop BFS through graph_edges with optional edge_type and min_weight filtering.\",\n  \"parameters\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"seed_memory_id\": {\n        \"type\": \"string\",\n        \"description\": \"Memory ID to start traversal from\"\n      },\n      \"max_hops\": {\n        \"type\": \"integer\",\n        \"description\": \"Maximum traversal depth (default: 2)\",\n        \"default\": 2\n      },\n      \"edge_type\": {\n        \"type\": \"string\",\n        \"description\": \"Filter by edge type (empty = all types, e.g. 'ctx', 'rel', 'syn', 'references', 'caused', 'supersedes')\",\n        \"default\": \"\"\n      },\n      \"min_weight\": {\n        \"type\": \"number\",\n        \"description\": \"Minimum edge weight threshold (0.0 to 1.0, default: 0.0 = no filter)\",\n        \"default\": 0.0\n      }\n    },\n    \"required\": [\n      \"seed_memory_id\"\n    ]\n  }\n}\n"}]}]
+4c:["$","$L2",null,{"as":"h3","children":"mnemosyne_graph_link"}]
+4d:["$","p",null,{"children":"Declare a semantic edge between two memories in the graph. Use this to explicitly link related memories so graph traversal finds them."}]
+4e:["$","pre",null,{"children":["$","code",null,{"className":"language-json","children":"{\n  \"name\": \"mnemosyne_graph_link\",\n  \"description\": \"Declare a semantic edge between two memories in the graph. Use this to explicitly link related memories so graph traversal finds them.\",\n  \"parameters\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"source_id\": {\n        \"type\": \"string\",\n        \"description\": \"Source memory ID\"\n      },\n      \"target_id\": {\n        \"type\": \"string\",\n        \"description\": \"Target memory ID\"\n      },\n      \"relationship\": {\n        \"type\": \"string\",\n        \"description\": \"Relationship label (e.g. 'references', 'caused', 'supersedes', 'related_to')\"\n      },\n      \"weight\": {\n        \"type\": \"number\",\n        \"description\": \"Edge weight from 0.0 to 1.0 (default: 0.5)\",\n        \"default\": 0.5\n      }\n    },\n    \"required\": [\n      \"source_id\",\n      \"target_id\",\n      \"relationship\"\n    ]\n  }\n}\n"}]}]
+4f:["$","script","script-0",{"src":"/_next/static/chunks/01o_465-h6ryu.js","async":true}]
+50:["$","$L56",null,{"children":["$","$57",null,{"name":"Next.MetadataOutlet","children":"$@58"}]}]
+58:null

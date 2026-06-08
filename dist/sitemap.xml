@@ -252,4 +252,10 @@
 <changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
+<url>
+<loc>https://docs.mnemosyne.site/integration/hermes</loc>
+<lastmod>2026-04-26T00:00:00.000Z</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.8</priority>
+</url>
 </urlset>

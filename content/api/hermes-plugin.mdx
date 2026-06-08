@@ -4,37 +4,50 @@ First-class integration with the Hermes agent framework.
 
 ## Installation
 
-Activate the Hermes venv, install the package, then register:
+**Do NOT install inside Hermes' managed venv** — `hermes update` rebuilds
+the venv and wipes extra packages. Use pipx (recommended) or a dedicated
+virtualenv.
 
-<CodeBlock code={`source ~/.hermes/hermes-agent/venv/bin/activate
+<CodeBlock code={`# Recommended: survives Hermes updates
+pipx install mnemosyne-hermes
+hermes config set memory.provider mnemosyne
+hermes gateway restart
 
-# If your venv was created with python -m venv or virtualenv
-pip install mnemosyne-memory
+# For speed with pipx
+export PIPX_DEFAULT_BACKEND=uv
+pipx install mnemosyne-hermes
 
-# If your venv was created with uv venv (pip is not included)
-uv pip install mnemosyne-memory
-
-python -m mnemosyne.install
+# Upgrade
+pipx upgrade mnemosyne-hermes
+hermes gateway restart
 `} language="bash" />
 
-<Callout type="warning" title="uv venv does not include pip">
-If you created the Hermes venv with `uv venv`, running `pip install` will fail with "command not found." This is by design — uv replaces pip with `uv pip`. Always use `uv pip install` in uv-created environments.
-</Callout>
+### Fallback: standalone venv
 
-Or add to `hermes.yaml`:
+<CodeBlock code={`python3 -m venv ~/.hermes/mnemosyne-venv
+~/.hermes/mnemosyne-venv/bin/pip install mnemosyne-hermes
+~/.hermes/mnemosyne-venv/bin/mnemosyne-hermes install --force
+hermes config set memory.provider mnemosyne
+hermes gateway restart
+`} language="bash" />
 
-<CodeBlock code={`plugins:
-  - name: mnemosyne-memory
-    source: pip
-    config:
-      db_path: ./memory.db
-      embedding_model: text-embedding-3-small
-      auto_context: true
-      context_injection:
-        enabled: true
-        max_memories: 5
-        min_relevance: 0.7
+### Disable legacy memory
+
+When Mnemosyne is active, disable Hermes' built-in memory to avoid
+duplication and token waste:
+
+<CodeBlock code={`hermes tools disable memory
+`} language="bash" />
+
+Also add to `~/.hermes/config.yaml`:
+
+<CodeBlock code={`memory:
+  enabled: false
+  user_profile_enabled: false
 `} language="yaml" />
+
+Both the CLI disable and the config keys are needed — the CLI handles
+runtime, the config handles startup.
 
 ## Auto-Context Injection
 

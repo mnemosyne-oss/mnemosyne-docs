@@ -1,0 +1,42 @@
+{
+  "version": "3.4.0",
+  "tool_count": 23,
+  "config_keys": [
+    "auto_sleep",
+    "sleep_threshold",
+    "vector_type",
+    "ignore_patterns",
+    "profile_isolation",
+    "shared_surface_path",
+    "shared_surface_read",
+    "skip_contexts",
+    "sync_roles"
+  ],
+  "tool_names": [
+    "mnemosyne_remember",
+    "mnemosyne_recall",
+    "mnemosyne_shared_remember",
+    "mnemosyne_shared_recall",
+    "mnemosyne_shared_forget",
+    "mnemosyne_shared_stats",
+    "mnemosyne_sleep",
+    "mnemosyne_stats",
+    "mnemosyne_invalidate",
+    "mnemosyne_validate",
+    "mnemosyne_get",
+    "mnemosyne_triple_add",
+    "mnemosyne_triple_query",
+    "mnemosyne_scratchpad_write",
+    "mnemosyne_scratchpad_read",
+    "mnemosyne_scratchpad_clear",
+    "mnemosyne_export",
+    "mnemosyne_update",
+    "mnemosyne_forget",
+    "mnemosyne_import",
+    "mnemosyne_diagnose",
+    "mnemosyne_graph_query",
+    "mnemosyne_graph_link"
+  ],
+  "pypi_package": "mnemosyne-memory",
+  "provider_class": "MnemosyneMemoryProvider"
+}
