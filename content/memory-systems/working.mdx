@@ -1,95 +1,68 @@
 export const metadata = {
-  title: 'Working Memory — Short-Term Agent Context Buffer',
-  description: 'Explore Mnemosyne\'s Working Memory tier: a short-term, high-speed buffer for the most recent agent observations, conversations, and tool results.',
-  openGraph: {
-    images: ['/og-image.svg'],
-  },
-  twitter: {
-    card: 'summary_large_image',
-  },
+  title: 'Working Memory',
+  description: 'Active per-agent memory that stores everything from mnemosyne_remember() calls. Consolidates via sleep() into episodic summaries for unlimited retention.',
+  openGraph: { images: ['/og-image.svg'] },
+  twitter: { card: 'summary_large_image' },
 };
 
 # Working Memory
 
-The agent's immediate context — recent observations, active conversations, and current tool results. Fastest access, limited capacity, and subject to eviction.
+Working Memory is the active per-agent memory bank. Every call to `mnemosyne_remember()` stores one memory here. There is **no fixed capacity limit** — agents can call `remember()` as often as needed. The `sleep()` consolidation process handles growth by compressing old working memories into compact episodic summaries.
 
-## Schema
+## How It Works
 
-| Column | Type | Description |
-|--------|------|-------------|
-| `id` | TEXT | UUIDv4 primary key |
-| `content` | TEXT | Raw memory content |
-| `source` | TEXT | Origin (user, tool, observation) |
-| `timestamp` | TEXT | Application-level timestamp |
-| `session_id` | TEXT | Session grouping key (default: `'default'`) |
-| `importance` | REAL | 0.0–1.0 importance score (default: `0.5`) |
-| `metadata_json` | TEXT | Arbitrary JSON metadata blob |
-| `created_at` | TIMESTAMP | Row creation time (SQLite `CURRENT_TIMESTAMP`) |
-| `recall_count` | INTEGER | Number of times recalled (default: `0`) |
-| `last_recalled` | TIMESTAMP | Last recall time (default: `NULL`) |
-| `valid_until` | TIMESTAMP | TTL expiry time |
-| `superseded_by` | TEXT | ID of newer version that replaces this entry |
-| `scope` | TEXT | Visibility scope (default: `'global'`) |
+1. Agent calls `mnemosyne_remember(content="...")` → stored in working memory
+2. Over time, working memory accumulates many individual entries
+3. `mnemosyne_sleep()` triggers the consolidation cycle:
+   - Old working memories are compressed into **episodic summaries**
+   - These summaries persist indefinitely in a lower-priority tier
+   - They still surface when queries match, just at reduced weight
+4. Working memory stays responsive because old entries migrate out
 
-### Indexes
+<CodeBlock code={`# Store a working memory
+mnemosyne_remember(
+    content="User asked about vector search performance",
+    importance=0.7
+)
 
-- `idx_working_session` on `session_id`
-- `idx_working_timestamp` on `timestamp`
-- `idx_working_source` on `source`
+# Later: consolidate old entries
+mnemosyne_sleep()
+`} language="bash" />
 
-### FTS5
+## Consolidation with sleep()
 
-Full-text search is maintained via `fts_working` (content-column FTS5) with automatic triggers for INSERT, UPDATE, and DELETE.
+The `sleep()` consolidation is the mechanism that keeps working memory from growing unbounded. Configure it via config.yaml:
 
-### Vector Search
+```yaml
+memory:
+  mnemosyne:
+    consolidation_threshold: 100   # Consolidate when working memory exceeds N entries
+    consolidation_timer: 3600      # Seconds between consolidation runs
+```
 
-Embeddings are stored separately in `vec_episodes` (sqlite-vec, int8\[384\]). They are generated at recall time and are **not** a column in the `working_memory` table.
+Or trigger it manually via the `mnemosyne_sleep` tool (also aliased as `hermes mnemosyne sleep` in Hermes).
 
-## Eviction Policy
+## Episodic Summary Tiers
 
-When Working Memory reaches capacity, entries are evicted by a composite score:
+After consolidation, old working memories become episodic summaries in three tiers:
 
-1. **Importance weighting**: Higher importance = lower eviction priority
-2. **Recency**: Recently created or recalled entries are protected
-3. **Recall frequency**: Entries with higher `recall_count` are protected
-4. **Composite score**: `score = importance * recency_factor * recall_factor`
+| Tier | Age | Priority | Description |
+|------|-----|----------|-------------|
+| **Active** | < 1 hour | High | Recent working memory entries, full detail |
+| **Recent** | 1 hour — 7 days | Medium | Compressed summaries, still recallable |
+| **Archive** | > 7 days | Low | Maximum compression, surfaces on strong match only |
 
-## Consolidation Path
-
-<MermaidDiagram chart={`
-flowchart LR
-    A[New Entry] -->|insert| WM[Working Memory]
-    WM -->|TTL/2 age trigger| C{Consolidation}
-    C -->|group by source| S[Summarize via LLM/AAAK]
-    S -->|promote| EM[Episodic Memory]
-    C -->|evict originals| DEL[Evicted]
-`} />
-
-## API Reference
-
-<CodeBlock code={`# Store a memory
-mem.remember(content, importance=0.5, source="user")
-
-# Recall memories (FTS5 + vector hybrid)
-results = mem.recall(query, top_k=10)
-
-# Update a memory
-mem.update(id, content=None, importance=None)
-
-# Delete a single memory
-mem.forget(id)
-`} language="python" />
-
-## Performance
-
-| Metric | Value |
-|--------|-------|
-| Median write | 15ms |
-| Median read | 8ms |
-| Median recall | 45ms |
-| Max capacity | 10,000 entries (configurable via `MNEMOSYNE_WM_MAX`) |
-| Memory footprint | ~50MB per 1K entries |
-
-<Callout type="info" title="Tip">
-Use high importance (0.8+) for critical facts you want promoted to Episodic Memory. Use low importance (0.2-) for transient observations that should be evicted quickly.
+<Callout type="info">
+Three-tier degradation ensures no memory is ever deleted. Old memories gracefully fade into compact, lower-priority signals that still surface when the query really matters.
 </Callout>
+
+## Memory Banks
+
+Working memory is scoped by [memory banks](/memory-systems/memory-banks). Each bank has its own independent working memory, so multi-agent setups can keep memories isolated.
+
+## Related
+
+- [Memory Banks](/memory-systems/memory-banks) — Scoped memory isolation
+- [Episodic Memory](/memory-systems/episodic) — The post-consolidation tier
+- [Semantic Memory](/memory-systems/semantic) — Fact triples
+- [Architecture: Memory Lifecycle](/architecture/memory-lifecycle)
