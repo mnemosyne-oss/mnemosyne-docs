@@ -33,21 +33,24 @@ hermes gateway restart
 
 ### Disable legacy memory
 
-When Mnemosyne is active, disable Hermes' built-in memory to avoid
-duplication and token waste:
+When Mnemosyne is active, disable Hermes' built-in MEMORY.md/USER.md storage
+to avoid duplication and token waste.
 
-<CodeBlock code={`hermes tools disable memory
-`} language="bash" />
+**DO NOT run `hermes tools disable memory`** — this kills Mnemosyne's tool
+surface along with the built-in memory. The `"memory"` toolset key gates
+both the built-in tool AND memory provider tools (source: `agent/agent_init.py:1163-1172`).
 
-Also add to `~/.hermes/config.yaml`:
+Instead, add to `~/.hermes/config.yaml`:
 
 <CodeBlock code={`memory:
   enabled: false
   user_profile_enabled: false
+  provider: mnemosyne
 `} language="yaml" />
 
-Both the CLI disable and the config keys are needed — the CLI handles
-runtime, the config handles startup.
+The `enabled: false` + `user_profile_enabled: false` disables
+the built-in file-based memory store while keeping the `"memory"` toolset
+active so Mnemosyne's 23 tools surface correctly.
 
 ## Auto-Context Injection
 

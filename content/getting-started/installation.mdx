@@ -140,15 +140,14 @@ pipx install mnemosyne-hermes
 
 ### Disable legacy memory
 
-```bash
-hermes tools disable memory
-```
+**DO NOT run `hermes tools disable memory`** — source: `agent/agent_init.py:1163-1172`.
 
-Also add to `~/.hermes/config.yaml`:
+Add to `~/.hermes/config.yaml`:
 ```yaml
 memory:
   enabled: false
   user_profile_enabled: false
+  provider: mnemosyne
 ```
 
 ### Default config

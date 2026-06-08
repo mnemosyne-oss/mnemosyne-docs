@@ -1,6 +1,6 @@
 {
   "version": "3.4.0",
-  "tool_count": 23,
+  "tool_count": 24,
   "config_keys": [
     "auto_sleep",
     "sleep_threshold",
@@ -26,6 +26,7 @@
     "mnemosyne_get",
     "mnemosyne_triple_add",
     "mnemosyne_triple_query",
+    "mnemosyne_triple_end",
     "mnemosyne_scratchpad_write",
     "mnemosyne_scratchpad_read",
     "mnemosyne_scratchpad_clear",
