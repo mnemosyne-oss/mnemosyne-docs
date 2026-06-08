@@ -1,104 +1,105 @@
+export const metadata = {
+  title: 'Semantic Memory',
+  description: 'Semantic facts, knowledge graphs, and structured relationships with temporal tracking via triples.',
+  openGraph: { images: ['/og-image.svg'] },
+  twitter: { card: 'summary_large_image' },
+};
+
 # Semantic Memory
 
-Structured knowledge storage using a temporal knowledge graph. Stores facts, relationships, and concepts as subject-predicate-object triples with temporal validity.
+Semantic Memory stores structured relationships between entities as subject-predicate-object triples with temporal validity tracking. It's managed by the separate `TripleStore` class.
 
-## TripleStore Class
+## How It Works
 
-Semantic Memory is managed by the `TripleStore` class, which is **separate** from the main `Memory` class. It is not accessed via `mem.add_fact()` or `mem.query_facts()`.
+Each triple has:
+- **Subject**: The entity being described (e.g., "user")
+- **Predicate**: The relationship (e.g., "prefers")
+- **Object**: The value (e.g., "neovim")
+- **valid_from** (optional): When this fact became true
+- **valid_until** (optional): When it stopped being true (for historical facts)
 
-### Module-Level Functions
+Facts are stored in tables indexed by subject+predicate for fast lookup. Temporal validity means you can query "what did Alice prefer last month?" and get correct historical answers.
 
-<CodeBlock code={`from mnemosyne.semantic import add_triple, query_triples
+## Triple CRUD
 
-# Add a triple
-add_triple(
-    subject="Project Alpha",
-    predicate="has_deadline",
-    object="2026-05-01",
-    confidence=0.90,
-    source="user",
-    valid_from="2026-04-25",
+<CodeBlock code={`# Store a fact
+mnemosyne_triple_add(
+    subject="alice",
+    predicate="prefers",
+    object="neovim"
 )
 
-# Query triples
-results = query_triples(
-    subject="Project Alpha",
-    predicate="has_deadline",
-)
-`} language="python" />
-
-### TripleStore Instance
-
-<CodeBlock code={`from mnemosyne.semantic import TripleStore
-
-ts = TripleStore(db_path="mnemosyne.db")
-
-# Add a triple
-ts.add(
-    subject="Alice",
-    predicate="prefers_language",
-    object="Go",
-    confidence=0.95,
-    source="user",
-    valid_from="2026-04-20",
+# Set temporal range
+mnemosyne_triple_add(
+    subject="bob",
+    predicate="role",
+    object="engineer",
+    valid_from="2025-06-01"
 )
 
-# Query triples
-results = ts.query(
-    subject="Alice",
-    predicate="prefers_language",
+# End a fact (it stays in history)
+mnemosyne_triple_end(
+    subject="bob",
+    predicate="role",
+    object="engineer"
 )
+`} language="bash" />
 
-# Temporal query — what was true as of a specific date?
-results = ts.query(
-    subject="Alice",
-    predicate="prefers_language",
-    as_of="2026-03-01",
+## Querying
+
+<CodeBlock code={`# All facts about Alice
+mnemosyne_triple_query(subject="alice")
+
+# What does Alice prefer?
+mnemosyne_triple_query(subject="alice", predicate="prefers")
+
+# Who prefers Neovim?
+mnemosyne_triple_query(predicate="prefers", object="neovim")
+
+# As of a specific date
+mnemosyne_triple_query(
+    subject="bob",
+    predicate="role",
+    valid_at="2025-07-15"
 )
-`} language="python" />
+`} language="bash" />
 
-## Triple Schema
+## When to Use Semantic vs. Episodic
 
-Each triple has the following fields:
+| | Semantic Memory | Episodic Memory |
+|---|---|---|
+| **What it stores** | Explicit facts (S→P→O) | Implicit learnings from conversations |
+| **How it's queried** | Direct lookup by subject/predicate | Semantic vector search |
+| **Temporal precision** | Exact validity windows | Approximate (recency weighting) |
+| **Best for** | Known facts, preferences, roles | Inferred learnings, conversation context |
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `subject` | TEXT | Entity (e.g., `"Alice"`) |
-| `predicate` | TEXT | Relationship (e.g., `"knows"`) |
-| `object` | TEXT | Target entity or value |
-| `confidence` | REAL | 0.0–1.0 fact confidence |
-| `source` | TEXT | Origin of this triple |
-| `valid_from` | TEXT/ISO date | When the fact became true |
-
-## Example Triples
-
-| Subject | Predicate | Object | Confidence |
-|---------|-----------|--------|------------|
-| Alice | `prefers_language` | Go | 0.95 |
-| Project Alpha | `has_deadline` | 2026-05-01 | 0.90 |
-| Bob | `reports_to` | Carol | 0.85 |
-| API v2 | `depends_on` | Auth Service | 0.80 |
-
-## Temporal Validity
-
-The `as_of` parameter in `query()` enables point-in-time queries. Only triples whose `valid_from` is on or before the specified date are returned. This lets you ask "what did we know at time X?"
-
-<CodeBlock code={`# What did we know about Project Alpha's deadline on April 1?
-results = ts.query(
-    subject="Project Alpha",
-    predicate="has_deadline",
-    as_of="2026-04-01",
-)
-`} language="python" />
-
-## Storage
-
-The TripleStore is backed by SQLite. No external graph database is required.
-
-<Callout type="info" title="Schema Flexibility">
-Semantic Memory has no predefined ontology. Predicates are free-form strings. This allows dynamic knowledge domains without schema migrations.
+<Callout type="info">
+Semantic Memory is complementary to Episodic Memory. Use triples for things you know explicitly (Alice's preferences, Bob's role, company policies). Use episodic/implicit memory for things you learned from context but can't name precisely.
 </Callout>
 
-<Callout type="warning" title="No Auto-Extraction">
-Triple extraction from Working Memory during consolidation is **not** currently implemented. Triples must be added explicitly via `add_triple()` or `TripleStore.add()`.
-</Callout>
+## Graph Search
+
+The semantic knowledge graph can be traversed with graph tools:
+
+<CodeBlock code={`# Link two memories with a semantic edge
+mnemosyne_graph_link(
+    source_id="mem_abc123",
+    target_id="mem_def456",
+    relationship="references",
+    weight=0.8
+)
+
+# Traverse from a seed memory
+mnemosyne_graph_query(
+    seed_memory_id="mem_abc123",
+    max_hops=2,
+    min_weight=0.5
+)
+`} language="bash" />
+
+## Related
+
+- [Temporal Graph](/memory-systems/temporal-graph) — Deeper dive into the triple model
+- [Graph Search](/architecture/graph-search) — Graph traversal and semantic linking tools (`graph_query`, `graph_link`)
+- [Episodic Memory](/memory-systems/episodic) — The implicit learning counterpart
+- [Memory Banks](/memory-systems/memory-banks) — Scoped memory isolation

@@ -1,63 +1,49 @@
 export const metadata = {
-  title: 'Scratchpad Memory — Temporary Agent Workspace',
-  description: 'Understand the Scratchpad tier in Mnemosyne: a temporary workspace for intermediate computations, planning steps, and transient data that agents need during tasks.',
-  openGraph: {
-    images: ['/og-image.svg'],
-  },
-  twitter: {
-    card: 'summary_large_image',
-  },
+  title: 'Scratchpad Memory',
+  description: 'Ephemeral scratchpad for temporary in-session context. Write, read, and clear transient notes that autofade.',
+  openGraph: { images: ['/og-image.svg'] },
+  twitter: { card: 'summary_large_image' },
 };
 
-# Scratchpad
+# Scratchpad Memory
 
-A temporary workspace for reasoning, planning, and intermediate computations. Session-bound and cleared on agent restart.
+Ephemeral scratchpad for transient, in-session notes. Simple write/read/clear pattern.
 
-## Use Cases
+## How It Works
 
-- **Chain-of-thought reasoning**: Step-by-step problem solving
-- **Planning**: Task decomposition and sequencing
-- **Scratch calculations**: Temporary math or data transformation
-- **Draft responses**: Iterative response refinement
+The scratchpad stores a single mutable string per bank. Calling `scratchpad_write` replaces it. No history — it's a sticky note, not a log.
 
 ## API
 
-<CodeBlock code={`# Write to scratchpad
-mem.scratchpad_write(content="Step 1: Parse the user's request...")
+| Method | Description |
+|--------|-------------|
+| `scratchpad_write(content=...)` | Replace the scratchpad string |
+| `scratchpad_read()` | Get the current scratchpad string |
+| `scratchpad_clear()` | Empty the scratchpad |
 
-# Read current scratchpad entries
-entries = mem.scratchpad_read()
+<CodeBlock code={`# Write a note
+mnemosyne_scratchpad_write(content="User's name is Alice, works at Acme Corp")
 
-# Clear scratchpad
-mem.scratchpad_clear()
-`} language="python" />
+# Read it back
+mnemosyne_scratchpad_read()
+# Returns: "User's name is Alice, works at Acme Corp"
 
-## Schema
+# Clear when done
+mnemosyne_scratchpad_clear()
+`} language="bash" />
 
-| Column | Type | Description |
-|--------|------|-------------|
-| `id` | TEXT | UUIDv4 primary key |
-| `content` | TEXT | Scratchpad entry content |
-| `session_id` | TEXT | Session binding (default: `'default'`) |
-| `created_at` | TIMESTAMP | Row creation time |
-| `updated_at` | TIMESTAMP | Last update time |
+## Use Cases
 
-## Lifecycle
+- **Session context**: Agent keeps ephemeral user info (name, preferences, current task)
+- **Temporary state**: Multi-step calculation results that don't need permanent memory
+- **Debugging**: Dump intermediate state during development
 
-<MermaidDiagram chart={`
-flowchart LR
-    A[Agent Start] -->|create| SP[Scratchpad]
-    SP -->|write/read| SP
-    SP -->|clear| DEL[Discard]
-    A -->|shutdown| DEL
-`} />
-
-## Configuration
-
-| Parameter | Default | Description |
-|-----------|---------|-------------|
-| `MNEMOSYNE_SP_MAX` | `1000` | Maximum entries per session |
-
-<Callout type="warning" title="Not Persistent">
-Scratchpad contents are session-bound and lost on agent restart. Do not store critical information solely in the scratchpad. Move important data to Working Memory via `mem.remember()` before shutting down.
+<Callout type="info">
+Scratchpad is deliberately simple. For structured temporary state, use [Working Memory](/memory-systems/working). For permanent memory, use [remember](/memory-systems/working).
 </Callout>
+
+## Related
+
+- [Working Memory](/memory-systems/working) — Persistent in-session memory
+- [Semantic Memory](/memory-systems/semantic) — Fact triples
+- [Memory Banks](/memory-systems/memory-banks) — Scoped memory isolation
