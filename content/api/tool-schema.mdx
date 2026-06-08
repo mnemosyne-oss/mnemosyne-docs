@@ -130,16 +130,16 @@ Complete JSON Schema for Mnemosyne tools exposed to agents.
       },
       "author_id": {
         "type": "string",
-        "description": "Filter by specific author. (v2.1)"
+        "description": "Filter by specific author. "
       },
       "author_type": {
         "type": "string",
         "enum": ["human", "agent", "system"],
-        "description": "Filter by author category. (v2.1)"
+        "description": "Filter by author category. "
       },
       "channel_id": {
         "type": "string",
-        "description": "Filter by channel for cross-session recall. (v2.1)"
+        "description": "Filter by channel for cross-session recall. "
       }
     }
   }
@@ -636,9 +636,9 @@ Complete JSON Schema for Mnemosyne tools exposed to agents.
 ## Tool Selection Guide
 
 <Callout type="info" title="MCP vs Hermes Plugin Tools">
-**All 23 tools** are available via the Hermes Agent plugin. The MCP server exposes a subset (remember, recall, sleep, scratchpad, stats) plus triple tools by name but not by discovery.
+**All 24 tools** are available via the Hermes Agent plugin. The MCP server exposes a subset (remember, recall, sleep, scratchpad, stats) plus triple tools by name but not by discovery.
 
-> Full tool list: `mnemosyne_remember`, `mnemosyne_recall`, `mnemosyne_shared_remember`, `mnemosyne_shared_recall`, `mnemosyne_shared_forget`, `mnemosyne_shared_stats`, `mnemosyne_sleep`, `mnemosyne_stats`, `mnemosyne_get`, `mnemosyne_forget`, `mnemosyne_update`, `mnemosyne_invalidate`, `mnemosyne_validate`, `mnemosyne_triple_add`, `mnemosyne_triple_query`, `mnemosyne_scratchpad_write`, `mnemosyne_scratchpad_read`, `mnemosyne_scratchpad_clear`, `mnemosyne_export`, `mnemosyne_import`, `mnemosyne_diagnose`, `mnemosyne_graph_query`, `mnemosyne_graph_link`.
+> Full tool list: `mnemosyne_remember`, `mnemosyne_recall`, `mnemosyne_shared_remember`, `mnemosyne_shared_recall`, `mnemosyne_shared_forget`, `mnemosyne_shared_stats`, `mnemosyne_sleep`, `mnemosyne_stats`, `mnemosyne_get`, `mnemosyne_forget`, `mnemosyne_update`, `mnemosyne_invalidate`, `mnemosyne_validate`, `mnemosyne_triple_add`, `mnemosyne_triple_end`, `mnemosyne_triple_query`, `mnemosyne_scratchpad_write`, `mnemosyne_scratchpad_read`, `mnemosyne_scratchpad_clear`, `mnemosyne_export`, `mnemosyne_import`, `mnemosyne_diagnose`, `mnemosyne_graph_query`, `mnemosyne_graph_link`.
 </Callout>
 
 | Goal | Tool | Example |

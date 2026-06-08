@@ -16,7 +16,8 @@ User=mnemosyne
 Group=mnemosyne
 WorkingDirectory=/opt/mnemosyne
 Environment="MNEMOSYNE_DATA_DIR=/opt/mnemosyne/data"
-ExecStart=/opt/mnemosyne/venv/bin/python -m mnemosyne.mcp_server --transport sse --host 0.0.0.0 --port 8080 --db-path /opt/mnemosyne/data/mnemosyne.db
+Environment="MNEMOSYNE_MCP_TOKEN=***"
+ExecStart=/opt/mnemosyne/venv/bin/python -m mnemosyne.mcp_server --transport sse --host 0.0.0.0 --port 8080
 Restart=always
 RestartSec=5
 
@@ -37,7 +38,7 @@ sudo chown -R mnemosyne:mnemosyne /opt/mnemosyne
 sudo -u mnemosyne bash -c '
 cd /opt/mnemosyne
 python3 -m venv venv
-venv/bin/pip install mnemosyne-memory
+venv/bin/pip install "mnemosyne-memory[mcp]"
 '
 
 # Copy service file
@@ -66,7 +67,7 @@ sudo systemctl stop mnemosyne
 
 Create `/etc/logrotate.d/mnemosyne`:
 
-<CodeBlock code={`/var/log/mnemosyne/*.log {
+<CodeBlock code={`/opt/mnemosyne/data/*.log {
     daily
     rotate 7
     compress

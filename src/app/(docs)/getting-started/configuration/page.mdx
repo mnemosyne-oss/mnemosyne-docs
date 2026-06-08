@@ -70,21 +70,7 @@ To use a custom embedding endpoint (OpenAI-compatible), set `MNEMOSYNE_EMBEDDING
 | `MNEMOSYNE_EMBEDDING_API_URL` | `https://openrouter.ai/api/v1` | Base URL for custom embedding API (OpenAI-compatible). Falls back to `OPENROUTER_BASE_URL`. |
 | `MNEMOSYNE_EMBEDDING_DIM` | auto (384) | Override embedding dimension for unsupported models |
 | `MNEMOSYNE_EMBEDDINGS_VIA_API` | unset | Set to `1` to explicitly route embeddings through API (needed for OpenRouter-hosted models) |
-|| `MNEMOSYNE_NO_EMBEDDINGS` | unset | Set to `1` to disable dense vector retrieval entirely (falls back to FTS5 keyword-only) |
-|| `SSL_CERT_FILE` | OS default | Custom CA bundle for embedding API HTTPS connections |
-|| `REQUESTS_CA_BUNDLE` | OS default | Alias for `SSL_CERT_FILE` used by the requests library |
-
-### Feature Flags
-
-Opt-in recall features that change how Mnemosyne retrieves and ranks memories.
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `MNEMOSYNE_ENHANCED_RECALL` | unset | Set to `1` to enable enhanced recall with polyphonic fusion, cross-tier dedup, and graph-based bonus scoring |
-| `MNEMOSYNE_POLYPHONIC_RECALL` | unset | Set to `1` to enable multi-voice retrieval (voice, graph, fact, temporal parallel scoring) |
-| `MNEMOSYNE_PROACTIVE_LINKING` | unset | Set to `1` to enable zero-LLM graph edge creation at ingest time |
-| `MNEMOSYNE_LENIENT_FACT_MATCH` | unset | Set to `1` to revert to permissive fact matching (default is strict) |
-| `MNEMOSYNE_BEAM_MODE` | unset | Enable BEAM benchmark optimization mode |
+| `MNEMOSYNE_NO_EMBEDDINGS` | unset | Set to `1` to disable dense vector retrieval entirely (falls back to FTS5 keyword-only) |
 
 ### Local LLM (Sleep Summarization)
 
@@ -114,9 +100,6 @@ When running inside Hermes, the host agent can provide an LLM backend for consol
 | `MNEMOSYNE_HOST_LLM_PROVIDER` | — | Provider name override (e.g. `openai-codex`) |
 | `MNEMOSYNE_HOST_LLM_MODEL` | — | Model name override |
 | `MNEMOSYNE_HOST_LLM_N_CTX` | `32000` | Prompt context budget for host LLM path |
-|| `MNEMOSYNE_PREFETCH_CONTENT_CHARS` | `0` | Truncate prefetched memory content to this many chars (0 = no truncation) |
-|| `MNEMOSYNE_SKIP_CONTEXTS` | `cron,flush,subagent,background,skill_loop` | Context types to skip during auto-save |
-|| `MNEMOSYNE_SYNC_ROLES` | `user,assistant` | Which roles to persist during auto-save. Set to `user` to save only user turns, or empty to disable conversation autosave |
 
 ### Multi-Agent Identity
 
@@ -190,28 +173,6 @@ memory:
       - "nothing to change"       # No-op responses
       - "skill.*refined"          # Wildcard match
 ```
-
-{/* GENERATED: config-table */}
-
-<Callout type="info" title="Auto-generated from code">
-This table is generated from `MnemosyneMemoryProvider.get_config_schema()`.
-If the provider adds or changes config keys, this updates automatically.
-</Callout>
-
-| Key | Default | Description |
-|-----|---------|-------------|
-| `auto_sleep` | `False` | Auto-run sleep() when working memory exceeds threshold. Set true to enable. Backward-compatible with MNEMOSYNE_AUTO_SLEEP_ENABLED env var. |
-| `sleep_threshold` | `50` | Working memory count before auto-sleep triggers |
-| `vector_type` | `int8` | Vector storage type (note: not yet wired to BeamMemory at runtime; reserved for future use) Choices: float32 | int8 | bit |
-| `ignore_patterns` | `[]` | Regex patterns to filter from memory storage (one per line in config, or comma-separated). Memories matching any pattern are skipped. |
-| `profile_isolation` | `False` | Enable per-profile memory isolation via Mnemosyne banks. Each Hermes profile gets its own SQLite database under mnemosyne/data/banks/&lt;profile&gt;/. Default false for backward compatibility. |
-| `shared_surface_path` | `data/shared/mnemosyne.db` | SQLite path for shared surface memories. Default is &lt;mnemosyne&gt;/data/shared/mnemosyne.db. |
-| `shared_surface_read` | `False` | When true, mnemosyne_recall merges shared-surface results into private bank recall, tagging each result with its bank ('private' or 'surface'). Default false. |
-| `skip_contexts` | `cron,flush,subagent,background,skill_loop` | Agent contexts where Mnemosyne should skip initialization. Comma-separated list. Defaults to 'cron,flush,subagent,background,skill_loop'. Set to empty string to enable all contexts. Also configurable via MNEMOSYNE_SKIP_CONTEXTS env var. |
-| `sync_roles` | `['user', 'assistant']` | Conversation roles to autosave in sync_turn(). List of role names: 'user', 'assistant'. Default ['user', 'assistant'] saves both. Set to ['user'] for user turns only, or [] to disable conversation autosave entirely. Does not affect explicit mnemosyne_remember calls. Identity signal capture is gated by user sync — excluding 'user' also disables identity extraction. Also configurable via MNEMOSYNE_SYNC_ROLES env var. |
-
-{/* /GENERATED: config-table */}
-
 
 Config file lookup order (first found wins):
 1. `./config.yaml` (current working directory)

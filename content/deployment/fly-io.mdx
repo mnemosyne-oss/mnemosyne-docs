@@ -32,9 +32,8 @@ primary_region = "ord"
   destination = "/data"
 
 [env]
-  MNEMOSYNE_DB_PATH = "/data/mnemosyne.db"
-  MNEMOSYNE_HOST = "0.0.0.0"
-  MNEMOSYNE_PORT = "8080"
+  MNEMOSYNE_DATA_DIR = "/data"
+  MNEMOSYNE_MCP_TOKEN = "***"
 
 [http_service]
   internal_port = 8080
@@ -50,9 +49,8 @@ primary_region = "ord"
 
 WORKDIR /app
 COPY . .
-RUN pip install .
+RUN pip install ".[mcp]"
 
-# Optional: pip install ".[embeddings]" for vector search support
 # Optional: pip install ".[all]" for everything (embeddings + LLM + MCP)
 
 EXPOSE 8080

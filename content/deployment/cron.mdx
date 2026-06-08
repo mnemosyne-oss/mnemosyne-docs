@@ -16,8 +16,8 @@ crontab -e
 # Daily consolidation at 3 AM via Hermes
 0 3 * * * cd /path/to/project && hermes mnemosyne sleep >> /var/log/mnemosyne/consolidate.log 2>&1
 
-# Daily backup at 4 AM via Python script
-0 4 * * * /usr/local/bin/mnemosyne-backup --db /data/mnemosyne.db --dest /backups >> /var/log/mnemosyne/backup.log 2>&1
+# Daily backup at 4 AM
+0 4 * * * /opt/mnemosyne/venv/bin/mnemosyne backup --output-dir /backups >> /var/log/mnemosyne/backup.log 2>&1
 `} language="bash" />
 
 ## Consolidation via Hermes
@@ -38,25 +38,21 @@ mem.sleep()  # Run consolidation
 There is no `mnemosyne-consolidate` CLI tool. Consolidation is only available via `mnemosyne_sleep` tool or by calling `mem.sleep()` programmatically.
 </Callout>
 
-## Backup Script
+## Backup
 
-<CodeBlock code={`#!/usr/bin/env python3
-# /usr/local/bin/mnemosyne-backup
+Backup via the CLI:
 
-import argparse
+<CodeBlock code={`# Automated backup via CLI
+mnemosyne backup --output-dir /backups
+
+# Programmatically
+from pathlib import Path
 from mnemosyne.dr.recovery import create_backup
 
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--db", required=True)
-    parser.add_argument("--dest", required=True)
-    args = parser.parse_args()
-
-    backup_path = create_backup(args.db, args.dest)
-    print(f"Backup created: {backup_path}")
-
-if __name__ == "__main__":
-    main()
+backup_path = create_backup(
+    db_path=Path("/data/mnemosyne.db"),
+    backup_dir=Path("/backups")
+)
 `} language="python" />
 
 ## Monitoring Cron Jobs

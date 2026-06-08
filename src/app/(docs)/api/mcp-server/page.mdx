@@ -1,6 +1,6 @@
 export const metadata = {
   title: 'MCP Server',
-  description: 'Model Context Protocol server with 6 tools and dual transports.',
+  description: 'Model Context Protocol server with 24 tools and dual transports.',
   openGraph: { images: ['/og-image.svg'] },
   twitter: { card: 'summary_large_image' },
 };
@@ -23,14 +23,34 @@ mnemosyne mcp --bank project_a
 
 ## Tools
 
+The MCP server exposes all 24 Mnemosyne tools:
+
 | Tool | Description |
 |------|-------------|
 | `mnemosyne_remember` | Store a memory |
 | `mnemosyne_recall` | Search memories |
 | `mnemosyne_sleep` | Run consolidation |
-| `mnemosyne_scratchpad_read` | Read scratchpad |
+| `mnemosyne_stats` | Memory statistics |
+| `mnemosyne_get` | Retrieve a single memory by ID |
+| `mnemosyne_update` | Update a memory's content or importance |
+| `mnemosyne_forget` | Permanently delete a memory |
+| `mnemosyne_invalidate` | Mark a memory as expired |
+| `mnemosyne_validate` | Attest, update, or invalidate a memory |
+| `mnemosyne_export` | Export all memories to JSON |
+| `mnemosyne_import` | Import memories from JSON or another provider |
+| `mnemosyne_diagnose` | Run PII-safe diagnostics |
+| `mnemosyne_shared_remember` | Store cross-agent surface memory |
+| `mnemosyne_shared_recall` | Search shared surface memory |
+| `mnemosyne_shared_forget` | Delete shared surface memory |
+| `mnemosyne_shared_stats` | Shared surface DB stats |
+| `mnemosyne_triple_add` | Add a temporal fact triple |
+| `mnemosyne_triple_end` | End a temporal fact triple |
+| `mnemosyne_triple_query` | Query the temporal knowledge graph |
 | `mnemosyne_scratchpad_write` | Write to scratchpad |
-| `mnemosyne_stats` | Get statistics |
+| `mnemosyne_scratchpad_read` | Read scratchpad |
+| `mnemosyne_scratchpad_clear` | Clear scratchpad |
+| `mnemosyne_graph_query` | Traverse the memory graph |
+| `mnemosyne_graph_link` | Link two memories with an edge |
 
 ## Claude Desktop Config
 

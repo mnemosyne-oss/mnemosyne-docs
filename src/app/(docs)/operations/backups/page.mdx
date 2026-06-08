@@ -1,275 +1,91 @@
-# Disaster Recovery
+# Backups
 
-Protect your agent's memory with Mnemosyne's built-in disaster recovery module and backup procedures.
+Protect your agent's memory with reliable backup and restore procedures.
 
-The `mnemosyne.dr.recovery` module handles everything: compressed backups with checksums, automated restore, integrity verification, health checks, and rotation. It's already installed with every Mnemosyne package.
+## SQLite Backup
 
-<Callout type="warning" title="A backup you can't restore is worthless">
-Schedule monthly restore drills. The DR module makes this trivially scriptable.
-</Callout>
+SQLite databases are single files — backup is as simple as copying:
 
-## Quick Reference
-
-```bash
-# Backup
-python -m mnemosyne.dr backup
-
-# Restore from latest valid backup
-python -m mnemosyne.dr emergency
-
-# Restore a specific backup
-python -m mnemosyne.dr restore ~/.mnemosyne/backups/mnemosyne_backup_20260530_120000.db.gz
-
-# Verify database integrity
-python -m mnemosyne.dr verify
-
-# Full health check
-python -m mnemosyne.dr health
-
-# List available backups
-python -m mnemosyne.dr list
-
-# Rotate backups (keep last 10)
-python -m mnemosyne.dr rotate
-```
-
-## Creating Backups
-
-### Using the DR Module
-
-```python
-from mnemosyne.dr.recovery import create_backup
-
-# Default paths (~/.mnemosyne/data/)
-result = create_backup()
-print(result)
-# {
-#   "backup_path": "/root/.mnemosyne/backups/mnemosyne_backup_20260530_120000.db.gz",
-#   "metadata_path": "/root/.mnemosyne/backups/mnemosyne_backup_20260530_120000.db.gz.json",
-#   "original_size": 5242880,
-#   "backup_size": 1048576,
-#   "db_checksum": "a1b2c3d4e5f6g7h8",
-#   "backup_checksum": "h8g7f6e5d4c3b2a1",
-#   "compressed": true
-# }
-
-# Custom paths
-create_backup(
-    db_path="/data/mnemosyne.db",
-    backup_dir="/backups/mnemosyne"
-)
-```
-
-Backups are gzip-compressed SQL dumps with checksummed metadata. The module uses SQLite's online backup API (lock-aware, WAL-safe — won't produce a torn file under concurrent write load).
-
-### Direct SQLite Backup
-
-For environments where you can't run Python:
-
-```bash
-# Hot backup (SQLite supports concurrent reads)
+<CodeBlock code={`# Hot backup (SQLite supports concurrent reads)
 cp mnemosyne.db mnemosyne-backup-$(date +%Y%m%d).db
 
 # With verification
 sqlite3 mnemosyne.db ".backup to mnemosyne-backup.db"
 sqlite3 mnemosyne-backup.db "PRAGMA integrity_check"
-```
-
-## Restoring
-
-### Automated Emergency Restore
-
-Scans all backups in order of recency and restores the first one that passes integrity check. Best for unattended recovery.
-
-```python
-from mnemosyne.dr.recovery import emergency_restore
-
-result = emergency_restore()
-# {
-#   "restored": true,
-#   "backup_used": "/root/.mnemosyne/backups/mnemosyne_backup_20260530_120000.db.gz",
-#   "integrity_check": true
-# }
-```
-
-### Restore a Specific Backup
-
-```python
-from pathlib import Path
-from mnemosyne.dr.recovery import restore_backup
-
-result = restore_backup(
-    backup_path=Path("/backups/mnemosyne_backup_20260530_120000.db.gz"),
-    db_path=Path("/data/mnemosyne.db")
-)
-```
-
-<Callout type="info" title="Safety First">
-Restore always creates an emergency backup of the current database first (`{db}.emergency_backup.db`). You can roll back if the restore wasn't what you expected.
-</Callout>
-
-### Manual Restore
-
-```bash
-# From file copy
-cp mnemosyne-backup-20260425.db mnemosyne.db
-
-# Verify
-sqlite3 mnemosyne.db "PRAGMA integrity_check"
-```
-
-## Integrity Verification
-
-```python
-from mnemosyne.dr.recovery import verify_integrity
-
-is_valid = verify_integrity("/data/mnemosyne.db")
-# True if database passes SQLite's PRAGMA integrity_check
-```
-
-The `restore_backup()` function runs this automatically and includes the result in its return dict.
-
-## Health Checks
-
-Run a comprehensive health check of the entire Mnemosyne system — database integrity, backup availability, and status summary.
-
-```python
-from mnemosyne.dr.recovery import health_check
-
-status = health_check()
-# {
-#   "database": {
-#     "exists": true,
-#     "valid": true,
-#     "path": "/root/.mnemosyne/data/mnemosyne.db",
-#     "message": "Database integrity verified"
-#   },
-#   "backups": {
-#     "total": 14,
-#     "latest": "/root/.mnemosyne/backups/mnemosyne_backup_20260530_120000.db.gz",
-#     "directory": "/root/.mnemosyne/backups/"
-#   },
-#   "status": "healthy"
-# }
-```
-
-Or from the CLI:
-
-```bash
-python -m mnemosyne.dr health
-```
-
-## Backup Management
-
-### List Available Backups
-
-```python
-from mnemosyne.dr.recovery import list_backups
-
-backups = list_backups()
-for b in backups:
-    print(f"{b['name']} — {b['size']} bytes — {b['modified']}")
-```
-
-### Rotation
-
-Keep the most recent N backups and remove the rest.
-
-```python
-from mnemosyne.dr.recovery import rotate_backups
-
-# Keep last 20 backups (default: 10)
-result = rotate_backups(keep=20)
-print(f"Deleted {result['deleted']} old backups")
-```
-
-The rotation preserves both the `.db.gz` file and its `.gz.json` metadata sidecar.
+`} language="bash" />
 
 ## Automated Backups
 
-### Via Cron (Recommended)
+### Using Litestream
 
-Add to your crontab for daily automated backups with rotation:
+<CodeBlock code={`# Install
+wget https://github.com/benbjohnson/litestream/releases/latest/download/litestream-linux-amd64.deb
+sudo dpkg -i litestream-linux-amd64.deb
 
-```bash
-# Daily at 3 AM — backup then prune to keep last 14
-0 3 * * * cd /home/your-user && \
-  python3 -m mnemosyne.dr backup && \
-  python3 -m mnemosyne.dr rotate --keep 14 >> /var/log/mnemosyne-backup.log 2>&1
-```
+# Configure /etc/litestream.yml
+access-key-id: AKIA...
+secret-access-key: ...
 
-### Via Hermes Cron
-
-```bash
-hermes cron create \
-  --name "mnemosyne-daily-backup" \
-  --schedule "0 3 * * *" \
-  --task "Run mnemosyne.dr backup and rotate to keep last 14" \
-  --target local
-```
-
-### Via Systemd Timer
-
-```
-# /etc/systemd/system/mnemosyne-backup.service
-[Unit]
-Description=Mnemosyne daily backup
-
-[Service]
-Type=oneshot
-ExecStart=python3 -m mnemosyne.dr backup
-ExecStartPost=python3 -m mnemosyne.dr rotate --keep 14
-User=your-user
-
-# /etc/systemd/system/mnemosyne-backup.timer
-[Unit]
-Description=Run Mnemosyne backup daily
-
-[Timer]
-OnCalendar=daily
-Persistent=true
-
-[Install]
-WantedBy=timers.target
-```
-
-## Retention Policy
-
-| Backup Type | Frequency | Retention | Method |
-|-------------|-----------|-----------|--------|
-| Hourly | Every hour | 24 hours | cron + dr.rotate(24) |
-| Daily | Every day | 30 days | cron + dr.rotate(30) |
-| Weekly | Every week | 12 weeks | systemd timer + dr.rotate(12) |
-| Monthly | Every month | 12 months | manual or external (S3) |
-
-## External Replication
-
-For off-server redundancy, combine the DR module with cloud storage:
-
-```bash
-# Backup + ship to S3
-python3 -m mnemosyne.dr backup && \
-  aws s3 sync ~/.mnemosyne/backups/ s3://my-backups/mnemosyne/
-```
-
-Or use [Litestream](https://litestream.io) for continuous WAL-based replication to S3:
-
-```bash
-# /etc/litestream.yml
 dbs:
   - path: /data/mnemosyne.db
     replicas:
       - url: s3://mybucket/mnemosyne
-        retention: 720h
-```
+        retention: 720h  # 30 days
+        snapshot-interval: 24h
 
-## Recovery Playbook
+# Start
+sudo systemctl enable litestream
+sudo systemctl start litestream
+`} language="bash" />
 
-| Scenario | Action |
-|----------|--------|
-| Database corrupted | `python -m mnemosyne.dr emergency` |
-| Specific backup restore | `python -m mnemosyne.dr restore <backup-path>` |
-| Verify after restore | `python -m mnemosyne.dr verify` |
-| Check if backups exist | `python -m mnemosyne.dr health` |
-| Clean up old backups | `python -m mnemosyne.dr rotate` |
-| Migrate to new server | Export JSON + `mnemosyne_import` tool |
+### Using Cron
+
+<CodeBlock code={`# Daily backup to S3
+0 3 * * * sqlite3 /data/mnemosyne.db ".backup to /tmp/mnemosyne-tmp.db" && \
+  aws s3 cp /tmp/mnemosyne-tmp.db s3://backups/mnemosyne-$(date +\%Y\%m\%d).db
+`} language="bash" />
+
+## Restore
+
+<CodeBlock code={`# From file copy
+cp mnemosyne-backup-20260425.db mnemosyne.db
+
+# From Litestream
+litestream restore -o mnemosyne.db s3://mybucket/mnemosyne
+
+# Verify
+sqlite3 mnemosyne.db "PRAGMA integrity_check"
+`} language="bash" />
+
+## Backup Verification
+
+Always verify backups:
+
+<CodeBlock code={`#!/bin/bash
+BACKUP_FILE=$1
+
+# Check file exists and is valid SQLite
+if ! sqlite3 "$BACKUP_FILE" "PRAGMA integrity_check;" | grep -q "ok"; then
+    echo "BACKUP FAILED: integrity check failed"
+    exit 1
+fi
+
+# Check row counts
+WORKING=$(sqlite3 "$BACKUP_FILE" "SELECT COUNT(*) FROM working_memory;")
+EPISODIC=$(sqlite3 "$BACKUP_FILE" "SELECT COUNT(*) FROM episodic_memory;")
+
+echo "Backup verified: $WORKING working, $EPISODIC episodic"
+`} language="bash" />
+
+## Retention Policy
+
+| Backup Type | Frequency | Retention |
+|-------------|-----------|-----------|
+| Hourly | Every hour | 24 hours |
+| Daily | Every day | 30 days |
+| Weekly | Every week | 12 weeks |
+| Monthly | Every month | 12 months |
+
+<Callout type="danger" title="Test Restores">
+A backup you can't restore is worthless. Schedule monthly restore drills to a staging environment.
+</Callout>

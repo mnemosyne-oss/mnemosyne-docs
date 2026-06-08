@@ -23,9 +23,9 @@ The main interface for interacting with Mnemosyne's memory system.
 | `session_id` | `str` | `"default"` | Session identifier for scoping working memories |
 | `db_path` | `Path \| None` | `None` | Path to the SQLite database file. Defaults to `~/.hermes/mnemosyne/data/mnemosyne.db` |
 | `bank` | `str \| None` | `None` | Named memory bank. Each bank gets its own SQLite file under `data_dir/banks/<name>/` |
-| `author_id` | `str \| None` | `None` | Author identifier for multi-agent identity (v2.1) |
-| `author_type` | `str \| None` | `None` | Author category: `"human"`, `"agent"`, or `"system"` (v2.1) |
-| `channel_id` | `str \| None` | `None` | Channel for cross-session shared memory. Defaults to `session_id` (v2.1) |
+| `author_id` | `str \| None` | `None` | Author identifier for multi-agent identity  |
+| `author_type` | `str \| None` | `None` | Author category: `"human"`, `"agent"`, or `"system"`  |
+| `channel_id` | `str \| None` | `None` | Channel for cross-session shared memory. Defaults to `session_id`  |
 
 <CodeBlock code={`from mnemosyne import Mnemosyne
 
@@ -121,9 +121,9 @@ Retrieve relevant memories using hybrid vector + full-text search with configura
 | `to_date` | `str \| None` | `None` | ISO 8601 timestamp -- only return memories on or before this date |
 | `source` | `str \| None` | `None` | Filter by source label (e.g. `"conversation"`, `"user"`) |
 | `topic` | `str \| None` | `None` | Filter by topic keyword |
-| `author_id` | `str \| None` | `None` | Filter by specific author (v2.1) |
-| `author_type` | `str \| None` | `None` | Filter by author category: `"human"`, `"agent"`, `"system"` (v2.1) |
-| `channel_id` | `str \| None` | `None` | Filter by channel for cross-session recall (v2.1) |
+| `author_id` | `str \| None` | `None` | Filter by specific author  |
+| `author_type` | `str \| None` | `None` | Filter by author category: `"human"`, `"agent"`, `"system"`  |
+| `channel_id` | `str \| None` | `None` | Filter by channel for cross-session recall  |
 | `temporal_weight` | `float` | `0.0` | How much recency decay influences the final score (0.0-1.0). Default 0.0 (disabled) |
 | `query_time` | `str \| None` | `None` | ISO 8601 timestamp to use as "now" for temporal decay calculations |
 | `temporal_halflife` | `float \| None` | `None` | Half-life in hours for the exponential recency decay. Default from `MNEMOSYNE_TEMPORAL_HALFLIFE_HOURS` (24h) |
@@ -218,7 +218,7 @@ Run consolidation and degradation across all sessions (not just the current one)
 <CodeBlock code={`sleep_all_sessions(dry_run: bool = False) -> dict
 `} language="python" />
 
-Returns a dict with per-session consolidation and degradation summaries. (v2.3)
+Returns a dict with per-session consolidation and degradation summaries.
 
 ### enable_streaming
 
@@ -320,9 +320,9 @@ Apply a delta received from a peer.
 
 Returns `{peer_id, table, stats, checkpoint}` with import statistics and an updated sync checkpoint.
 
-## V2 Properties
+## Subsystem Properties
 
-The `Mnemosyne` instance exposes several v2 subsystems as lazy-initialized properties:
+The `Mnemosyne` instance exposes several lazy-initialized subsystems:
 
 | Property | Type | Description |
 |----------|------|-------------|
@@ -330,7 +330,7 @@ The `Mnemosyne` instance exposes several v2 subsystems as lazy-initialized prope
 | `compressor` | `MemoryCompressor` | Dictionary-based, RLE, and semantic compression strategies for reducing memory footprint |
 | `patterns` | `PatternDetector` | Detects temporal (hour/weekday), content (keyword frequency, co-occurrence), and sequence patterns across memories |
 | `delta_sync` | `DeltaSync` | Incremental synchronization between Mnemosyne instances with checkpointed resume support |
-| `plugins` | `PluginManager` | Discovers and manages plugins from `~/.hermes/mnemosyne/plugins/`. Built-in: `LoggingPlugin`, `MetricsPlugin`, `FilterPlugin` |
+| `plugins` | `PluginManager` | Discovers and manages plugins from `~/.hermes/mnemosyne/plugins/`. Built-in: `LoggingPlugin`, `MetricsPlugin`, `FilterPlugin`, `CompressionPlugin` |
 
 <CodeBlock code={`from mnemosyne import Mnemosyne
 
@@ -514,7 +514,11 @@ remember("Some important fact")
 results = recall("important fact")
 `} language="python" />
 
-## Hermes Plugin Tools
+## Hermes Plugin Tools (17 tools)
+
+<Callout type="info">
+The Hermes plugin registers 17 tools. Shared surface tools (`shared_remember`, `shared_recall`, `shared_forget`, `shared_stats`) and `validate`/`get` are MCP-only and not registered by the plugin.
+</Callout>
 
 When using Mnemosyne as a Hermes plugin, the following tools are exposed:
 
@@ -535,12 +539,6 @@ When using Mnemosyne as a Hermes plugin, the following tools are exposed:
 | `mnemosyne_forget` | Delete a specific memory by ID |
 | `mnemosyne_import` | Import memories from a file or external provider |
 | `mnemosyne_diagnose` | Run PII-safe system diagnostics |
-| `mnemosyne_shared_remember` | Store a memory in the shared cross-agent surface |
-| `mnemosyne_shared_recall` | Search the shared cross-agent surface |
-| `mnemosyne_shared_forget` | Delete a memory from the shared surface |
-| `mnemosyne_shared_stats` | Get shared surface health and statistics |
-| `mnemosyne_validate` | Validate memory integrity and provenance |
-| `mnemosyne_get` | Retrieve a single memory by its primary key |
 | `mnemosyne_graph_query` | Query the knowledge graph for linked entities |
 | `mnemosyne_graph_link` | Link entities in the knowledge graph |
 

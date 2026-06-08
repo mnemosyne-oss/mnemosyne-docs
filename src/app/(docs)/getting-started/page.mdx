@@ -1,6 +1,6 @@
 # Quick Start
 
-Get Mnemosyne v3.1.2 running in under 5 minutes. This guide covers installation, basic configuration, and your first memory operations — including entity extraction and temporal recall.
+Get Mnemosyne v3.4.1 running in under 5 minutes. This guide covers installation, basic configuration, and your first memory operations — including entity extraction and temporal recall.
 
 ## Prerequisites
 
@@ -11,11 +11,18 @@ Get Mnemosyne v3.1.2 running in under 5 minutes. This guide covers installation,
 
 Install Mnemosyne **with semantic search**:
 
-<CodeBlock code={`# Using pip
+<CodeBlock code={`# Recommended: pipx (isolated, survives env rebuilds)
+pipx install mnemosyne-memory[embeddings]
+
+# Or traditional pip
 pip install mnemosyne-memory[embeddings]
 
 # Using uv (faster)
 uv pip install mnemosyne-memory[embeddings]
+
+# Upgrade
+pip install --upgrade mnemosyne-memory[embeddings]
+# or: pipx upgrade mnemosyne-memory[embeddings]
 `} language="bash" />
 
 <Callout type="info" title="What [embeddings] gives you">
@@ -56,7 +63,7 @@ for r in results:
 
 ## Configurable Retrieval
 
-Mnemosyne v2 lets you tune scoring weights per query:
+Mnemosyne v3 lets you tune scoring weights per query:
 
 <CodeBlock code={`# Boost text matching over semantic similarity
 results = mem.recall(
@@ -80,7 +87,7 @@ Isolate memories for different projects or contexts:
 
 <CodeBlock code={`# Create a bank for work projects
 work_mem = Mnemosyne(bank="work")
-work_mem.remember("Deployed v2.5.0 to staging.")
+work_mem.remember("Deployed v3.4.0 to staging.")
 
 # Separate bank for personal
 personal_mem = Mnemosyne(bank="personal")

@@ -1,6 +1,6 @@
 # Installation
 
-Mnemosyne v3.1.2 is a standalone Python package — no agent framework required. This page walks through every step from prerequisites to verification.
+Mnemosyne v3.4.1 is a standalone Python package — no agent framework required. This page walks through every step from prerequisites to verification.
 
 ## Prerequisites
 
@@ -16,10 +16,13 @@ Two commands. That's all it takes.
 **Step 1 — Install the package:**
 
 ```bash
-# Using pip
+# Recommended: pipx (isolated, survives env rebuilds)
+pipx install mnemosyne-memory[all]
+
+# Or traditional pip
 pip install mnemosyne-memory[all]
 
-# Using uv (faster)
+# Using uv (faster, but pipx with uv backend preferred for stability)
 uv pip install mnemosyne-memory[all]
 ```
 
@@ -27,7 +30,14 @@ uv pip install mnemosyne-memory[all]
 
 ```bash
 python -c "import mnemosyne; print(mnemosyne.__version__)"
-# Should print: 2.8.0
+# Should print: 3.4.0
+```
+
+**Upgrade:**
+
+```bash
+pip install --upgrade mnemosyne-memory[all]
+# or: pipx upgrade mnemosyne-memory
 ```
 
 That's it. No database setup, no container orchestration, no config files. Mnemosyne creates its SQLite database automatically on first use.
@@ -89,7 +99,7 @@ print(f"Stored and retrieved {len(results)} memory")
 
 ## MCP Server Setup
 
-Mnemosyne v2 includes a built-in MCP server for Claude Desktop and other MCP clients:
+Mnemosyne v3 includes a built-in MCP server for Claude Desktop and other MCP clients:
 
 ```bash
 # Add to your Claude Desktop config (claude_desktop_config.json):
@@ -113,18 +123,42 @@ mnemosyne mcp --transport sse --port 8080
 
 If you're using Mnemosyne as a Hermes plugin:
 
-```yaml
-# hermes.yaml
-plugins:
-  - name: mnemosyne-memory
-    source: pip
-    config:
-      auto_sleep: true
-      sleep_threshold: 50
-      vector_type: int8
-      ignore_patterns: []
-      profile_isolation: false
+**Do NOT install inside Hermes' managed venv.** Use pipx:
+
+```bash
+pipx install mnemosyne-hermes
+hermes config set memory.provider mnemosyne
+hermes gateway restart
 ```
+
+For speed with pipx:
+
+```bash
+export PIPX_DEFAULT_BACKEND=uv
+pipx install mnemosyne-hermes
+```
+
+### Disable legacy memory
+
+**DO NOT run `hermes tools disable memory`** — source: `agent/agent_init.py:1163-1172`.
+
+Add to `~/.hermes/config.yaml`:
+```yaml
+memory:
+  enabled: false
+  user_profile_enabled: false
+  provider: mnemosyne
+```
+
+### Default config
+
+```yaml
+# ~/.hermes/config.yaml
+memory:
+  provider: mnemosyne
+  mnemosyne:
+    auto_sleep: true
+    sleep_threshold: 50
 
 ## Development Install (from Source)
 
