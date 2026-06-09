@@ -2,76 +2,81 @@
 
 Keep your Mnemosyne deployment healthy with built-in metrics and health checks.
 
-## Health Endpoint
+## Health Check
 
-<CodeBlock code={`GET /health
+Mnemosyne does not expose an HTTP server. Use CLI commands to verify health:
 
-{
-  "status": "healthy",
-  "version": "3.1.2",
-  "db_connected": true,
-  "db_size_mb": 12.5,
-  "working_count": 42,
-  "episodic_count": 128,
-  "semantic_count": 64,
-  "last_sleep_at": "2026-04-25T13:00:00Z",
-  "uptime_seconds": 86400,
-}
+<CodeBlock code={`# Check memory stats
+hermes mnemosyne stats
+
+# Verify database integrity
+sqlite3 ~/.hermes/mnemosyne/data/mnemosyne.db "PRAGMA integrity_check"
 `} language="bash" />
 
-## Metrics Endpoint
+For programmatic health checks, use the `mnemosyne_diagnose` MCP tool, which returns database stats, table counts, and integrity status.
 
-<CodeBlock code={`GET /metrics
+## Metrics
 
-# Prometheus-compatible output
-mnemosyne_working_memory_entries 42
-mnemosyne_episodic_memory_entries 128
-mnemosyne_semantic_memory_entries 64
-mnemosyne_query_latency_ms{quantile="0.5"} 65
-mnemosyne_query_latency_ms{quantile="0.99"} 180
-mnemosyne_consolidation_last_run 1714060800
-mnemosyne_db_size_bytes 13107200
+Retrieve memory metrics via the CLI or MCP tool:
+
+<CodeBlock code={`# Global stats across all Hermes profiles
+hermes mnemosyne stats --global
+
+# Per-profile stats (run from a project directory or specify --profile)
+hermes mnemosyne stats
 `} language="bash" />
+
+The `mnemosyne_diagnose` MCP tool returns structured metrics including:
+- `working_memory`, `episodic_memory`, and `scratchpad` table counts
+- Database size and integrity status
+- Embedding model info
+- Version info (3.4.0)
 
 ## Key Metrics
 
-| Metric | Target | Alert If |
-|--------|--------|----------|
-| Query latency p50 | &lt;100ms | &gt;200ms |
-| Query latency p99 | &lt;500ms | &gt;1000ms |
-| DB size | &lt;1GB | &gt;5GB |
-| Working memory | &lt;80% max | &gt;95% |
-| Last consolidation | &lt;2x interval | &gt;3x interval |
+Retrieve these with `hermes mnemosyne stats` or `mnemosyne_diagnose`:
+
+- **working_memory**: Items currently in active working memory (max controlled by `MNEMOSYNE_WM_MAX_ITEMS`, default 10000)
+- **episodic_memory**: Total consolidated episodes across all tiers
+- **scratchpad**: Temporary in-flight entries during sleep/consolidation
+- **Database size**: `du -sh ~/.hermes/mnemosyne/data/mnemosyne.db`
+- **Last sleep / consolidation time**: Reported in `hermes mnemosyne stats` output
+- **Vector index**: sqlite-vec virtual table (`vec_episodes`) for embedding search
 
 ## Logging
 
-Mnemosyne uses structured JSON logging:
+Mnemosyne uses Python's standard `logging` module. To enable debug logging:
 
-<CodeBlock code={`{
-  "timestamp": "2026-04-25T14:30:00Z",
-  "level": "INFO",
-  "component": "retrieval",
-  "event": "query_completed",
-  "latency_ms": 65,
-  "results_count": 5,
-  "query": "user preferences",
-}
-`} language="json" />
+<CodeBlock code={`import logging
+logging.getLogger("mnemosyne").setLevel(logging.DEBUG)
+`} language="python" />
 
-## Alerting Rules (Prometheus)
+Log output includes component-level detail without requiring special configuration. Key loggers:
+- `mnemosyne.beam` — memory tiering, sleep/consolidation
+- `mnemosyne.embeddings` — model loading and generation
+- `mnemosyne.dr.recovery` — backup and integrity checks
 
-<CodeBlock code={`groups:
-  - name: mnemosyne
-    rules:
-      - alert: HighQueryLatency
-        expr: mnemosyne_query_latency_ms{quantile="0.99"} > 500
-        for: 5m
-        annotations:
-          summary: "Mnemosyne query latency is high"
+## Health Check Scripts
 
-      - alert: MemoryNotConsolidating
-        expr: time() - mnemosyne_consolidation_last_run > 7200
-        for: 10m
-        annotations:
-          summary: "Mnemosyne consolidation has stalled"
-`} language="yaml" />
+For automated monitoring, use cron or a scheduled job that runs health checks:
+
+<CodeBlock code={`#!/bin/bash
+# mnemosyne-health-check.sh
+set -e
+
+# Integrity check
+sqlite3 ~/.hermes/mnemosyne/data/mnemosyne.db \\
+  "PRAGMA integrity_check" | grep -q "ok" || exit 1
+
+# Check working memory hasn't overflowed
+hermes mnemosyne stats --json | python3 -c "
+import json, sys
+d = json.load(sys.stdin)
+if d['working_total'] > 9500:
+    sys.exit(1)
+"
+
+echo \"Mnemosyne health check passed\"
+`} language="bash" />
+
+Run this script via cron every 5 minutes. Replace thresholds with values appropriate for your deployment.
