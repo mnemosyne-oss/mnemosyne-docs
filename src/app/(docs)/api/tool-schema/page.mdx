@@ -1,13 +1,13 @@
 ---
 title: "MCP Tool Schema"
 version: 3.4.0
-tool_count: 23
+tool_count: 24
 generated_at: "auto"
 ---
 
 # MCP Tool Schema (v3.4.0)
 
-Mnemosyne exposes **23 MCP tools** for memory management, retrieval, and diagnostics.
+Mnemosyne exposes **24 MCP tools** for memory management, retrieval, and diagnostics.
 
 ---
 
@@ -18,13 +18,13 @@ Store a durable memory
 |-----------|------|----------|
 | `content` | `string` | yes |
 | `importance` | `float` | no (default: 0.5) |
-| `source` | `string` | no (default: user) |
+| `source` | `string` | yes |
 | `scope` | `string` | no (default: session) |
-| `valid_until` | `string` | no (default: ) |
-| `extract_entities` | `bool` | no (default: false) |
-| `extract` | `bool` | no (default: false) |
-| `metadata` | `dict` | no (default: {}) |
-| `veracity` | `string` | no (default: unknown) |
+| `valid_until` | `string` | yes |
+| `extract_entities` | `bool` | yes |
+| `extract` | `bool` | yes |
+| `metadata` | `dict` | yes |
+| `veracity` | `string` | yes |
 
 ### 2. `mnemosyne_recall`
 Search memories by vector+FTS hybrid ranking
@@ -34,11 +34,11 @@ Search memories by vector+FTS hybrid ranking
 | `query` | `string` | yes |
 | `limit` | `int` | no (default: 5) |
 | `temporal_weight` | `float` | no (default: 0.0) |
-| `query_time` | `string` | no (default: ) |
+| `query_time` | `string` | yes |
 | `temporal_halflife` | `float` | no (default: 24) |
-| `vec_weight` | `float` | no (default: null) |
-| `fts_weight` | `float` | no (default: null) |
-| `importance_weight` | `float` | no (default: null) |
+| `vec_weight` | `float` | yes |
+| `fts_weight` | `float` | yes |
+| `importance_weight` | `float` | yes |
 
 ### 3. `mnemosyne_forget`
 Permanently delete a memory by ID
@@ -207,5 +207,10 @@ Read the scratchpad entries
 
 ### 23. `mnemosyne_scratchpad_clear`
 Clear all scratchpad entries
+
+*No parameters*
+
+### 24. `mnemosyne_end`
+Graceful shutdown: persist, flush caches, close connections
 
 *No parameters*
