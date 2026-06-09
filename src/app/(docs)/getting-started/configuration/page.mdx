@@ -40,3 +40,34 @@ If the provider adds or changes config keys, this updates automatically.
 | `shared_surface_read` | `False` | When true, mnemosyne_recall merges shared-surface results into private bank recall, tagging each result with its bank ('private' or 'surface'). Default false. |
 | `skip_contexts` | `cron,flush,subagent,background,skill_loop` | Agent contexts where Mnemosyne should skip initialization. Comma-separated list. Defaults to 'cron,flush,subagent,background,skill_loop'. Set to empty string to enable all contexts. Also configurable via MNEMOSYNE_SKIP_CONTEXTS env var. |
 | `sync_roles` | `['user', 'assistant']` | Conversation roles to autosave in sync_turn(). List of role names: 'user', 'assistant'. Default ['user', 'assistant'] saves both. Set to ['user'] for user turns only, or [] to disable conversation autosave entirely. Does not affect explicit mnemosyne_remember calls. Identity signal capture is gated by user sync — excluding 'user' also disables identity extraction. Also configurable via MNEMOSYNE_SYNC_ROLES env var. |
+<!-- GENERATED_CONFIG_TABLE -->
+| `MNEMOSYNE_DB_PATH` | ~/.mnemosyne/mnemosyne.db | Path to the SQLite database |
+| `MNEMOSYNE_EMBEDDING_MODEL` | all-MiniLM-L6-v2 | SentenceTransformer model for vector embeddings |
+| `MNEMOSYNE_EMBEDDING_DEVICE` | cpu | Device for embeddings: cpu, cuda, mps |
+| `MNEMOSYNE_BEAM_ENABLED` | true | Enable BEAM (Budget Elastic Adaptive Memory) tiering |
+| `MNEMOSYNE_BEAM_CPU_THRESHOLD` | 5000 | Max working memories before cold tier promotion |
+| `MNEMOSYNE_BEAM_COLD_THRESHOLD` | 10000 | Max cold memories before frozen tier promotion |
+| `MNEMOSYNE_MCP_TOKEN` |  | Bearer token for MCP server auth (required for remote deployment) |
+| `MNEMOSYNE_MCP_HOST` | 0.0.0.0 | MCP server bind address |
+| `MNEMOSYNE_MCP_PORT` | 4321 | MCP server port |
+<!-- /GENERATED_CONFIG_TABLE -->
+| `MNEMOSYNE_DB_PATH` | ~/.mnemosyne/mnemosyne.db | Path to the SQLite database |
+| `MNEMOSYNE_EMBEDDING_MODEL` | all-MiniLM-L6-v2 | SentenceTransformer model for vector embeddings |
+| `MNEMOSYNE_EMBEDDING_DEVICE` | cpu | Device for embeddings: cpu, cuda, mps |
+| `MNEMOSYNE_BEAM_ENABLED` | true | Enable BEAM (Budget Elastic Adaptive Memory) tiering |
+| `MNEMOSYNE_BEAM_CPU_THRESHOLD` | 5000 | Max working memories before cold tier promotion |
+| `MNEMOSYNE_BEAM_COLD_THRESHOLD` | 10000 | Max cold memories before frozen tier promotion |
+| `MNEMOSYNE_MCP_TOKEN` |  | Bearer token for MCP server auth (required for remote deployment) |
+| `MNEMOSYNE_MCP_HOST` | 0.0.0.0 | MCP server bind address |
+| `MNEMOSYNE_MCP_PORT` | 4321 | MCP server port |
+<!-- /GENERATED_CONFIG_TABLE -->
+| `MNEMOSYNE_DB_PATH` | ~/.mnemosyne/mnemosyne.db | Path to the SQLite database |
+| `MNEMOSYNE_EMBEDDING_MODEL` | all-MiniLM-L6-v2 | SentenceTransformer model for vector embeddings |
+| `MNEMOSYNE_EMBEDDING_DEVICE` | cpu | Device for embeddings: cpu, cuda, mps |
+| `MNEMOSYNE_BEAM_ENABLED` | true | Enable BEAM (Budget Elastic Adaptive Memory) tiering |
+| `MNEMOSYNE_BEAM_CPU_THRESHOLD` | 5000 | Max working memories before cold tier promotion |
+| `MNEMOSYNE_BEAM_COLD_THRESHOLD` | 10000 | Max cold memories before frozen tier promotion |
+| `MNEMOSYNE_MCP_TOKEN` |  | Bearer token for MCP server auth (required for remote deployment) |
+| `MNEMOSYNE_MCP_HOST` | 0.0.0.0 | MCP server bind address |
+| `MNEMOSYNE_MCP_PORT` | 4321 | MCP server port |
+<!-- /GENERATED_CONFIG_TABLE -->
