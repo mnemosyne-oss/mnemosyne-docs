@@ -37,11 +37,9 @@ mnemosyne_triple_add(
     valid_from="2025-06-01"
 )
 
-# End a fact (it stays in history)
-mnemosyne_triple_end(
-    subject="bob",
-    predicate="role",
-    object="engineer"
+# Invalidate a fact (it stays in history)
+mnemosyne_invalidate(
+    memory_id="<id_of_triple>"
 )
 `} language="bash" />
 

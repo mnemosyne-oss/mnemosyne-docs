@@ -19,7 +19,7 @@ The REST API server is a legacy FastAPI application embedded in `mnemosyne/cli.p
 
 ## Starting the Server
 
-<CodeBlock code={`export MNEMOSYNE_DB_PATH=./memory.db && \\
+<CodeBlock code={`export MNEMOSYNE_DATA_DIR=./memory_data && \\
     python -m mnemosyne \\
     --host 0.0.0.0 \\
     --port 8090
