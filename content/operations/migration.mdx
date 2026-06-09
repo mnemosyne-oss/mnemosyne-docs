@@ -22,20 +22,12 @@ python -c "from mnemosyne import Mnemosyne; m = Mnemosyne(); print(m.stats())"
 `} language="bash" />
 
 <Callout type="info" title="Automatic Migrations">
-Mnemosyne uses automatic schema migrations that run on first connection after an upgrade. There is no `python -m mnemosyne.migrate` command. If migration fails, check logs with `MNEMOSYNE_LOG_LEVEL=debug`.
+Mnemosyne uses automatic schema migrations that run on first connection after an upgrade. There is no `python -m mnemosyne.migrate` command. If migration fails, enable debug logging with `logging.getLogger("mnemosyne").setLevel(logging.DEBUG)`.
 </Callout>
 
 ## Schema Migrations
 
-Mnemosyne uses automatic schema migrations:
-
-| Version | Migration | Description |
-|---------|-----------|-------------|
-| 1.0 → 2.0 | `m_1_0_to_2_0` | Add semantic memory, FTS5 indices |
-| 2.0 → 2.1 | `m_2_0_to_2_1` | Add session_id to episodic |
-| 2.1 → 2.2 | `m_2_1_to_2_2` | Add temporal graph indexes |
-
-Migrations run automatically on first connection. No manual intervention needed.
+Mnemosyne uses automatic schema migrations via lazy `ALTER TABLE ... ADD COLUMN` on first connection. When the codebase adds new columns to the schema, `init_beam()` checks whether each column exists and runs `_add_column_if_missing()` as needed. No manual migration commands or version-specific migration functions are required.
 
 ## Cross-Instance Migration
 

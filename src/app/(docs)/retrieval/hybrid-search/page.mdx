@@ -19,8 +19,8 @@ base_score = (vector_score * vec_weight +
              fts_score * fts_weight +
              importance * importance_weight) / (vec_weight + fts_weight + importance_weight)
 
-# Step 2: Apply temporal recency decay
-final_score = base_score * (1.0 - temporal_weight + temporal_weight * recency_decay)
+# Step 2: Apply temporal recency boost
+final_score = base_score * (1.0 + temporal_weight * temporal_boost)
 `} language="python" />
 
 ### Default weights:
@@ -30,7 +30,7 @@ final_score = base_score * (1.0 - temporal_weight + temporal_weight * recency_de
 - **Importance** (`importance_weight`): 20.0 — memory importance rating, 0.0–1.0
 - **Temporal** (`temporal_weight`): 0.3 — controls how much recency decay influences the final score
 
-The recency decay uses an exponential half-life (`temporal_halflife`, default 168 hours / 7 days).
+The recency decay uses an exponential half-life (`temporal_halflife`, default 24 hours).
 
 All weights are configurable per-query — see usage examples below.
 

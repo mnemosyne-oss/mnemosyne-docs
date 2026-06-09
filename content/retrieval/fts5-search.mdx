@@ -64,7 +64,7 @@ Two separate FTS5 virtual tables are maintained:
 CREATE VIRTUAL TABLE fts_episodes USING fts5(
     content,
     source,
-    content_rowid=rowid
+    content='episodic_memory'
 );
 
 -- Triggers keep fts_episodes in sync with episodic_memory

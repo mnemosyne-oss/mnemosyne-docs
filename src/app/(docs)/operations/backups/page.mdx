@@ -7,10 +7,10 @@ Protect your agent's memory with reliable backup and restore procedures.
 SQLite databases are single files — backup is as simple as copying:
 
 <CodeBlock code={`# Hot backup (SQLite supports concurrent reads)
-cp mnemosyne.db mnemosyne-backup-$(date +%Y%m%d).db
+cp ~/.hermes/mnemosyne/data/mnemosyne.db mnemosyne-backup-$(date +%Y%m%d).db
 
 # With verification
-sqlite3 mnemosyne.db ".backup to mnemosyne-backup.db"
+sqlite3 ~/.hermes/mnemosyne/data/mnemosyne.db ".backup to mnemosyne-backup.db"
 sqlite3 mnemosyne-backup.db "PRAGMA integrity_check"
 `} language="bash" />
 

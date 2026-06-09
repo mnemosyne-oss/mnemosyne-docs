@@ -166,7 +166,7 @@ Mnemosyne uses automatic schema migrations that run on first connection after up
 | 2.8 → 3.0 (MEMORIA) | Auto-create | 5 new tables (`memoria_facts`, `memoria_timelines`, `memoria_instructions`, `memoria_preferences`, `memoria_kg`) |
 
 <Callout type="info" title="Automatic Migrations">
-Mnemosyne uses automatic schema migrations that run on first connection after an upgrade. There is no `python -m mnemosyne.migrate` command. If migration fails, check logs with `MNEMOSYNE_LOG_LEVEL=debug`.
+Mnemosyne uses automatic schema migrations that run on first connection after an upgrade. There is no `python -m mnemosyne.migrate` command. If migration fails, enable debug logging with `logging.getLogger("mnemosyne").setLevel(logging.DEBUG)`.
 </Callout>
 
 ## Cross-Instance Migration
