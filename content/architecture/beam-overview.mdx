@@ -131,11 +131,11 @@ During `remember()`, MEMORIA regex-mining extracts structured data from content 
 
 ### Entity Extraction
 
-`remember()` accepts `extract_entities=True` to automatically detect named entities (mentions, hashtags, proper nouns) using regex patterns and Levenshtein fuzzy matching. Extracted entities are stored as TripleStore triples.
+`remember()` accepts `extract_entities=True` to automatically detect named entities (mentions, hashtags, proper nouns) using regex patterns and Levenshtein fuzzy matching. Extracted entities are stored as AnnotationStore annotations.
 
 ### Fact Extraction
 
-`remember()` accepts `extract=True` to send content through an LLM pipeline that extracts 2–5 structured factual statements, stored as TripleStore triples. The extraction pipeline gracefully falls back through remote API → local GGUF → skip.
+`remember()` accepts `extract=True` to send content through an LLM pipeline that extracts 2–5 structured factual statements, stored as AnnotationStore annotations. The extraction pipeline gracefully falls back through remote API → local GGUF → skip.
 
 ### Temporal Recall
 
@@ -155,7 +155,7 @@ Named banks provide isolated SQLite databases per project or context. Create via
 
 ### Plugin System
 
-A plugin base class (`MnemosynePlugin`) with 4 lifecycle hooks. Built-in plugins: `LoggingPlugin`, `MetricsPlugin`, `FilterPlugin`. Discovers plugins from `~/.hermes/mnemosyne/plugins/`.
+A plugin base class (`MnemosynePlugin`) with 4 lifecycle hooks. Built-in plugins: `LoggingPlugin`, `MetricsPlugin`, `FilterPlugin`, `CompressionPlugin`. Discovers plugins from `~/.hermes/mnemosyne/plugins/`.
 
 ## Design Philosophy
 

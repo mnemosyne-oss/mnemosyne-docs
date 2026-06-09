@@ -105,7 +105,7 @@ Mnemosyne exposes these tools to agents:
     "required": ["query"],
     "properties": {
       "query": { "type": "string", "description": "Natural language search query" },
-      "top_k": { "type": "integer", "default": 5, "description": "Max memories to return" },
+      "limit": { "type": "integer", "default": 5, "description": "Max memories to return" },
       "author_id": { "type": "string", "description": "Filter by author" },
       "author_type": { "type": "string", "enum": ["human", "agent", "system"] },
       "channel_id": { "type": "string", "description": "Filter by channel" },
@@ -164,7 +164,8 @@ Mnemosyne exposes these tools to agents:
   "parameters": {
     "type": "object",
     "properties": {
-      "dry_run": { "type": "boolean", "description": "If true, preview what would happen without making changes" }
+      "dry_run": { "type": "boolean", "description": "If true, preview what would happen without making changes" },
+      "all_sessions": { "type": "boolean", "default": false, "description": "If true, run consolidation across all sessions" }
     }
   }
 }
@@ -268,6 +269,36 @@ Mnemosyne exposes these tools to agents:
   "parameters": {
     "type": "object",
     "properties": {}
+  }
+}
+
+{
+  "name": "mnemosyne_graph_query",
+  "description": "Traverse the memory graph to find memories related to a seed memory. Uses multi-hop BFS through graph_edges with optional edge_type and min_weight filtering.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "seed_memory_id": { "type": "string", "description": "Memory ID to start traversal from" },
+      "max_hops": { "type": "integer", "description": "Maximum traversal depth (default: 2)", "default": 2 },
+      "edge_type": { "type": "string", "description": "Filter by edge type (empty = all types, e.g. 'ctx', 'rel', 'syn', 'references', 'caused', 'supersedes')", "default": "" },
+      "min_weight": { "type": "number", "description": "Minimum edge weight threshold (0.0 to 1.0, default: 0.0 = no filter)", "default": 0.0 }
+    },
+    "required": ["seed_memory_id"]
+  }
+}
+
+{
+  "name": "mnemosyne_graph_link",
+  "description": "Declare a semantic edge between two memories in the graph. Use this to explicitly link related memories so graph traversal finds them.",
+  "parameters": {
+    "type": "object",
+    "required": ["source_id", "target_id", "relationship"],
+    "properties": {
+      "source_id": { "type": "string", "description": "Source memory ID" },
+      "target_id": { "type": "string", "description": "Target memory ID" },
+      "relationship": { "type": "string", "description": "Relationship label (e.g. 'references', 'caused', 'supersedes', 'related_to')" },
+      "weight": { "type": "number", "description": "Edge weight from 0.0 to 1.0 (default: 0.5)", "default": 0.5 }
+    }
   }
 }
 `} language="json" />
