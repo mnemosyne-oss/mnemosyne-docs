@@ -1,210 +1,73 @@
-# Configuration
+---
+title: Configuration
+description: Generated reference for all Mnemosyne config.yaml keys with defaults.
+generated: true
+source: hermes_memory_provider/__init__.py:get_config_schema()
+generated_at: 2026-06-08T21:12:41.385307+00:00
+---
 
-Mnemosyne is configured via environment variables and an optional Hermes `config.yaml` file. All settings have sensible defaults — you can start using it with zero configuration.
+This page is auto-generated from the provider code. Do not hand-edit.
 
-## Environment Variables
 
-### Storage & Memory Tiers
+{/* GENERATED: config-table */}
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `MNEMOSYNE_DATA_DIR` | `~/.hermes/mnemosyne/data` | Root data directory for SQLite database files |
-| `MNEMOSYNE_WM_MAX_ITEMS` | `10000` | Maximum items in working memory (per session) |
-| `MNEMOSYNE_WM_TTL_HOURS` | `24` | Working memory TTL in hours |
-| `MNEMOSYNE_EP_LIMIT` | `50000` | Episodic recall scan limit |
-| `MNEMOSYNE_SLEEP_BATCH` | `5000` | Sleep/consolidation batch size |
-| `MNEMOSYNE_SP_MAX` | `1000` | Maximum scratchpad entries |
-| `MNEMOSYNE_RECENCY_HALFLIFE` | `168` | Recency decay half-life in hours (default: 1 week) |
-| `MNEMOSYNE_AUTO_MIGRATE` | `1` | Set to `0` to disable automatic schema migrations on startup |
-
-### Vector & Retrieval Weights
-
-Mnemosyne uses hybrid scoring (vector + FTS5 + importance) for recall. These weights are configurable and auto-normalized per query.
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `MNEMOSYNE_VEC_TYPE` | `int8` | Vector quantization: `float32`, `int8`, or `bit` |
-| `MNEMOSYNE_VEC_WEIGHT` | `0.5` | Vector similarity weight in hybrid scoring |
-| `MNEMOSYNE_FTS_WEIGHT` | `0.3` | FTS5 text relevance weight |
-| `MNEMOSYNE_IMPORTANCE_WEIGHT` | `0.2` | Importance score weight |
-| `MNEMOSYNE_TEMPORAL_HALFLIFE_HOURS` | `24` | Temporal boost half-life in hours |
-| `MNEMOSYNE_BEAM_OPTIMIZATIONS` | `false` | Enable BEAM benchmark optimizations (OR semantics, larger scans) |
-
-### Tiered Degradation
-
-Episodic memories degrade through 3 tiers over time. Tier 1 is full content, Tier 2 is LLM-summarized, Tier 3 is entity-extracted compressed signal.
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `MNEMOSYNE_TIER2_DAYS` | `30` | Days before Tier 1 degrades to Tier 2 |
-| `MNEMOSYNE_TIER3_DAYS` | `180` | Days before Tier 2 degrades to Tier 3 |
-| `MNEMOSYNE_TIER1_WEIGHT` | `1.0` | Recall score multiplier for Tier 1 memories |
-| `MNEMOSYNE_TIER2_WEIGHT` | `0.5` | Recall score multiplier for Tier 2 memories |
-| `MNEMOSYNE_TIER3_WEIGHT` | `0.25` | Recall score multiplier for Tier 3 memories |
-| `MNEMOSYNE_DEGRADE_BATCH` | `100` | Max memories per degradation cycle |
-| `MNEMOSYNE_SMART_COMPRESS` | `true` | Enable entity-aware sentence extraction for Tier 3 |
-| `MNEMOSYNE_TIER3_MAX_CHARS` | `300` | Max characters for Tier 3 compressed content |
-
-### Veracity Weights
-
-Memories carry veracity labels that affect their recall weight. These multipliers tune how strongly each veracity level influences retrieval.
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `MNEMOSYNE_STATED_WEIGHT` | `1.0` | Recall multiplier for explicitly stated facts |
-| `MNEMOSYNE_INFERRED_WEIGHT` | `0.7` | Recall multiplier for inferred facts |
-| `MNEMOSYNE_TOOL_WEIGHT` | `0.5` | Recall multiplier for tool-generated output |
-| `MNEMOSYNE_IMPORTED_WEIGHT` | `0.6` | Recall multiplier for imported facts |
-| `MNEMOSYNE_UNKNOWN_WEIGHT` | `0.8` | Recall multiplier for uncategorized/legacy facts |
-
-### Embeddings
-
-Mnemosyne uses **BAAI/bge-small-en-v1.5** via fastembed (384 dimensions, local ONNX) for embedding generation. No external API key is needed for local mode.
-
-To use a custom embedding endpoint (OpenAI-compatible), set `MNEMOSYNE_EMBEDDING_API_URL` and `MNEMOSYNE_EMBEDDING_API_KEY`. These fall back to `OPENROUTER_BASE_URL` and `OPENROUTER_API_KEY` for backward compatibility.
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `MNEMOSYNE_EMBEDDING_MODEL` | `BAAI/bge-small-en-v1.5` | Embedding model (local fastembed or `openai/*` API) |
-| `MNEMOSYNE_EMBEDDING_API_KEY` | `""` | API key for remote embedding API. Falls back to `OPENROUTER_API_KEY`. |
-| `MNEMOSYNE_EMBEDDING_API_URL` | `https://openrouter.ai/api/v1` | Base URL for custom embedding API (OpenAI-compatible). Falls back to `OPENROUTER_BASE_URL`. |
-| `MNEMOSYNE_EMBEDDING_DIM` | auto (384) | Override embedding dimension for unsupported models |
-| `MNEMOSYNE_EMBEDDINGS_VIA_API` | unset | Set to `1` to explicitly route embeddings through API (needed for OpenRouter-hosted models) |
-| `MNEMOSYNE_NO_EMBEDDINGS` | unset | Set to `1` to disable dense vector retrieval entirely (falls back to FTS5 keyword-only) |
-
-### Local LLM (Sleep Summarization)
-
-The sleep/consolidation cycle can use a local or remote LLM to summarize grouped working memories before promoting them to episodic memory.
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `MNEMOSYNE_LLM_ENABLED` | `true` | Enable LLM-based summarization during sleep |
-| `MNEMOSYNE_LLM_BASE_URL` | — | OpenAI-compatible API base URL for remote LLM |
-| `MNEMOSYNE_LLM_API_KEY` | — | API key for the remote LLM endpoint |
-| `MNEMOSYNE_LLM_MODEL` | — | Model name for the remote LLM endpoint |
-| `MNEMOSYNE_LLM_MAX_TOKENS` | `2048` | Max output tokens for generated summaries |
-| `MNEMOSYNE_LLM_N_THREADS` | `4` | CPU threads for local LLM inference |
-| `MNEMOSYNE_LLM_N_CTX` | `2048` | Context window size for the local LLM |
-| `MNEMOSYNE_LLM_REPO` | `TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF` | GGUF model repository |
-| `MNEMOSYNE_LLM_FILE` | `tinyllama-1.1b-chat-v1.0.Q4_K_M.gguf` | GGUF model filename |
-| `MNEMOSYNE_SLEEP_PROMPT` | *(built-in)* | Custom consolidation prompt. Supports `{source}`, `{memories}`, `{memory_count}` placeholders. |
-| `MNEMOSYNE_FORCE_LOCAL` | unset | Set to `1` to force local inference even when a remote endpoint is configured |
-
-### Host LLM Backend (Hermes Integration)
-
-When running inside Hermes, the host agent can provide an LLM backend for consolidation — avoiding duplicate API calls.
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `MNEMOSYNE_HOST_LLM_ENABLED` | `false` | Route LLM calls through Hermes' authenticated client |
-| `MNEMOSYNE_HOST_LLM_PROVIDER` | — | Provider name override (e.g. `openai-codex`) |
-| `MNEMOSYNE_HOST_LLM_MODEL` | — | Model name override |
-| `MNEMOSYNE_HOST_LLM_N_CTX` | `32000` | Prompt context budget for host LLM path |
-
-### Multi-Agent Identity
-
-Filter memories by author and channel for multi-agent or multi-tenant deployments.
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `MNEMOSYNE_AUTHOR_ID` | — | Default author identifier |
-| `MNEMOSYNE_AUTHOR_TYPE` | — | Author category: `human`, `agent`, or `system` |
-| `MNEMOSYNE_CHANNEL_ID` | — | Default channel identifier for cross-session memory |
-
-### Auto-Sleep & SHMR
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `MNEMOSYNE_AUTO_SLEEP_ENABLED` | `false` | Enable auto-sleep after memory threshold is exceeded (Hermes integration) |
-| `MNEMOSYNE_AUTO_SLEEP_TIMEOUT` | `5` | Auto-sleep timeout in seconds before forced termination |
-| `MNEMOSYNE_SHMR_BATCH_SIZE` | `50` | SHMR batch size for harmony cycles |
-| `MNEMOSYNE_SHMR_MAX_ITERATIONS` | `3` | SHMR max iterations per cluster |
-| `MNEMOSYNE_SHMR_SIMILARITY_THRESHOLD` | `0.70` | SHMR cosine similarity threshold |
-| `MNEMOSYNE_SHMR_HARMONY_THRESHOLD` | `0.60` | SHMR harmony score threshold |
-| `MNEMOSYNE_SHMR_MODEL` | `""` | Model override for SHMR harmony scoring (empty = default) |
-| `MNEMOSYNE_SHMR_MIN_CLUSTER_SIZE` | `2` | Minimum memories to form a SHMR cluster |
-| `MNEMOSYNE_SHMR_TEMPERATURE` | `0.2` | LLM temperature for SHMR analysis |
-
-### Memory Extraction (MEMORIA)
-
-Structured fact extraction uses a dedicated model and prompt template. These control how MEMORIA extracts facts, timelines, preferences, and instructions from conversation content.
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `MNEMOSYNE_EXTRACTION_MODEL` | `google/gemini-2.5-flash` | Model for structured extraction into MEMORIA tables |
-| `MNEMOSYNE_EXTRACTION_PROMPT` | *(embedded)* | Custom extraction prompt. Overrides the default MEMORIA extraction template. |
-
-### Blob Storage
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `MNEMOSYNE_BLOB_DIR` | `~/.hermes/mnemosyne/blobs` | Root directory for content-addressed blob storage (images, data URIs, binary) |
-
-### Logging & MCP
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `MNEMOSYNE_LOG_TOOLS` | `false` | Opt-in tool call logging in hermes_plugin |
-| `MNEMOSYNE_MCP_BANK` | `default` | Default bank for MCP server |
-| `MNEMOSYNE_MCP_TOKEN` | `""` | Bearer token for non-loopback MCP SSE connections |
-
-## YAML Configuration
-
-Mnemosyne integrates with the Hermes `config.yaml` file (not a standalone `mnemosyne.yaml`). Configure settings under the `memory.mnemosyne` key:
-
-```yaml
-# config.yaml (Hermes project root)
-memory:
-  mnemosyne:
-    # Auto-sleep consolidation
-    auto_sleep: false             # Auto-run sleep() when working memory exceeds threshold
-    sleep_threshold: 50           # Working memory count before auto-sleep triggers
-
-    # Vector configuration
-    vector_type: int8             # Quantization: float32, int8, or bit
-
-    # Multi-tenant & identity
-    profile_isolation: false      # Separate SQLite DB per Hermes profile
-    shared_surface_read: false    # Merge shared-surface results into recall
-
-    # Pattern filtering
-    ignore_patterns:              # Content patterns to skip during remember()
-      - "be ACTIVE"               # Skill refinement boilerplate
-      - "nothing to change"       # No-op responses
-      - "skill.*refined"          # Wildcard match
-```
-
-Config file lookup order (first found wins):
-1. `./config.yaml` (current working directory)
-2. `~/.hermes/mnemosyne/config.yaml` (user-level)
-3. Environment variables (fallback for any setting not in config.yaml)
-
-## Programmatic Configuration
-
-No config file is needed. You can create a `Mnemosyne` instance directly in Python:
-
-```python
-from mnemosyne import Mnemosyne
-
-mem = Mnemosyne(
-    session_id="my-agent",        # Scope working memories to this session
-    db_path="./my-memory.db",     # Custom SQLite database path (optional)
-    bank="work",                  # Named memory bank for isolation
-    author_id="alice",            # Multi-agent identity
-    author_type="human",          # "human", "agent", or "system"
-    channel_id="team-slack",      # Cross-session channel
-)
-```
-
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `session_id` | `str` | `"default"` | Session identifier for scoping working memories |
-| `db_path` | `str \| None` | `None` | Path to the SQLite database file (auto-created if None) |
-| `bank` | `str \| None` | `None` | Named memory bank — each bank gets its own isolated SQLite file under `data_dir/banks/` |
-| `author_id` | `str \| None` | `None` | Author identifier for multi-agent memory scoping |
-| `author_type` | `str \| None` | `None` | Author category: `"human"`, `"agent"`, or `"system"` |
-| `channel_id` | `str \| None` | `None` | Channel identifier for cross-session shared memory |
-
-<Callout type="info" title="Local-first by default">
-Mnemosyne requires no external API keys for basic usage. Embeddings use **BAAI/bge-small-en-v1.5** via fastembed (384-dimensional, local ONNX runtime). The sleep/consolidation cycle defaults to a local TinyLlama GGUF model. You only need API keys if you configure a remote LLM endpoint via `MNEMOSYNE_LLM_BASE_URL` or remote embeddings via `MNEMOSYNE_EMBEDDING_API_URL`.
+<Callout type="info" title="Auto-generated from code">
+This table is generated from `MnemosyneMemoryProvider.get_config_schema()`.
+If the provider adds or changes config keys, this updates automatically.
 </Callout>
+
+| Key | Default | Description |
+|-----|---------|-------------|
+| `auto_sleep` | `False` | Auto-run sleep() when working memory exceeds threshold. Set true to enable. Backward-compatible with MNEMOSYNE_AUTO_SLEEP_ENABLED env var. |
+| `sleep_threshold` | `50` | Working memory count before auto-sleep triggers |
+| `vector_type` | `int8` | Vector storage type (note: not yet wired to BeamMemory at runtime; reserved for future use) Choices: float32 | int8 | bit |
+| `ignore_patterns` | `[]` | Regex patterns to filter from memory storage (one per line in config, or comma-separated). Memories matching any pattern are skipped. |
+| `profile_isolation` | `False` | Enable per-profile memory isolation via Mnemosyne banks. Each Hermes profile gets its own SQLite database under mnemosyne/data/banks/&lt;profile&gt;/. Default false for backward compatibility. |
+| `shared_surface_path` | `data/shared/mnemosyne.db` | SQLite path for shared surface memories. Default is &lt;mnemosyne&gt;/data/shared/mnemosyne.db. |
+| `shared_surface_read` | `False` | When true, mnemosyne_recall merges shared-surface results into private bank recall, tagging each result with its bank ('private' or 'surface'). Default false. |
+| `skip_contexts` | `cron,flush,subagent,background,skill_loop` | Agent contexts where Mnemosyne should skip initialization. Comma-separated list. Defaults to 'cron,flush,subagent,background,skill_loop'. Set to empty string to enable all contexts. Also configurable via MNEMOSYNE_SKIP_CONTEXTS env var. |
+| `sync_roles` | `['user', 'assistant']` | Conversation roles to autosave in sync_turn(). List of role names: 'user', 'assistant'. Default ['user', 'assistant'] saves both. Set to ['user'] for user turns only, or [] to disable conversation autosave entirely. Does not affect explicit mnemosyne_remember calls. Identity signal capture is gated by user sync — excluding 'user' also disables identity extraction. Also configurable via MNEMOSYNE_SYNC_ROLES env var. |
+
+{/* /GENERATED: config-table */}
+| Key | Default | Description |
+|-----|---------|-------------|
+| `auto_sleep` | `False` | Auto-run sleep() when working memory exceeds threshold. Set true to enable. Backward-compatible with MNEMOSYNE_AUTO_SLEEP_ENABLED env var. |
+| `sleep_threshold` | `50` | Working memory count before auto-sleep triggers |
+| `vector_type` | `int8` | Vector storage type (note: not yet wired to BeamMemory at runtime; reserved for future use) Choices: float32 | int8 | bit |
+| `ignore_patterns` | `[]` | Regex patterns to filter from memory storage (one per line in config, or comma-separated). Memories matching any pattern are skipped. |
+| `profile_isolation` | `False` | Enable per-profile memory isolation via Mnemosyne banks. Each Hermes profile gets its own SQLite database under mnemosyne/data/banks/&lt;profile&gt;/. Default false for backward compatibility. |
+| `shared_surface_path` | `data/shared/mnemosyne.db` | SQLite path for shared surface memories. Default is &lt;mnemosyne&gt;/data/shared/mnemosyne.db. |
+| `shared_surface_read` | `False` | When true, mnemosyne_recall merges shared-surface results into private bank recall, tagging each result with its bank ('private' or 'surface'). Default false. |
+| `skip_contexts` | `cron,flush,subagent,background,skill_loop` | Agent contexts where Mnemosyne should skip initialization. Comma-separated list. Defaults to 'cron,flush,subagent,background,skill_loop'. Set to empty string to enable all contexts. Also configurable via MNEMOSYNE_SKIP_CONTEXTS env var. |
+| `sync_roles` | `['user', 'assistant']` | Conversation roles to autosave in sync_turn(). List of role names: 'user', 'assistant'. Default ['user', 'assistant'] saves both. Set to ['user'] for user turns only, or [] to disable conversation autosave entirely. Does not affect explicit mnemosyne_remember calls. Identity signal capture is gated by user sync — excluding 'user' also disables identity extraction. Also configurable via MNEMOSYNE_SYNC_ROLES env var. |
+<!-- GENERATED_CONFIG_TABLE -->
+| `MNEMOSYNE_DB_PATH` | ~/.mnemosyne/mnemosyne.db | Path to the SQLite database |
+| `MNEMOSYNE_EMBEDDING_MODEL` | all-MiniLM-L6-v2 | SentenceTransformer model for vector embeddings |
+| `MNEMOSYNE_EMBEDDING_DEVICE` | cpu | Device for embeddings: cpu, cuda, mps |
+| `MNEMOSYNE_BEAM_ENABLED` | true | Enable BEAM (Budget Elastic Adaptive Memory) tiering |
+| `MNEMOSYNE_BEAM_CPU_THRESHOLD` | 5000 | Max working memories before cold tier promotion |
+| `MNEMOSYNE_BEAM_COLD_THRESHOLD` | 10000 | Max cold memories before frozen tier promotion |
+| `MNEMOSYNE_MCP_TOKEN` |  | Bearer token for MCP server auth (required for remote deployment) |
+| `MNEMOSYNE_MCP_HOST` | 0.0.0.0 | MCP server bind address |
+| `MNEMOSYNE_MCP_PORT` | 4321 | MCP server port |
+<!-- /GENERATED_CONFIG_TABLE -->
+| `MNEMOSYNE_DB_PATH` | ~/.mnemosyne/mnemosyne.db | Path to the SQLite database |
+| `MNEMOSYNE_EMBEDDING_MODEL` | all-MiniLM-L6-v2 | SentenceTransformer model for vector embeddings |
+| `MNEMOSYNE_EMBEDDING_DEVICE` | cpu | Device for embeddings: cpu, cuda, mps |
+| `MNEMOSYNE_BEAM_ENABLED` | true | Enable BEAM (Budget Elastic Adaptive Memory) tiering |
+| `MNEMOSYNE_BEAM_CPU_THRESHOLD` | 5000 | Max working memories before cold tier promotion |
+| `MNEMOSYNE_BEAM_COLD_THRESHOLD` | 10000 | Max cold memories before frozen tier promotion |
+| `MNEMOSYNE_MCP_TOKEN` |  | Bearer token for MCP server auth (required for remote deployment) |
+| `MNEMOSYNE_MCP_HOST` | 0.0.0.0 | MCP server bind address |
+| `MNEMOSYNE_MCP_PORT` | 4321 | MCP server port |
+<!-- /GENERATED_CONFIG_TABLE -->
+| `MNEMOSYNE_DB_PATH` | ~/.mnemosyne/mnemosyne.db | Path to the SQLite database |
+| `MNEMOSYNE_EMBEDDING_MODEL` | all-MiniLM-L6-v2 | SentenceTransformer model for vector embeddings |
+| `MNEMOSYNE_EMBEDDING_DEVICE` | cpu | Device for embeddings: cpu, cuda, mps |
+| `MNEMOSYNE_BEAM_ENABLED` | true | Enable BEAM (Budget Elastic Adaptive Memory) tiering |
+| `MNEMOSYNE_BEAM_CPU_THRESHOLD` | 5000 | Max working memories before cold tier promotion |
+| `MNEMOSYNE_BEAM_COLD_THRESHOLD` | 10000 | Max cold memories before frozen tier promotion |
+| `MNEMOSYNE_MCP_TOKEN` |  | Bearer token for MCP server auth (required for remote deployment) |
+| `MNEMOSYNE_MCP_HOST` | 0.0.0.0 | MCP server bind address |
+| `MNEMOSYNE_MCP_PORT` | 4321 | MCP server port |
+<!-- /GENERATED_CONFIG_TABLE -->
