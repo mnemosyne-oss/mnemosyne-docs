@@ -19,7 +19,7 @@ During each consolidation cycle, Mnemosyne:
 
 1. **Scans** Working Memory for entries older than TTL/2 (12 hours by default)
 2. **Groups** candidates by `source`
-3. **Summarizes** each group via local LLM (TinyLlama) or AAAK text substitution
+3. **Summarizes** each group via local LLM (MiniCPM5-1B GGUF) or AAAK text substitution
 4. **Promotes** summaries to Episodic Memory (with `summary_of` tracking originals)
 5. **Evicts** original Working Memory entries (MEMORIA `memoria_*` tables persist independently)
 
@@ -49,7 +49,7 @@ flowchart LR
 3. **Summarize** each group using the LLM fallback chain:
    - **Host backend** (Hermes auxiliary client) — when `MNEMOSYNE_HOST_LLM_ENABLED=true`
    - **Remote OpenAI-compatible API** — if `MNEMOSYNE_LLM_BASE_URL` is set
-   - **Local LLM** (TinyLlama GGUF) — offline, no API key
+   - **Local LLM** (MiniCPM5-1B GGUF) — offline, no API key
    - **AAAK encoding** — keyword-based text substitution as final fallback
 4. **Promote**: Insert summary into `episodic_memory` with `summary_of` referencing the original IDs
 5. **Evict**: Delete the original entries from `working_memory`
