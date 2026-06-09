@@ -139,6 +139,7 @@ const navigation: NavSection[] = [
       { title: "From Mem0", href: "/migration/from-mem0" },
       { title: "From Letta", href: "/migration/from-letta" },
       { title: "From Zep", href: "/migration/from-zep" },
+      { title: "From Holographic", href: "/migration/from-holographic", badge: "new" },
     ],
   },
   {

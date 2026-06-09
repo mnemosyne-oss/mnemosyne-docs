@@ -1,11 +1,11 @@
 1:"$Sreact.fragment"
-2:I[11276,["/_next/static/chunks/076f1ogf-il.v.js","/_next/static/chunks/11u.26kh8kw...js","/_next/static/chunks/09-wudx97fkxd.js","/_next/static/chunks/0b57chlhtixj9.js","/_next/static/chunks/01o_465-h6ryu.js"],"AnchorHeading"]
-3:I[47747,["/_next/static/chunks/076f1ogf-il.v.js","/_next/static/chunks/11u.26kh8kw...js","/_next/static/chunks/09-wudx97fkxd.js","/_next/static/chunks/0b57chlhtixj9.js","/_next/static/chunks/01o_465-h6ryu.js"],"CodeBlock"]
-4:I[81957,["/_next/static/chunks/076f1ogf-il.v.js","/_next/static/chunks/11u.26kh8kw...js","/_next/static/chunks/09-wudx97fkxd.js","/_next/static/chunks/0b57chlhtixj9.js","/_next/static/chunks/01o_465-h6ryu.js"],"MermaidDiagram"]
-f:I[32504,["/_next/static/chunks/076f1ogf-il.v.js","/_next/static/chunks/11u.26kh8kw...js","/_next/static/chunks/09-wudx97fkxd.js","/_next/static/chunks/0b57chlhtixj9.js","/_next/static/chunks/01o_465-h6ryu.js"],"default"]
+2:I[11276,["/_next/static/chunks/076f1ogf-il.v.js","/_next/static/chunks/11u.26kh8kw...js","/_next/static/chunks/09-wudx97fkxd.js","/_next/static/chunks/0xzy0jq~7l6bc.js","/_next/static/chunks/01o_465-h6ryu.js"],"AnchorHeading"]
+3:I[47747,["/_next/static/chunks/076f1ogf-il.v.js","/_next/static/chunks/11u.26kh8kw...js","/_next/static/chunks/09-wudx97fkxd.js","/_next/static/chunks/0xzy0jq~7l6bc.js","/_next/static/chunks/01o_465-h6ryu.js"],"CodeBlock"]
+4:I[81957,["/_next/static/chunks/076f1ogf-il.v.js","/_next/static/chunks/11u.26kh8kw...js","/_next/static/chunks/09-wudx97fkxd.js","/_next/static/chunks/0xzy0jq~7l6bc.js","/_next/static/chunks/01o_465-h6ryu.js"],"MermaidDiagram"]
+f:I[32504,["/_next/static/chunks/076f1ogf-il.v.js","/_next/static/chunks/11u.26kh8kw...js","/_next/static/chunks/09-wudx97fkxd.js","/_next/static/chunks/0xzy0jq~7l6bc.js","/_next/static/chunks/01o_465-h6ryu.js"],"default"]
 10:I[10752,["/_next/static/chunks/076f1ogf-il.v.js","/_next/static/chunks/11u.26kh8kw...js"],"OutletBoundary"]
 11:"$Sreact.suspense"
-5:T18c6,{
+5:T1f43,{
 "name": "mnemosyne_remember",
 "description": "Store information in long-term memory. Use for facts, preferences, decisions, and observations.",
 "parameters": {
@@ -31,7 +31,7 @@ f:I[32504,["/_next/static/chunks/076f1ogf-il.v.js","/_next/static/chunks/11u.26k
   "required": ["query"],
   "properties": {
     "query": { "type": "string", "description": "Natural language search query" },
-    "top_k": { "type": "integer", "default": 5, "description": "Max memories to return" },
+    "limit": { "type": "integer", "default": 5, "description": "Max memories to return" },
     "author_id": { "type": "string", "description": "Filter by author" },
     "author_type": { "type": "string", "enum": ["human", "agent", "system"] },
     "channel_id": { "type": "string", "description": "Filter by channel" },
@@ -90,7 +90,8 @@ f:I[32504,["/_next/static/chunks/076f1ogf-il.v.js","/_next/static/chunks/11u.26k
 "parameters": {
   "type": "object",
   "properties": {
-    "dry_run": { "type": "boolean", "description": "If true, preview what would happen without making changes" }
+    "dry_run": { "type": "boolean", "description": "If true, preview what would happen without making changes" },
+    "all_sessions": { "type": "boolean", "default": false, "description": "If true, run consolidation across all sessions" }
   }
 }
 }
@@ -196,7 +197,37 @@ f:I[32504,["/_next/static/chunks/076f1ogf-il.v.js","/_next/static/chunks/11u.26k
   "properties": {}
 }
 }
-0:{"rsc":["$","$1","c",{"children":[[["$","$L2",null,{"as":"h1","children":"Hermes Plugin"}],"\n",["$","p",null,{"children":"First-class integration with the Hermes agent framework."}],"\n",["$","$L2",null,{"as":"h2","children":"Installation"}],"\n",["$","p",null,{"children":[["$","strong",null,{"children":"Do NOT install inside Hermes' managed venv"}]," — ",["$","code",null,{"children":"hermes update"}]," rebuilds\nthe venv and wipes extra packages. Use pipx (recommended) or a dedicated\nvirtualenv."]}],"\n",["$","$L3",null,{"code":"# Recommended: survives Hermes updates\npipx install mnemosyne-hermes\nhermes config set memory.provider mnemosyne\nhermes gateway restart\n\n# For speed with pipx\nexport PIPX_DEFAULT_BACKEND=uv\npipx install mnemosyne-hermes\n\n# Upgrade\npipx upgrade mnemosyne-hermes\nhermes gateway restart\n","language":"bash"}],"\n",["$","$L2",null,{"as":"h3","children":"Fallback: standalone venv"}],"\n",["$","$L3",null,{"code":"python3 -m venv ~/.hermes/mnemosyne-venv\n~/.hermes/mnemosyne-venv/bin/pip install mnemosyne-hermes\n~/.hermes/mnemosyne-venv/bin/mnemosyne-hermes install --force\nhermes config set memory.provider mnemosyne\nhermes gateway restart\n","language":"bash"}],"\n",["$","$L2",null,{"as":"h3","children":"Disable legacy memory"}],"\n",["$","p",null,{"children":"When Mnemosyne is active, disable Hermes' built-in MEMORY.md/USER.md storage\nto avoid duplication and token waste."}],"\n",["$","p",null,{"children":[["$","strong",null,{"children":["DO NOT run ",["$","code",null,{"children":"hermes tools disable memory"}]]}]," — this kills Mnemosyne's tool\nsurface along with the built-in memory. The ",["$","code",null,{"children":"\"memory\""}]," toolset key gates\nboth the built-in tool AND memory provider tools (source: ",["$","code",null,{"children":"agent/agent_init.py:1163-1172"}],")."]}],"\n",["$","p",null,{"children":["Instead, add to ",["$","code",null,{"children":"~/.hermes/config.yaml"}],":"]}],"\n",["$","$L3",null,{"code":"memory:\nenabled: false\nuser_profile_enabled: false\nprovider: mnemosyne\n","language":"yaml"}],"\n",["$","p",null,{"children":["The ",["$","code",null,{"children":"enabled: false"}]," + ",["$","code",null,{"children":"user_profile_enabled: false"}]," disables\nthe built-in file-based memory store while keeping the ",["$","code",null,{"children":"\"memory\""}]," toolset\nactive so Mnemosyne's 17 tools surface correctly."]}],"\n",["$","$L2",null,{"as":"h2","children":"Auto-Context Injection"}],"\n",["$","p",null,{"children":"When enabled, Mnemosyne automatically injects relevant memories into agent context:"}],"\n",["$","$L4",null,{"chart":"\nflowchart LR\n  U[User Input] -->|query| M[Mnemosyne]\n  M -->|recall| C[Context Assembly]\n  C -->|inject| A[Agent Prompt]\n  A -->|respond| R[Response]\n  R -->|remember| M\n"}],"\n",["$","$L2",null,{"as":"h2","children":"Plugin Hooks"}],"\n",["$","p",null,{"children":"Mnemosyne registers the following Hermes hooks:"}],"\n",["$","table",null,{"children":[["$","thead",null,{"children":["$","tr",null,{"children":[["$","th",null,{"children":"Hook"}],["$","th",null,{"children":"Timing"}],["$","th",null,{"children":"Action"}]]}]}],["$","tbody",null,{"children":[["$","tr",null,{"children":[["$","td",null,{"children":["$","code",null,{"children":"pre_llm_call"}]}],["$","td",null,{"children":"Before LLM call"}],["$","td",null,{"children":"Inject relevant memories"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":["$","code",null,{"children":"on_session_start"}]}],["$","td",null,{"children":"Session start"}],["$","td",null,{"children":"Store conversation"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":["$","code",null,{"children":"post_tool_call"}]}],["$","td",null,{"children":"After tool execution"}],["$","td",null,{"children":"Store tool results"}]]}]]}]]}],"\n",["$","$L2",null,{"as":"h2","children":"Tool Schema"}],"\n",["$","p",null,{"children":"Mnemosyne exposes these tools to agents:"}],"\n",["$","$L3",null,{"code":"$5","language":"json"}],"\n","$L6","\n","$L7","\n","$L8","\n","$L9","\n","$La","\n","$Lb","\n","$Lc"],["$Ld"],"$Le"]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"bLdIFQuLJKVWSPykPPUJl"}
+
+{
+"name": "mnemosyne_graph_query",
+"description": "Traverse the memory graph to find memories related to a seed memory. Uses multi-hop BFS through graph_edges with optional edge_type and min_weight filtering.",
+"parameters": {
+  "type": "object",
+  "properties": {
+    "seed_memory_id": { "type": "string", "description": "Memory ID to start traversal from" },
+    "max_hops": { "type": "integer", "description": "Maximum traversal depth (default: 2)", "default": 2 },
+    "edge_type": { "type": "string", "description": "Filter by edge type (empty = all types, e.g. 'ctx', 'rel', 'syn', 'references', 'caused', 'supersedes')", "default": "" },
+    "min_weight": { "type": "number", "description": "Minimum edge weight threshold (0.0 to 1.0, default: 0.0 = no filter)", "default": 0.0 }
+  },
+  "required": ["seed_memory_id"]
+}
+}
+
+{
+"name": "mnemosyne_graph_link",
+"description": "Declare a semantic edge between two memories in the graph. Use this to explicitly link related memories so graph traversal finds them.",
+"parameters": {
+  "type": "object",
+  "required": ["source_id", "target_id", "relationship"],
+  "properties": {
+    "source_id": { "type": "string", "description": "Source memory ID" },
+    "target_id": { "type": "string", "description": "Target memory ID" },
+    "relationship": { "type": "string", "description": "Relationship label (e.g. 'references', 'caused', 'supersedes', 'related_to')" },
+    "weight": { "type": "number", "description": "Edge weight from 0.0 to 1.0 (default: 0.5)", "default": 0.5 }
+  }
+}
+}
+0:{"rsc":["$","$1","c",{"children":[[["$","$L2",null,{"as":"h1","children":"Hermes Plugin"}],"\n",["$","p",null,{"children":"First-class integration with the Hermes agent framework."}],"\n",["$","$L2",null,{"as":"h2","children":"Installation"}],"\n",["$","p",null,{"children":[["$","strong",null,{"children":"Do NOT install inside Hermes' managed venv"}]," — ",["$","code",null,{"children":"hermes update"}]," rebuilds\nthe venv and wipes extra packages. Use pipx (recommended) or a dedicated\nvirtualenv."]}],"\n",["$","$L3",null,{"code":"# Recommended: survives Hermes updates\npipx install mnemosyne-hermes\nhermes config set memory.provider mnemosyne\nhermes gateway restart\n\n# For speed with pipx\nexport PIPX_DEFAULT_BACKEND=uv\npipx install mnemosyne-hermes\n\n# Upgrade\npipx upgrade mnemosyne-hermes\nhermes gateway restart\n","language":"bash"}],"\n",["$","$L2",null,{"as":"h3","children":"Fallback: standalone venv"}],"\n",["$","$L3",null,{"code":"python3 -m venv ~/.hermes/mnemosyne-venv\n~/.hermes/mnemosyne-venv/bin/pip install mnemosyne-hermes\n~/.hermes/mnemosyne-venv/bin/mnemosyne-hermes install --force\nhermes config set memory.provider mnemosyne\nhermes gateway restart\n","language":"bash"}],"\n",["$","$L2",null,{"as":"h3","children":"Disable legacy memory"}],"\n",["$","p",null,{"children":"When Mnemosyne is active, disable Hermes' built-in MEMORY.md/USER.md storage\nto avoid duplication and token waste."}],"\n",["$","p",null,{"children":[["$","strong",null,{"children":["DO NOT run ",["$","code",null,{"children":"hermes tools disable memory"}]]}]," — this kills Mnemosyne's tool\nsurface along with the built-in memory. The ",["$","code",null,{"children":"\"memory\""}]," toolset key gates\nboth the built-in tool AND memory provider tools (source: ",["$","code",null,{"children":"agent/agent_init.py:1163-1172"}],")."]}],"\n",["$","p",null,{"children":["Instead, add to ",["$","code",null,{"children":"~/.hermes/config.yaml"}],":"]}],"\n",["$","$L3",null,{"code":"memory:\nenabled: false\nuser_profile_enabled: false\nprovider: mnemosyne\n","language":"yaml"}],"\n",["$","p",null,{"children":["The ",["$","code",null,{"children":"enabled: false"}]," + ",["$","code",null,{"children":"user_profile_enabled: false"}]," disables\nthe built-in file-based memory store while keeping the ",["$","code",null,{"children":"\"memory\""}]," toolset\nactive so Mnemosyne's 17 tools surface correctly."]}],"\n",["$","$L2",null,{"as":"h2","children":"Auto-Context Injection"}],"\n",["$","p",null,{"children":"When enabled, Mnemosyne automatically injects relevant memories into agent context:"}],"\n",["$","$L4",null,{"chart":"\nflowchart LR\n  U[User Input] -->|query| M[Mnemosyne]\n  M -->|recall| C[Context Assembly]\n  C -->|inject| A[Agent Prompt]\n  A -->|respond| R[Response]\n  R -->|remember| M\n"}],"\n",["$","$L2",null,{"as":"h2","children":"Plugin Hooks"}],"\n",["$","p",null,{"children":"Mnemosyne registers the following Hermes hooks:"}],"\n",["$","table",null,{"children":[["$","thead",null,{"children":["$","tr",null,{"children":[["$","th",null,{"children":"Hook"}],["$","th",null,{"children":"Timing"}],["$","th",null,{"children":"Action"}]]}]}],["$","tbody",null,{"children":[["$","tr",null,{"children":[["$","td",null,{"children":["$","code",null,{"children":"pre_llm_call"}]}],["$","td",null,{"children":"Before LLM call"}],["$","td",null,{"children":"Inject relevant memories"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":["$","code",null,{"children":"on_session_start"}]}],["$","td",null,{"children":"Session start"}],["$","td",null,{"children":"Store conversation"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":["$","code",null,{"children":"post_tool_call"}]}],["$","td",null,{"children":"After tool execution"}],["$","td",null,{"children":"Store tool results"}]]}]]}]]}],"\n",["$","$L2",null,{"as":"h2","children":"Tool Schema"}],"\n",["$","p",null,{"children":"Mnemosyne exposes these tools to agents:"}],"\n",["$","$L3",null,{"code":"$5","language":"json"}],"\n","$L6","\n","$L7","\n","$L8","\n","$L9","\n","$La","\n","$Lb","\n","$Lc"],["$Ld"],"$Le"]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"M3VECoqh50DFPrq41-vUK"}
 6:["$","$L2",null,{"as":"h2","children":"Troubleshooting"}]
 7:["$","$L2",null,{"as":"h3","children":"Plugin not loading"}]
 8:["$","$L3",null,{"code":"hermes plugins list\n# Verify mnemosyne appears\n\nhermes mnemosyne stats\n# Check memory statistics\n","language":"bash"}]

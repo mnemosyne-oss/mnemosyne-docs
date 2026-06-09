@@ -13,7 +13,7 @@ export const metadata = {
 
 Move your memories out of other providers and into Mnemosyne with a single command.
 
-Mnemosyne v3.4.0 ships importers for 7 major memory providers. Each importer handles extraction, field mapping, and data import end to end. You don't need to write export scripts or manually map fields.
+Mnemosyne v3.4.0 ships importers for 8 major memory providers. Each importer handles extraction, field mapping, and data import end to end. You don't need to write export scripts or manually map fields.
 
 ## Supported Providers
 
@@ -26,6 +26,7 @@ Mnemosyne v3.4.0 ships importers for 7 major memory providers. Each importer han
 | **Honcho** | SDK (Workspace/Peer/Session/Message model) | `--from honcho` |
 | **SuperMemory** | REST API | `--from supermemory --api-key sk-xxx` |
 | **Hindsight** | JSON export file | `--from hindsight --file ./export.json` |
+| **Holographic** | Local SQLite DB | `--from holographic [--db-path ...]` |
 
 For providers that do not expose a clean API, there is an agentic fallback. Mnemosyne generates the exact migration script or AI agent prompt you need.
 
@@ -92,3 +93,4 @@ hermes mnemosyne import --from zep --output-script ./migrate_zep.py
 - [From Mem0](/migration/from-mem0) — Cloud + self-hosted, SDK pagination
 - [From Letta](/migration/from-letta) — AgentFile, SDK, offline
 - [From Zep](/migration/from-zep) — Session-by-session, temporal graph
+- [From Holographic](/migration/from-holographic) — Local SQLite, trust scores, entity links
