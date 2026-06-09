@@ -80,7 +80,7 @@ There is no equivalent in Mnemosyne. Mnemosyne integrates via explicit tool call
 | **Code changes required** | Add memory calls to your agent loop | Zero code changes to existing LLM calls |
 | **Hermes Agent** | Native (in-process, 15 tools, 3 hooks) | Via HTTP proxy (no native plugin) |
 | **OpenClaw** | Planned (adapter not yet built) | Via HTTP proxy |
-| **MCP** | 6 tools, stdio + SSE | Custom HTTP API via Memory Router |
+| **MCP** | 23 tools, stdio + SSE | Custom HTTP API via Memory Router |
 
 > **Who this matters to:** If you have an existing app making OpenAI API calls and you want to add memory without touching your codebase, the Memory Router is uniquely compelling. If you're building an agent from scratch and want fine-grained control over what gets remembered and how, Mnemosyne's explicit API gives you more precision.
 
@@ -129,7 +129,7 @@ This is where the two products diverge most dramatically.
 | **GitHub stars** | Newer project, growing | ~22.4K — strong consumer developer community |
 | **License** | MIT | Proprietary (source-available for client SDKs) |
 | **Documentation** | Full docs (this site) + API reference | docs.supermemory.ai, interactive playground |
-| **Integrations** | Hermes Agent (native, 15 tools, 3 hooks), MCP (6 tools, stdio + SSE), OpenClaw (planned) | Memory Router (OpenAI-compatible proxy), Notion, Slack, Google Drive connectors |
+| **Integrations** | Hermes Agent (native, 15 tools, 3 hooks), MCP (23 tools, stdio + SSE), OpenClaw (planned) | Memory Router (OpenAI-compatible proxy), Notion, Slack, Google Drive connectors |
 | **SDK languages** | Python | TypeScript (primary), REST API |
 | **Target audience** | Developers building agents, local-first enthusiasts | Consumer app developers, TypeScript ecosystem, no-code/low-code users |
 | **Academic depth** | BEAM: published architecture with formal memory model | Less academic publication; product-focused engineering |

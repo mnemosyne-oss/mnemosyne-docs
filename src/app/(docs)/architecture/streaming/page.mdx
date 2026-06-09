@@ -22,7 +22,7 @@ stream = mem.stream
 mem.remember("test memory")
 
 # Pull via callback
-stream.on(EventType.MEMORY_STORED, lambda event: print(f"Event: {event.event_type}"))
+stream.on(EventType.MEMORY_ADDED, lambda event: print(f"Event: {event.event_type}"))
 
 # Pull via iterator
 stream.listen()
@@ -37,11 +37,11 @@ mem_b = Mnemosyne(session_id="agent-b")
 
 # Compute and apply delta
 delta = mem_a.delta_sync.compute_delta(peer_id="agent-b")
-mem_b.delta_sync.apply_delta(delta)
+mem_b.delta_sync.apply_delta("agent-a", delta)
 
 # Bidirectional sync
 mem_a.delta_sync.sync_to("agent-b")
-mem_a.delta_sync.sync_from(peer_id="agent-b", delta=delta, table="memory")
+mem_a.delta_sync.sync_from(peer_id="agent-b", delta=delta, table="working_memory")
 `} language="python" />
 
 <Callout type="info">

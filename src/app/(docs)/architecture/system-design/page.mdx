@@ -82,7 +82,7 @@ Mnemosyne is designed for single-node deployments:
 - **Episodic Memory**: SQLite with sqlite-vec extension for vector search
 - **TripleStore (Knowledge Graph)**: Subject-predicate-object triples stored in SQLite (via separate `TripleStore` class)
 
-For multi-agent deployments, each agent maintains its own database instance. There is no built-in synchronization or shared-memory mechanism between instances.
+For multi-agent deployments, each agent maintains its own database instance. Built-in `DeltaSync` provides incremental synchronization with checkpointing — use `sync_to()` and `sync_from()` for bidirectional sync between instances.
 
 <Callout type="warning" title="Not a Distributed System">
 Mnemosyne does not support distributed or clustered deployments. For high-availability requirements, use SQLite replication (Litestream) or export/import between instances.
