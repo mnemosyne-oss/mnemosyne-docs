@@ -59,10 +59,10 @@ Mnemosyne ships optional dependency groups you can install as needed:
 
 | Extra | Command | What it adds |
 |-------|---------|--------------|
-| Core (not recommended) | `pip install mnemosyne-memory` | Base package with FTS5 keyword search only |
-| **Embeddings** | `pip install mnemosyne-memory[embeddings]` | **+ fastembed for semantic vector search** |
-| LLM consolidation | `pip install mnemosyne-memory[llm]` | + ctransformers for local LLM sleep consolidation |
-| Everything | `pip install mnemosyne-memory[all]` | All optional dependencies |
+| Core (bare install) | `pip install mnemosyne-memory` | Base package with FTS5 keyword search only. Best for low-resource systems (Raspberry Pi, 1 GB VPS) or when using a remote embedding API. ~50 MB RAM. |
+| **Embeddings** | `pip install mnemosyne-memory[embeddings]` | **+ fastembed for semantic vector search**. Adds ~800 MB RAM. Best for single-user desktop agents. |
+| LLM consolidation | `pip install mnemosyne-memory[llm]` | + ctransformers for local LLM sleep consolidation. |
+| Everything | `pip install mnemosyne-memory[all]` | All optional dependencies. ~1.5 GB RAM. Full local embeddings + local LLM. Recommended for systems with 8 GB+ RAM. |
 
 ## Optional: sqlite-vec for Performance
 
