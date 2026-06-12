@@ -1,12 +1,12 @@
 # Installation
 
-Mnemosyne v3.4.1 is a standalone Python package — no agent framework required. This page walks through every step from prerequisites to verification.
+Mnemosyne v3.6.0 is a standalone Python package — no agent framework required. This page walks through every step from prerequisites to verification.
 
 ## Prerequisites
 
 Before installing Mnemosyne, make sure you have:
 
-- **Python 3.9 or higher** — check with `python --version`
+- **Python 3.10 or higher** — check with `python --version`
 - **pip** or **uv** package manager available in your shell
 
 ## Quick Install
@@ -66,7 +66,7 @@ Mnemosyne ships optional dependency groups you can install as needed:
 
 ## Optional: sqlite-vec for Performance
 
-`sqlite-vec` is an **optional performance boost** for large datasets (100K+ memories). It moves vector similarity search into native C code inside SQLite. Without it, Mnemosyne uses an in-memory numpy fallback that works fine for most use cases.
+`sqlite-vec` is an **included by default. It moves vector similarity search into native C code inside SQLite. Without it, Mnemosyne uses an in-memory numpy fallback that works fine for most use cases.
 
 ```bash
 pip install sqlite-vec

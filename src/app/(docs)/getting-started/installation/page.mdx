@@ -1,12 +1,12 @@
 # Installation
 
-Mnemosyne v3.4.1 is a standalone Python package — no agent framework required. This page walks through every step from prerequisites to verification.
+Mnemosyne v3.6.0 is a standalone Python package — no agent framework required. This page walks through every step from prerequisites to verification.
 
 ## Prerequisites
 
 Before installing Mnemosyne, make sure you have:
 
-- **Python 3.9 or higher** — check with `python --version`
+- **Python 3.10 or higher** — check with `python --version`
 - **pip** or **uv** package manager available in your shell
 
 ## Quick Install
@@ -30,7 +30,7 @@ uv pip install mnemosyne-memory[all]
 
 ```bash
 python -c "import mnemosyne; print(mnemosyne.__version__)"
-# Should print: 3.5.0
+# Should print: 3.4.0
 ```
 
 **Upgrade:**
@@ -59,14 +59,14 @@ Mnemosyne ships optional dependency groups you can install as needed:
 
 | Extra | Command | What it adds |
 |-------|---------|--------------|
-| Core (FTS5 only) | `pip install mnemosyne-memory` | Base package with FTS5 keyword search only |
-| **Embeddings** | `pip install mnemosyne-memory[embeddings]` | **+ fastembed for semantic vector search** |
-| LLM consolidation | `pip install mnemosyne-memory[llm]` | + ctransformers for local LLM sleep consolidation |
-| Everything | `pip install mnemosyne-memory[all]` | All optional dependencies |
+| Core (bare install) | `pip install mnemosyne-memory` | Base package with FTS5 keyword search only. Best for low-resource systems (Raspberry Pi, 1 GB VPS) or when using a remote embedding API. ~50 MB RAM. |
+| **Embeddings** | `pip install mnemosyne-memory[embeddings]` | **+ fastembed for semantic vector search**. Adds ~800 MB RAM. Best for single-user desktop agents. |
+| LLM consolidation | `pip install mnemosyne-memory[llm]` | + ctransformers for local LLM sleep consolidation. |
+| Everything | `pip install mnemosyne-memory[all]` | All optional dependencies. ~1.5 GB RAM. Full local embeddings + local LLM. Recommended for systems with 8 GB+ RAM. |
 
 ## Optional: sqlite-vec for Performance
 
-`sqlite-vec` is an **optional performance boost** for large datasets (100K+ memories). It moves vector similarity search into native C code inside SQLite. Without it, Mnemosyne uses an in-memory numpy fallback that works fine for most use cases.
+`sqlite-vec` is an **included by default. It moves vector similarity search into native C code inside SQLite. Without it, Mnemosyne uses an in-memory numpy fallback that works fine for most use cases.
 
 ```bash
 pip install sqlite-vec

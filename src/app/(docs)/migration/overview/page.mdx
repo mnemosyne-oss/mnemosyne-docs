@@ -13,7 +13,7 @@ export const metadata = {
 
 Move your memories out of other providers and into Mnemosyne with a single command.
 
-Mnemosyne v3.4.0 ships importers for 8 major memory providers. Each importer handles extraction, field mapping, and data import end to end. You don't need to write export scripts or manually map fields.
+Mnemosyne v3.6.0 ships importers for 8 major memory providers. Each importer handles extraction, field mapping, and data import end to end. You don't need to write export scripts or manually map fields.
 
 ## Supported Providers
 
@@ -26,7 +26,7 @@ Mnemosyne v3.4.0 ships importers for 8 major memory providers. Each importer han
 | **Honcho** | SDK (Workspace/Peer/Session/Message model) | `--from honcho` |
 | **SuperMemory** | REST API | `--from supermemory --api-key sk-xxx` |
 | **Hindsight** | JSON export file | `--from hindsight --file ./export.json` |
-| **Holographic** | Local SQLite DB | `--from holographic [--db-path ...]` |
+| **Holographic** | Local SQLite DB | `--from holographic [--db  ...]` |
 
 For providers that do not expose a clean API, there is an agentic fallback. Mnemosyne generates the exact migration script or AI agent prompt you need.
 

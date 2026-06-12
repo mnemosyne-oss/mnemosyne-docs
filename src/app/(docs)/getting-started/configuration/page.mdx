@@ -33,19 +33,20 @@ Mnemosyne is configured entirely through environment variables. No config files,
 | `MNEMOSYNE_EMBEDDING_MODEL` | BAAI/bge-small-en-v1.5 | fastembed model for vector embeddings |
 | `MNEMOSYNE_EMBEDDING_DIM` | 384 | Override embedding vector dimension |
 | `MNEMOSYNE_EMBEDDING_API_KEY` |  | API key for cloud embedding provider |
-| `MNEMOSYNE_EMBEDDING_API_URL` |  | API endpoint for cloud embeddings |
+| `MNEMOSYNE_EMBEDDING_API_URL` | https://openrouter.ai/api/v1 | API endpoint for cloud embeddings |
 | `MNEMOSYNE_NO_EMBEDDINGS` | false | Disable dense vector retrieval entirely |
 | `MNEMOSYNE_EMBEDDINGS_VIA_API` | false | Force cloud API mode for embeddings |
 | `MNEMOSYNE_WM_MAX_ITEMS` | 10000 | Maximum items in working memory before eviction |
 | `MNEMOSYNE_WM_TTL_HOURS` | 24 | Hours before working memory entries expire |
-| `MNEMOSYNE_EP_LIMIT` | 10 | Max episodic memories returned per recall |
-| `MNEMOSYNE_SLEEP_BATCH` | 50 | Batch size for sleep consolidation |
-| `MNEMOSYNE_VEC_TYPE` | float32 | Vector storage format (float32, float16, binary) |
+| `MNEMOSYNE_EP_LIMIT` | 50000 | Max episodic memories returned per recall |
+| `MNEMOSYNE_SLEEP_BATCH` | 5000 | Batch size for sleep consolidation |
+| `MNEMOSYNE_VEC_TYPE` | int8 | Vector storage format (int8, float32, float16, binary) |
 | `MNEMOSYNE_VEC_WEIGHT` | 0.5 | Vector similarity weight in hybrid ranking |
 | `MNEMOSYNE_FTS_WEIGHT` | 0.3 | Full-text search weight in hybrid ranking |
 | `MNEMOSYNE_IMPORTANCE_WEIGHT` | 0.2 | Importance score weight in hybrid ranking |
 | `MNEMOSYNE_MCP_TOKEN` |  | Bearer token for MCP server auth (required for remote deployment) |
-| `MNEMOSYNE_AUTO_SLEEP_ENABLED` | true | Enable automatic sleep consolidation (Hermes provider) |
+| `MNEMOSYNE_AUTO_SLEEP_ENABLED` | false | Enable automatic sleep consolidation (Hermes provider, default off) |
 | `MNEMOSYNE_SYNC_ROLES` | user,assistant | Conversation roles to sync into memory |
 | `MNEMOSYNE_SKIP_CONTEXTS` |  | Comma-separated context names to skip |
+| `MNEMOSYNE_EMBEDDING_FALLBACK_MODEL` |  | Local fastembed model for API fallback (v3.6.0) |
 {/* /GENERATED_CONFIG_TABLE */}

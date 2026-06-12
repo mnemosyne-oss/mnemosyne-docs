@@ -13,7 +13,7 @@ export const metadata = {
 
 An honest, technical comparison for users running memory systems locally with Hermes Agent and OpenClaw.
 
-**Last updated:** 2026-06-08 · Mnemosyne v3.4.0
+**Last updated:** 2026-06-08 · Mnemosyne v3.6.0
 
 > **TL;DR:** They are not direct competitors. Hindsight is a **memory engine** with sophisticated NLP and multi-signal retrieval. Mnemosyne is a **memory layer** optimized for simplicity, speed, and single-machine deployments. Choose based on what you actually need.
 
@@ -104,7 +104,7 @@ Additional: **TripleStore** — temporal knowledge graph with `valid_from`/`vali
 
 ### MCP (Model Context Protocol) — v2
 
-Mnemosyne provides an MCP server with **23 tools** and **2 transports**:
+Mnemosyne provides an MCP server with **25 tools** and **2 transports**:
 
 | Tool | Description |
 |------|-------------|
@@ -135,7 +135,7 @@ Custom HTTP API on port 8888. Native `openclaw-hindsight` plugin exists for Open
 |--|-----------|-----------|
 | **Hermes** | Native (in-process, no serialization) | HTTP client |
 | **OpenClaw** | Planned (adapter not yet built) | Native plugin exists |
-| **MCP** | 23 tools, stdio + SSE | Custom HTTP API |
+| **MCP** | 25 tools, stdio + SSE | Custom HTTP API |
 | **Cross-machine** | Export/import JSON only | Any agent with HTTP access to port 8888 |
 
 ---
@@ -232,4 +232,4 @@ Custom HTTP API on port 8888. Native `openclaw-hindsight` plugin exists for Open
 
 ---
 
-*This page was rewritten for v3.4.0 after community feedback about inaccurate comparisons. Every feature listed for Mnemosyne has been verified against the source code. If anything here is wrong, please open an issue — we'll fix it.*
+*This page was rewritten for v3.6.0 after community feedback about inaccurate comparisons. Every feature listed for Mnemosyne has been verified against the source code. If anything here is wrong, please open an issue — we'll fix it.*

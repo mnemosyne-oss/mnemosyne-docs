@@ -1,13 +1,13 @@
 ---
 title: "MCP Tool Schema"
-version: 3.5.0
-tool_count: 23
+version: 3.6.0
+tool_count: 25
 generated_at: "auto"
 ---
 
-# MCP Tool Schema (v3.5.0)
+# MCP Tool Schema (v3.6.0)
 
-Mnemosyne exposes **23 MCP tools** for memory management, retrieval, and diagnostics.
+Mnemosyne exposes **25 MCP tools** for memory management, retrieval, and diagnostics.
 
 ---
 
@@ -209,3 +209,25 @@ Read the scratchpad entries
 Clear all scratchpad entries
 
 *No parameters*
+
+### 24. `mnemosyne_remember_canonical`
+Store an owner-scoped canonical fact (single source of truth)
+
+| Parameter | Type | Required |
+|-----------|------|----------|
+| `content` | `string` | yes |
+| `importance` | `float` | no (default: 0.5) |
+| `veracity` | `string` | no (default: unknown) |
+| `source` | `string` | no (default: user) |
+| `valid_until` | `string` | no (default: ) |
+
+### 25. `mnemosyne_recall_canonical`
+Recall canonical facts by slot, category, or substring
+
+| Parameter | Type | Required |
+|-----------|------|----------|
+| `slot` | `string` | no (default: ) |
+| `category` | `string` | no (default: ) |
+| `substring` | `string` | no (default: ) |
+| `limit` | `int` | no (default: 5) |
+| `include_history` | `bool` | no (default: false) |

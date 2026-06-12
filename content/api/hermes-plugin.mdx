@@ -61,7 +61,7 @@ Instead, add to `~/.hermes/config.yaml`:
 
 The `enabled: false` + `user_profile_enabled: false` disables
 the built-in file-based memory store while keeping the `"memory"` toolset
-active so Mnemosyne's 17 tools surface correctly.
+active so Mnemosyne's tools surface correctly.
 
 ## Auto-Context Injection
 
@@ -82,9 +82,9 @@ Mnemosyne registers the following Hermes hooks:
 
 | Hook | Timing | Action |
 |------|--------|--------|
-| `pre_llm_call` | Before LLM call | Inject relevant memories |
-| `on_session_start` | Session start | Store conversation |
-| `post_tool_call` | After tool execution | Store tool results |
+| `on_turn_start` | Start of each agent turn | Prefetch identity + inject relevant memories |
+| `on_session_end` | Session close | Trigger consolidation, store conversation summary |
+| `on_memory_write` | After Hermes builtin memory writes | Sync to Mnemosyne for centralized recall |
 
 ## Tool Schema
 
