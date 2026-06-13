@@ -1,8 +1,8 @@
 {
   "_schema": "mnemosyne-docs-audit-checkpoint-v1",
   "_description": "Tracks per-page audit state. On re-audit, only check pages whose git hash changed since last_audit_hash. Pages not listed here have never been audited \u2014 audit them fully.",
-  "last_full_audit": "2026-06-09T03:09:21.294327+00:00",
-  "codebase_version": "3.4.0",
+  "last_full_audit": "2026-06-13T04:00:00.000000+00:00",
+  "codebase_version": "3.6.0",
   "audit_history": [
     {
       "date": "2026-05-11",
@@ -35,6 +35,15 @@
       "issues_fixed": 57,
       "false_positives": 0,
       "summary": "Full audit v3.1.0->v3.4.0. Pass 1: 57 issues across 30+ files. Fixed deployment bugs (MNEMOSYNE_MCP_TOKEN, fictional env vars, fictional --db-path, healthcheck route, missing [mcp] extras, nonexistent binary, str/Path bug), version rot (v2.x refs, v3.1.2 stale pages, v2.3/since annotations, wrong class name Memory->Mnemosyne), core API (tool counts 6/23->24/17, missing tools, stale descriptions). All mirrors synced. Build clean."
+    },
+    {
+      "date": "2026-06-13",
+      "codebase_version": "3.6.0",
+      "pages_audited": 74,
+      "issues_found": 96,
+      "issues_fixed": 96,
+      "commit": "d129421c7396",
+      "summary": "Full pass: v3.4.0\u2192v3.6.0. Root hallucinations killed (CHANGELOG embeddings, memory_enabled key, plugin hooks). Generator 23\u219225 tools, 20\u2192100 config keys. Architecture 8 bugs fixed. Comparison 10 errors. Schema convergence. pipx-first install consolidated."
     }
   ],
   "files": {
@@ -771,7 +780,7 @@
     "src/app/(docs)/architecture/sleep-consolidation/page.mdx": {
       "last_audited": null,
       "audit_hash": "75c9e1ce951e1b7f879c23fdc89859813ce56b6078d01f0d5fbe7a4fe5ef01ef",
-      "status": "clean",
+      "status": "drifted",
       "category": "mirror",
       "note": "Never audited. Full audit needed."
     },
@@ -1087,17 +1096,519 @@
       "audit_hash": "9e6a7c4c030ce8ac14ba6ca01b4039183a64f7ef",
       "status": "clean",
       "category": "mirror"
+    },
+    ".agents/skills/no-mistakes/SKILL.md": {
+      "last_audited": null,
+      "audit_hash": "1c02c0b925986f9218ccda885f31c78df5b7f566",
+      "status": "unaudited",
+      "category": "mirror"
+    },
+    ".claude/skills/no-mistakes/SKILL.md": {
+      "last_audited": null,
+      "audit_hash": "1c02c0b925986f9218ccda885f31c78df5b7f566",
+      "status": "unaudited",
+      "category": "mirror"
+    },
+    "content/getting-started/updating.mdx": {
+      "last_audited": null,
+      "audit_hash": "d5245cc0b13b5324ebf407493f29ea3e48a0fa9c",
+      "status": "unaudited",
+      "category": "source"
+    },
+    "content/migration/from-cognee.mdx": {
+      "last_audited": null,
+      "audit_hash": "696d7e8b8ee6d7e29c499245cd6901c7ef8d93e6",
+      "status": "unaudited",
+      "category": "source"
+    },
+    "content/migration/from-holographic.mdx": {
+      "last_audited": null,
+      "audit_hash": "63a26f7ff3880ed296e81c64b9e404747879cd31",
+      "status": "unaudited",
+      "category": "source"
+    },
+    "content/migration/from-honcho.mdx": {
+      "last_audited": null,
+      "audit_hash": "8a8822c818a9756bff2b658c29c7aab75431685e",
+      "status": "unaudited",
+      "category": "source"
+    },
+    "content/migration/from-supermemory.mdx": {
+      "last_audited": null,
+      "audit_hash": "754d99f316531ab09c67da461d8b89110b9a1a5a",
+      "status": "unaudited",
+      "category": "source"
+    },
+    "content/operations/benchmarking.mdx": {
+      "last_audited": null,
+      "audit_hash": "308830d9b1407cace80864b0a64b1bad734fa6d9",
+      "status": "unaudited",
+      "category": "source"
+    },
+    "src/app/(docs)/migration/from-holographic/page.mdx": {
+      "last_audited": null,
+      "audit_hash": "63a26f7ff3880ed296e81c64b9e404747879cd31",
+      "status": "unaudited",
+      "category": "mirror"
     }
   },
   "_health": {
-    "checked_at": "2026-06-09T03:09:21.294327+00:00",
-    "total_tracked": 147,
-    "audited_clean": 137,
-    "unaudited": 9,
+    "checked_at": "2026-06-13T01:40:29.586756+00:00",
+    "total_tracked": 156,
+    "audited_clean": 136,
+    "unaudited": 18,
     "gone": 0,
-    "drifted": 2,
+    "drifted": 3,
     "stale_version": 0
   },
   "version": "3.1.2",
-  "last_audit": "2026-05-29"
+  "last_audit": "2026-06-13",
+  "audit_version": "3.6.0",
+  "auditor": "AJ",
+  "pages": {
+    "api/hermes-plugin": {
+      "status": "clean",
+      "audit_hash": "fe25a2a747ffa5a870bcedeac92f7a1c87148840",
+      "current_hash": "fe25a2a747ffa5a870bcedeac92f7a1c87148840",
+      "last_audited": "2026-06-13"
+    },
+    "api/mcp-server": {
+      "status": "clean",
+      "audit_hash": "fbdc6a2a0b1ecfa744c89af8f448b1903836ad60",
+      "current_hash": "fbdc6a2a0b1ecfa744c89af8f448b1903836ad60",
+      "last_audited": "2026-06-13"
+    },
+    "api/overview": {
+      "status": "clean",
+      "audit_hash": "6ffbea11a361d0205ec03fad2d6f3813b6140be9",
+      "current_hash": "6ffbea11a361d0205ec03fad2d6f3813b6140be9",
+      "last_audited": "2026-06-13"
+    },
+    "api/python-sdk": {
+      "status": "clean",
+      "audit_hash": "715ce213e2739ea6fe58069a8f28f37dfb47ef25",
+      "current_hash": "715ce213e2739ea6fe58069a8f28f37dfb47ef25",
+      "last_audited": "2026-06-13"
+    },
+    "api/rest": {
+      "status": "clean",
+      "audit_hash": "84336f8b39df0759938dc438742e64a678e5e6f3",
+      "current_hash": "84336f8b39df0759938dc438742e64a678e5e6f3",
+      "last_audited": "2026-06-13"
+    },
+    "api/tool-schema": {
+      "status": "clean",
+      "audit_hash": "16d53653f643b8b3ddfb94fc3a0a398717d7ca71",
+      "current_hash": "16d53653f643b8b3ddfb94fc3a0a398717d7ca71",
+      "last_audited": "2026-06-13"
+    },
+    "architecture/aaak-compression": {
+      "status": "clean",
+      "audit_hash": "bec84b150badd981ce10d2ae3de198de5248dfa7",
+      "current_hash": "bec84b150badd981ce10d2ae3de198de5248dfa7",
+      "last_audited": "2026-06-13"
+    },
+    "architecture/beam-overview": {
+      "status": "clean",
+      "audit_hash": "eeeacadde721fc60afb5ecd4c69a5b84771dd86d",
+      "current_hash": "eeeacadde721fc60afb5ecd4c69a5b84771dd86d",
+      "last_audited": "2026-06-13"
+    },
+    "architecture/data-flow": {
+      "status": "clean",
+      "audit_hash": "150c279afc099d906c7162b62c96407f83e15c1c",
+      "current_hash": "150c279afc099d906c7162b62c96407f83e15c1c",
+      "last_audited": "2026-06-13"
+    },
+    "architecture/entity-extraction": {
+      "status": "clean",
+      "audit_hash": "60f9d6da62b7b6027c888f09a6b1bafaaef9c3ce",
+      "current_hash": "60f9d6da62b7b6027c888f09a6b1bafaaef9c3ce",
+      "last_audited": "2026-06-13"
+    },
+    "architecture/fact-extraction": {
+      "status": "clean",
+      "audit_hash": "030ba1a006f9dc5c50d75ff3648db077ef3e5717",
+      "current_hash": "030ba1a006f9dc5c50d75ff3648db077ef3e5717",
+      "last_audited": "2026-06-13"
+    },
+    "architecture/llm-backends": {
+      "status": "clean",
+      "audit_hash": "631ae9b1bfb2bed00630c1b87e40fe4a19f9a3ce",
+      "current_hash": "631ae9b1bfb2bed00630c1b87e40fe4a19f9a3ce",
+      "last_audited": "2026-06-13"
+    },
+    "architecture/pattern-detection": {
+      "status": "clean",
+      "audit_hash": "221a7d713ada9d4c443d787f5347713d84ecb523",
+      "current_hash": "221a7d713ada9d4c443d787f5347713d84ecb523",
+      "last_audited": "2026-06-13"
+    },
+    "architecture/plugin-system": {
+      "status": "clean",
+      "audit_hash": "ccbfe635e56f812cc643461a4fc00789732bd557",
+      "current_hash": "ccbfe635e56f812cc643461a4fc00789732bd557",
+      "last_audited": "2026-06-13"
+    },
+    "architecture/sleep-consolidation": {
+      "status": "clean",
+      "audit_hash": "cf27d405a2085ba7f1515f23a34a426c85d99d12",
+      "current_hash": "cf27d405a2085ba7f1515f23a34a426c85d99d12",
+      "last_audited": "2026-06-13"
+    },
+    "architecture/streaming": {
+      "status": "clean",
+      "audit_hash": "d7fb794421a78cfb6a9fb022d06ee4e997bf257b",
+      "current_hash": "d7fb794421a78cfb6a9fb022d06ee4e997bf257b",
+      "last_audited": "2026-06-13"
+    },
+    "architecture/system-design": {
+      "status": "clean",
+      "audit_hash": "dc137c4f94dc291f2d1922fcb2abeaa3ba35d454",
+      "current_hash": "dc137c4f94dc291f2d1922fcb2abeaa3ba35d454",
+      "last_audited": "2026-06-13"
+    },
+    "architecture/tiered-degradation": {
+      "status": "clean",
+      "audit_hash": "399a58014d69057568b11d0fdd63ec2712dd6c10",
+      "current_hash": "399a58014d69057568b11d0fdd63ec2712dd6c10",
+      "last_audited": "2026-06-13"
+    },
+    "architecture/veracity-signal": {
+      "status": "clean",
+      "audit_hash": "9811e895c95f994ce15a7e18f6fc6beace610a33",
+      "current_hash": "9811e895c95f994ce15a7e18f6fc6beace610a33",
+      "last_audited": "2026-06-13"
+    },
+    "comparisons/cognee": {
+      "status": "clean",
+      "audit_hash": "764a71374baa01a778bb0881aff427e288423585",
+      "current_hash": "764a71374baa01a778bb0881aff427e288423585",
+      "last_audited": "2026-06-13"
+    },
+    "comparisons/hindsight": {
+      "status": "clean",
+      "audit_hash": "410e1a83d244f8364508ccafe6cc41f2f29a5d7a",
+      "current_hash": "410e1a83d244f8364508ccafe6cc41f2f29a5d7a",
+      "last_audited": "2026-06-13"
+    },
+    "comparisons/honcho": {
+      "status": "clean",
+      "audit_hash": "a77a6e1b5f9eb46b67466fdc33bd4eb1ef6ffa4e",
+      "current_hash": "a77a6e1b5f9eb46b67466fdc33bd4eb1ef6ffa4e",
+      "last_audited": "2026-06-13"
+    },
+    "comparisons/letta": {
+      "status": "clean",
+      "audit_hash": "c9495eae576abac66d675fcf084c34c4c514eebd",
+      "current_hash": "c9495eae576abac66d675fcf084c34c4c514eebd",
+      "last_audited": "2026-06-13"
+    },
+    "comparisons/mem0": {
+      "status": "clean",
+      "audit_hash": "6a67369bcbfc3f4fcee37b0e6aa1dc6733db85f1",
+      "current_hash": "6a67369bcbfc3f4fcee37b0e6aa1dc6733db85f1",
+      "last_audited": "2026-06-13"
+    },
+    "comparisons/supermemory": {
+      "status": "clean",
+      "audit_hash": "2bad852949d630905ee2828c1a528bf6908ca5c7",
+      "current_hash": "2bad852949d630905ee2828c1a528bf6908ca5c7",
+      "last_audited": "2026-06-13"
+    },
+    "comparisons/zep": {
+      "status": "clean",
+      "audit_hash": "9dbde41c4cb54ac1fe594f81235dca3eeae8495f",
+      "current_hash": "9dbde41c4cb54ac1fe594f81235dca3eeae8495f",
+      "last_audited": "2026-06-13"
+    },
+    "deployment/cron": {
+      "status": "clean",
+      "audit_hash": "da67f802a73c49a24d1d35cb1702344bf9e5c2f5",
+      "current_hash": "da67f802a73c49a24d1d35cb1702344bf9e5c2f5",
+      "last_audited": "2026-06-13"
+    },
+    "deployment/docker": {
+      "status": "clean",
+      "audit_hash": "35fa4d955dd73fa2f3f960d8c50a0a4b6b99f178",
+      "current_hash": "35fa4d955dd73fa2f3f960d8c50a0a4b6b99f178",
+      "last_audited": "2026-06-13"
+    },
+    "deployment/fly-io": {
+      "status": "clean",
+      "audit_hash": "bd015b06f31fe94d6e9415ae1f9242fff9941027",
+      "current_hash": "bd015b06f31fe94d6e9415ae1f9242fff9941027",
+      "last_audited": "2026-06-13"
+    },
+    "deployment/overview": {
+      "status": "clean",
+      "audit_hash": "26692dc2eaecf7a1d4f78a5bcdb3e84a69acaf1e",
+      "current_hash": "26692dc2eaecf7a1d4f78a5bcdb3e84a69acaf1e",
+      "last_audited": "2026-06-13"
+    },
+    "deployment/systemd": {
+      "status": "clean",
+      "audit_hash": "5d6b40d15ed4e6060b2c09f981c3d5a8a2e82dff",
+      "current_hash": "5d6b40d15ed4e6060b2c09f981c3d5a8a2e82dff",
+      "last_audited": "2026-06-13"
+    },
+    "getting-started": {
+      "status": "clean",
+      "audit_hash": "e7cc52b3a1bfe856b237ac532b302ee529a44fcf",
+      "current_hash": "e7cc52b3a1bfe856b237ac532b302ee529a44fcf",
+      "last_audited": "2026-06-13"
+    },
+    "getting-started/configuration": {
+      "status": "clean",
+      "audit_hash": "ca7525a2b0ab9a2aad7c60763da3fbec925a3989",
+      "current_hash": "ca7525a2b0ab9a2aad7c60763da3fbec925a3989",
+      "last_audited": "2026-06-13"
+    },
+    "getting-started/first-steps": {
+      "status": "clean",
+      "audit_hash": "23a66887b82cd64f085943122bd32ddc137e2235",
+      "current_hash": "23a66887b82cd64f085943122bd32ddc137e2235",
+      "last_audited": "2026-06-13"
+    },
+    "getting-started/installation": {
+      "status": "clean",
+      "audit_hash": "98507431b80b2235b4192056d4f399373b3156ee",
+      "current_hash": "98507431b80b2235b4192056d4f399373b3156ee",
+      "last_audited": "2026-06-13"
+    },
+    "getting-started/quick-start": {
+      "status": "clean",
+      "audit_hash": "f173635f19603817719486a5498c63089d41d5ef",
+      "current_hash": "f173635f19603817719486a5498c63089d41d5ef",
+      "last_audited": "2026-06-13"
+    },
+    "getting-started/updating": {
+      "status": "clean",
+      "audit_hash": "d5245cc0b13b5324ebf407493f29ea3e48a0fa9c",
+      "current_hash": "d5245cc0b13b5324ebf407493f29ea3e48a0fa9c",
+      "last_audited": "2026-06-13"
+    },
+    "memory-systems/episodic": {
+      "status": "clean",
+      "audit_hash": "a27a60addee08bef4b7975a06cdba5188fb54da2",
+      "current_hash": "a27a60addee08bef4b7975a06cdba5188fb54da2",
+      "last_audited": "2026-06-13"
+    },
+    "memory-systems/memory-banks": {
+      "status": "clean",
+      "audit_hash": "2d64da6552680beb8c9db8f636ea2584e2eba04e",
+      "current_hash": "2d64da6552680beb8c9db8f636ea2584e2eba04e",
+      "last_audited": "2026-06-13"
+    },
+    "memory-systems/scratchpad": {
+      "status": "clean",
+      "audit_hash": "c724efe932e3829d947062ef61d6e1d500ec8ab1",
+      "current_hash": "c724efe932e3829d947062ef61d6e1d500ec8ab1",
+      "last_audited": "2026-06-13"
+    },
+    "memory-systems/semantic": {
+      "status": "clean",
+      "audit_hash": "db36e41af260f1696feadfd7134c16ee2db0a0f8",
+      "current_hash": "db36e41af260f1696feadfd7134c16ee2db0a0f8",
+      "last_audited": "2026-06-13"
+    },
+    "memory-systems/temporal-graph": {
+      "status": "clean",
+      "audit_hash": "de82344d1627a6e9e503577b304ab1a64482eb1d",
+      "current_hash": "de82344d1627a6e9e503577b304ab1a64482eb1d",
+      "last_audited": "2026-06-13"
+    },
+    "memory-systems/working": {
+      "status": "clean",
+      "audit_hash": "c120b44091dff4df7e6357bdc88d83da24611ce9",
+      "current_hash": "c120b44091dff4df7e6357bdc88d83da24611ce9",
+      "last_audited": "2026-06-13"
+    },
+    "migration/from-cognee": {
+      "status": "clean",
+      "audit_hash": "696d7e8b8ee6d7e29c499245cd6901c7ef8d93e6",
+      "current_hash": "696d7e8b8ee6d7e29c499245cd6901c7ef8d93e6",
+      "last_audited": "2026-06-13"
+    },
+    "migration/from-hindsight": {
+      "status": "clean",
+      "audit_hash": "5be4d8333f2884dbeebcb815176479d3214b7254",
+      "current_hash": "5be4d8333f2884dbeebcb815176479d3214b7254",
+      "last_audited": "2026-06-13"
+    },
+    "migration/from-holographic": {
+      "status": "clean",
+      "audit_hash": "63a26f7ff3880ed296e81c64b9e404747879cd31",
+      "current_hash": "63a26f7ff3880ed296e81c64b9e404747879cd31",
+      "last_audited": "2026-06-13"
+    },
+    "migration/from-honcho": {
+      "status": "clean",
+      "audit_hash": "8a8822c818a9756bff2b658c29c7aab75431685e",
+      "current_hash": "8a8822c818a9756bff2b658c29c7aab75431685e",
+      "last_audited": "2026-06-13"
+    },
+    "migration/from-letta": {
+      "status": "clean",
+      "audit_hash": "268b7b69a3ee8005ec43cde9c3d8c47cd05394e8",
+      "current_hash": "268b7b69a3ee8005ec43cde9c3d8c47cd05394e8",
+      "last_audited": "2026-06-13"
+    },
+    "migration/from-mem0": {
+      "status": "clean",
+      "audit_hash": "a322250a3eedd750fbb6fdb1e78615829b9a670f",
+      "current_hash": "a322250a3eedd750fbb6fdb1e78615829b9a670f",
+      "last_audited": "2026-06-13"
+    },
+    "migration/from-supermemory": {
+      "status": "clean",
+      "audit_hash": "754d99f316531ab09c67da461d8b89110b9a1a5a",
+      "current_hash": "754d99f316531ab09c67da461d8b89110b9a1a5a",
+      "last_audited": "2026-06-13"
+    },
+    "migration/from-zep": {
+      "status": "clean",
+      "audit_hash": "1eaf55635c676b61b58e88cc91f690dde17a3cdc",
+      "current_hash": "1eaf55635c676b61b58e88cc91f690dde17a3cdc",
+      "last_audited": "2026-06-13"
+    },
+    "migration/overview": {
+      "status": "clean",
+      "audit_hash": "095061ceb07691c6d7c38c9fea149796f709e9e9",
+      "current_hash": "095061ceb07691c6d7c38c9fea149796f709e9e9",
+      "last_audited": "2026-06-13"
+    },
+    "operations/backups": {
+      "status": "clean",
+      "audit_hash": "f28aef39ffb588d78646f11448307534ece0c53e",
+      "current_hash": "f28aef39ffb588d78646f11448307534ece0c53e",
+      "last_audited": "2026-06-13"
+    },
+    "operations/benchmarking": {
+      "status": "clean",
+      "audit_hash": "308830d9b1407cace80864b0a64b1bad734fa6d9",
+      "current_hash": "308830d9b1407cace80864b0a64b1bad734fa6d9",
+      "last_audited": "2026-06-13"
+    },
+    "operations/migration": {
+      "status": "clean",
+      "audit_hash": "5137e0f4fa30f3ae62b8357c6412038738335cda",
+      "current_hash": "5137e0f4fa30f3ae62b8357c6412038738335cda",
+      "last_audited": "2026-06-13"
+    },
+    "operations/monitoring": {
+      "status": "clean",
+      "audit_hash": "cc297635ce20cab58b62dfa13b38bb56b6d4ca9b",
+      "current_hash": "cc297635ce20cab58b62dfa13b38bb56b6d4ca9b",
+      "last_audited": "2026-06-13"
+    },
+    "operations/performance": {
+      "status": "clean",
+      "audit_hash": "0b4a5b2a7647fc9b3649d1ad58bdcdae94c17faf",
+      "current_hash": "0b4a5b2a7647fc9b3649d1ad58bdcdae94c17faf",
+      "last_audited": "2026-06-13"
+    },
+    "operations/troubleshooting": {
+      "status": "clean",
+      "audit_hash": "fd784999e39549e8cb5a49ff3f51d331f30aa039",
+      "current_hash": "fd784999e39549e8cb5a49ff3f51d331f30aa039",
+      "last_audited": "2026-06-13"
+    },
+    "retrieval/configurable-scoring": {
+      "status": "clean",
+      "audit_hash": "f310b2cea3a87bd2510d429216e693cf81cba9db",
+      "current_hash": "f310b2cea3a87bd2510d429216e693cf81cba9db",
+      "last_audited": "2026-06-13"
+    },
+    "retrieval/fts5-search": {
+      "status": "clean",
+      "audit_hash": "96e8f73887965d9f100f632ccccc3b5b17f70ea7",
+      "current_hash": "96e8f73887965d9f100f632ccccc3b5b17f70ea7",
+      "last_audited": "2026-06-13"
+    },
+    "retrieval/hybrid-search": {
+      "status": "clean",
+      "audit_hash": "e0ed1232cba7434b76469727f59e61df81c0f543",
+      "current_hash": "e0ed1232cba7434b76469727f59e61df81c0f543",
+      "last_audited": "2026-06-13"
+    },
+    "retrieval/ranking": {
+      "status": "clean",
+      "audit_hash": "3e03ac3c41047eeb1060aa8ced05daf45e9414c6",
+      "current_hash": "3e03ac3c41047eeb1060aa8ced05daf45e9414c6",
+      "last_audited": "2026-06-13"
+    },
+    "retrieval/temporal-recall": {
+      "status": "clean",
+      "audit_hash": "10ca700a1bc7d96a303097e0eaf7924fe9be7d55",
+      "current_hash": "10ca700a1bc7d96a303097e0eaf7924fe9be7d55",
+      "last_audited": "2026-06-13"
+    },
+    "retrieval/vector-search": {
+      "status": "clean",
+      "audit_hash": "6e137f0fc0d2ae4735617aa18d814c6dc4d8572d",
+      "current_hash": "6e137f0fc0d2ae4735617aa18d814c6dc4d8572d",
+      "last_audited": "2026-06-13"
+    },
+    "security/access-control": {
+      "status": "clean",
+      "audit_hash": "396870595cd0e753322865a5569f26625a783ab8",
+      "current_hash": "396870595cd0e753322865a5569f26625a783ab8",
+      "last_audited": "2026-06-13"
+    },
+    "security/data-privacy": {
+      "status": "clean",
+      "audit_hash": "0235309d8a7f55a0322731ec7f17477e5633da59",
+      "current_hash": "0235309d8a7f55a0322731ec7f17477e5633da59",
+      "last_audited": "2026-06-13"
+    },
+    "security/encryption": {
+      "status": "clean",
+      "audit_hash": "89ce8d30aa356d2e80447f8283b386bac5fd255f",
+      "current_hash": "89ce8d30aa356d2e80447f8283b386bac5fd255f",
+      "last_audited": "2026-06-13"
+    },
+    "security/overview": {
+      "status": "clean",
+      "audit_hash": "b133446bb2ee7001045c3cd7e9171cb6b58feaa2",
+      "current_hash": "b133446bb2ee7001045c3cd7e9171cb6b58feaa2",
+      "last_audited": "2026-06-13"
+    },
+    "use-cases/knowledge-base": {
+      "status": "clean",
+      "audit_hash": "7617e277d0848b36881dd2f6ff048001237de034",
+      "current_hash": "7617e277d0848b36881dd2f6ff048001237de034",
+      "last_audited": "2026-06-13"
+    },
+    "use-cases/long-running": {
+      "status": "clean",
+      "audit_hash": "830dba889f1bb753aa13a59ce143adc4f38e1500",
+      "current_hash": "830dba889f1bb753aa13a59ce143adc4f38e1500",
+      "last_audited": "2026-06-13"
+    },
+    "use-cases/multi-agent": {
+      "status": "clean",
+      "audit_hash": "58c4e9b5aefccfa6597228000e78c5f9a7e57d70",
+      "current_hash": "58c4e9b5aefccfa6597228000e78c5f9a7e57d70",
+      "last_audited": "2026-06-13"
+    },
+    "use-cases/overview": {
+      "status": "clean",
+      "audit_hash": "d4846f37c49d91baf7192bf954e90d258cb66e10",
+      "current_hash": "d4846f37c49d91baf7192bf954e90d258cb66e10",
+      "last_audited": "2026-06-13"
+    },
+    "api": {
+      "status": "clean",
+      "audit_hash": "7eab82ca60b93f7bb0ec26b9fd3f450b95ffb34f",
+      "current_hash": "7eab82ca60b93f7bb0ec26b9fd3f450b95ffb34f",
+      "last_audited": "2026-06-13"
+    },
+    "integration/hermes": {
+      "status": "clean",
+      "audit_hash": "46d9f7aaee820f31ad75344ca47bf8780b048197",
+      "current_hash": "46d9f7aaee820f31ad75344ca47bf8780b048197",
+      "last_audited": "2026-06-13"
+    }
+  }
 }
