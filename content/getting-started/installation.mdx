@@ -1,92 +1,62 @@
 # Installation
 
-Mnemosyne v3.6.0 is a standalone Python package — no agent framework required. This page walks through every step from prerequisites to verification.
+Mnemosyne v3.6.0 installs in one command. This is the only guide you need — every other page links here.
 
 ## Prerequisites
 
-Before installing Mnemosyne, make sure you have:
+- **Python 3.10 or higher** — `python3 --version`
+- **pipx** — `pip install pipx && pipx ensurepath`
 
-- **Python 3.10 or higher** — check with `python --version`
-- **pip** or **uv** package manager available in your shell
-
-## Quick Install
-
-Two commands. That's all it takes.
-
-**Step 1 — Install the package:**
+## Install
 
 ```bash
-# Recommended: pipx (isolated, survives env rebuilds)
 pipx install mnemosyne-memory[all]
-
-# Or traditional pip
-pip install mnemosyne-memory[all]
-
-# Using uv (faster, but pipx with uv backend preferred for stability)
-uv pip install mnemosyne-memory[all]
 ```
 
-**Step 2 — Verify:**
+That's it. `[all]` gives you semantic vector search + local LLM consolidation. No database setup, no config files — Mnemosyne creates its SQLite database automatically on first use.
+
+For speed:
 
 ```bash
-python -c "import mnemosyne; print(mnemosyne.__version__)"
-# Should print: 3.4.0
+export PIPX_DEFAULT_BACKEND=uv
+pipx install mnemosyne-memory[all]
 ```
 
-**Upgrade:**
+**Why pipx?** Isolated virtualenv that survives system rebuilds, clean uninstall, no conflicts with other Python projects.
+
+## Verify
 
 ```bash
-pip install --upgrade mnemosyne-memory[all]
-# or: pipx upgrade mnemosyne-memory
+python3 -c "import mnemosyne; print(mnemosyne.__version__)"
+# Should print: 3.6.0
 ```
 
-That's it. No database setup, no container orchestration, no config files. Mnemosyne creates its SQLite database automatically on first use.
-
-## Install Options
-
-### pip vs uv
-
-Both work. `uv` is faster, but use the matching command:
-
-| Tool | Install command |
-|------|-----------------|
-| `pip` | `pip install mnemosyne-memory[all]` |
-| `uv` | `uv pip install mnemosyne-memory[all]` |
-
-### Extras
-
-Mnemosyne ships optional dependency groups you can install as needed:
-
-| Extra | Command | What it adds |
-|-------|---------|--------------|
-| Core (bare install) | `pip install mnemosyne-memory` | Base package with FTS5 keyword search only. Best for low-resource systems (Raspberry Pi, 1 GB VPS) or when using a remote embedding API. ~50 MB RAM. |
-| **Embeddings** | `pip install mnemosyne-memory[embeddings]` | **+ fastembed for semantic vector search**. Adds ~800 MB RAM. Best for single-user desktop agents. |
-| LLM consolidation | `pip install mnemosyne-memory[llm]` | + ctransformers for local LLM sleep consolidation. |
-| Everything | `pip install mnemosyne-memory[all]` | All optional dependencies. ~1.5 GB RAM. Full local embeddings + local LLM. Recommended for systems with 8 GB+ RAM. |
-
-## Optional: sqlite-vec for Performance
-
-`sqlite-vec` is an **included by default. It moves vector similarity search into native C code inside SQLite. Without it, Mnemosyne uses an in-memory numpy fallback that works fine for most use cases.
+## Upgrade
 
 ```bash
-pip install sqlite-vec
+pipx upgrade mnemosyne-memory
 ```
 
-- **With `[all]` only:** Full semantic search + hybrid retrieval via in-memory numpy cosine similarity. Works great for most deployments.
-- **With `[all]` + `sqlite-vec`:** Same semantic search, but vector queries run in native C inside SQLite. Faster on very large datasets.
-- **Without `[all]`:** FTS5 keyword search only, regardless of sqlite-vec.
+## Extras
 
-Install sqlite-vec only if you need maximum performance on huge datasets.
+| Extra | What it adds | RAM |
+|-------|-------------|-----|
+| Bare install | FTS5 keyword search only. Good for Raspberry Pi or remote embedding API. | ~50 MB |
+| `[embeddings]` | fastembed + sqlite-vec for semantic vector search | ~800 MB more |
+| `[llm]` | ctransformers for local LLM sleep consolidation | ~600 MB more |
+| `[all]` | Everything: embeddings + LLM consolidation. Recommended for 8 GB+ systems. | ~1.5 GB total |
+
+**To use pipx with extras**: `pipx install 'mnemosyne-memory[embeddings]'` (quotes required around brackets).
+
+**Hermes Agent users**: install `pipx install mnemosyne-hermes` instead — this bundles `[embeddings]` automatically. See full instructions on the [Hermes Plugin page](/api/hermes-plugin).
 
 ## Verify Installation
 
-Check the installed version directly:
-
 ```bash
-python -c "import mnemosyne; print(mnemosyne.__version__)"
+python3 -c "import mnemosyne; print(mnemosyne.__version__)"
 ```
 
-You can also run a quick smoke test:
+Smoke test:
 
 ```python
 from mnemosyne import Mnemosyne
@@ -99,10 +69,10 @@ print(f"Stored and retrieved {len(results)} memory")
 
 ## MCP Server Setup
 
-Mnemosyne v3 includes a built-in MCP server for Claude Desktop and other MCP clients:
+Mnemosyne includes a built-in MCP server for Claude Desktop and other MCP clients:
 
 ```bash
-# Add to your Claude Desktop config (claude_desktop_config.json):
+# Add to Claude Desktop config (claude_desktop_config.json):
 {
   "mcpServers": {
     "mnemosyne": {
@@ -121,9 +91,9 @@ mnemosyne mcp --transport sse --port 8080
 
 ## Hermes Agent Integration
 
-If you're using Mnemosyne as a Hermes plugin:
+If you're using Mnemosyne as a Hermes plugin, see the [Hermes Plugin](/api/hermes-plugin) page for the complete setup guide including config and troubleshooting.
 
-**Do NOT install inside Hermes' managed venv.** Use pipx:
+Quick commands:
 
 ```bash
 pipx install mnemosyne-hermes
@@ -131,50 +101,14 @@ hermes config set memory.provider mnemosyne
 hermes gateway restart
 ```
 
-For speed with pipx:
-
-```bash
-export PIPX_DEFAULT_BACKEND=uv
-pipx install mnemosyne-hermes
-```
-
-### Disable legacy memory
-
-**DO NOT run `hermes tools disable memory`** — source: `agent/agent_init.py:1163-1172`.
-
-Add to `~/.hermes/config.yaml`:
-```yaml
-memory:
-  enabled: false
-  user_profile_enabled: false
-  provider: mnemosyne
-```
-
-### Default config
-
-```yaml
-# ~/.hermes/config.yaml
-memory:
-  provider: mnemosyne
-  mnemosyne:
-    auto_sleep: true
-    sleep_threshold: 50
-
 ## Development Install (from Source)
 
-If you're contributing or want to run the latest unreleased changes:
-
 ```bash
-# Clone the repo
 git clone https://github.com/axdsan/mnemosyne.git
 cd mnemosyne
-
-# Create a virtual environment
-python -m venv .venv
+python3 -m venv .venv
 source .venv/bin/activate
-
-# Install in editable mode with dev dependencies
 pip install -e ".[dev]"
 ```
 
-The `-e` flag installs in "editable" mode — changes to the source code take effect immediately without re-installing. Perfect for development and debugging.
+The `-e` flag installs in "editable" mode — source changes take effect immediately.

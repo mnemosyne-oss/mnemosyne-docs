@@ -21,9 +21,9 @@ Pattern detection and memory compression for analyzing usage and reducing storag
 mem = Mnemosyne()
 detector = mem.patterns
 
-temporal = detector.detect_temporal_patterns(memories)
-content = detector.detect_content_patterns(memories)
-sequences = detector.detect_sequence_patterns(memories)
+temporal = detector.detect_temporal(memories)
+content = detector.detect_content(memories)
+sequences = detector.detect_sequence(memories)
 `} language="python" />
 
 ## MemoryCompressor
@@ -36,9 +36,9 @@ sequences = detector.detect_sequence_patterns(memories)
 
 <CodeBlock code={`compressor = mem.compressor
 
-compressed = compressor.compress(memories)
+compressed, stats = compressor.compress(memory_content)
 decompressed = compressor.decompress(compressed)
-batch = compressor.compress_batch(memory_list)
+results = compressor.compress_batch(memory_list)
 `} language="python" />
 
 ## Related

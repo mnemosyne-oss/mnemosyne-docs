@@ -10,7 +10,7 @@ Agent context windows are limited (4K–128K tokens). Raw memory dumps consume p
 
 The `encode()` function performs text substitution in three passes:
 
-1. **Category prefixes**: Replaces verbose category labels with short tokens (e.g., `"conversation:"` → `"conv:"`)
+1. **Category prefixes**: Replaces verbose category labels with short tokens (e.g., `"PREFERENCE: ..."` → `"PREF|..."`)
 2. **Phrase compression**: Substitutes common phrases with abbreviated forms
 3. **Structural**: Normalizes whitespace, removes redundant formatting
 

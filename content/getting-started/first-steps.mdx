@@ -38,21 +38,21 @@ results = mem.recall(
 
 # Access a specific memory from results
 for r in results:
-    print(f"{r['score']:.2f}: {r['content']}")
+    print(f"{r['score']:.3f}: {r['content']}")
 `} language="python" />
 
 ## 4. Update and Delete
 
 <CodeBlock code={`# Update a memory
-mem.update("mem_abc123", content="Deadline moved to Monday.")
+mem.update("abc123def", content="Deadline moved to Monday.")
 
 # Delete a memory
-mem.forget("mem_abc123")
+mem.forget("abc123def")
 
 # No bulk delete — iterate through results
 results = mem.recall("temp notes", top_k=10)
 for r in results:
-    mem.forget(r["memory_id"])
+    mem.forget(r["id"])
 `} language="python" />
 
 ## 5. Inspect Memory State

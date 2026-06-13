@@ -1,6 +1,6 @@
 export const metadata = {
   title: 'Sleep Consolidation — Automatic Memory Optimization',
-  description: 'Learn how Mnemosyne\'s sleep consolidation process promotes aged Working Memory entries to Episodic Memory via grouping, summarization, and eviction.',
+  description: 'Learn how Mnemosyne\'s sleep consolidation process promotes aged Working Memory entries to Episodic Memory via grouping, summarization, and consolidation marking.',
   openGraph: {
     images: ['/og-image.svg'],
   },
@@ -11,7 +11,7 @@ export const metadata = {
 
 # Sleep Consolidation
 
-Mnemosyne's background process that promotes aged Working Memory entries to Episodic Memory, inspired by human sleep's role in memory consolidation. In v3.0+ this also integrates with MEMORIA structured tables — fact extraction feeds `memoria_facts` and `memoria_timelines` during `remember()`, and these tables persist independently of the Working Memory lifecycle.
+Mnemosyne's explicit consolidation function that promotes aged Working Memory entries to Episodic Memory, inspired by human sleep's role in memory consolidation. In v3.0+ this also integrates with MEMORIA structured tables — fact extraction feeds `memoria_facts` and `memoria_timelines` during `remember()`, and these tables persist independently of the Working Memory lifecycle.
 
 ## What Sleep Does
 
@@ -21,15 +21,14 @@ During each consolidation cycle, Mnemosyne:
 2. **Groups** candidates by `source`
 3. **Summarizes** each group via local LLM (MiniCPM5-1B GGUF) or AAAK text substitution
 4. **Promotes** summaries to Episodic Memory (with `summary_of` tracking originals)
-5. **Evicts** original Working Memory entries (MEMORIA `memoria_*` tables persist independently)
+5. **Marks** original Working Memory entries as consolidated (MEMORIA `memoria_*` tables persist independently)
 
 ## Trigger Conditions
 
 Consolidation triggers on:
 
 - **Age threshold**: When Working Memory entries exceed TTL/2 (default: 12 hours with 24h TTL)
-- **Explicit call**: `mem.consolidate()` for manual consolidation
-- **Shutdown**: Graceful process exit
+- **Explicit call**: `mem.sleep()` for manual consolidation
 
 ## Consolidation Pipeline
 
@@ -39,7 +38,7 @@ flowchart LR
     B -->|group by source| C[Group Entries]
     C -->|summarize| D[LLM or AAAK]
     D -->|promote| E[Episodic Memory]
-    C -->|evict originals| F[Delete from Working]
+    C -->|mark originals| F[Mark as Consolidated]
 `} />
 
 ### Step-by-Step

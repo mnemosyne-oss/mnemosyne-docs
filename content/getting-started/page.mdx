@@ -25,7 +25,7 @@ The `[embeddings]` (now default) installs **fastembed**, which powers semantic v
 - Find "Italian food" when you search "pizza" (semantic similarity)
 - Combine vector + text scores for **hybrid retrieval**
 
-Embeddings (fastembed + sqlite-vec) are now a hard dependency — they ship with every install.
+Embeddings (fastembed + sqlite-vec) are included by default when using the Hermes plugin. For standalone Python SDK, add `[embeddings]` for vector search.
 </Callout>
 
 ## Your First Memories
@@ -89,7 +89,7 @@ personal_mem.remember("Dentist appointment on Friday.")
 
 ## Optional: sqlite-vec for Performance
 
-`sqlite-vec` is an **included by default. It moves vector similarity search into native C code inside SQLite. Without it, Mnemosyne uses an in-memory numpy fallback that works fine for most use cases.
+`sqlite-vec` is bundled inside the Hermes plugin. Standalone pip users need `[embeddings]`. It moves vector similarity search into native C code inside SQLite. Without it, Mnemosyne uses an in-memory numpy fallback that works fine for most use cases.
 
 <CodeBlock code={`pip install sqlite-vec`} language="bash" />
 
@@ -98,7 +98,7 @@ personal_mem.remember("Dentist appointment on Friday.")
 Confirm everything is working:
 
 <CodeBlock code={`python -c "import mnemosyne; print(mnemosyne.__version__)"
-# Should print: 2.8.0
+# Should print: 3.6.0
 `} language="bash" />
 
 ## What's Next?
