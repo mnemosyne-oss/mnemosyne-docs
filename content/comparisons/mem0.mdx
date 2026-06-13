@@ -26,11 +26,11 @@ Mem0 uses a dual-store architecture: a vector database for semantic search plus 
 | Dimension | Mnemosyne | Mem0 |
 |-----------|-----------|------|
 | **Process model** | In-process Python library | Cloud SaaS + optional Docker self-host |
-| **Database** | SQLite (single file, WAL mode) | Qdrant (vector DB) + Neo4j (knowledge graph) |
+| **Database** | SQLite (single file, WAL mode) | Qdrant (vector DB) + Neo4j / FalkorDB (pluggable knowledge graph) |
 | **Embedding model** | fastembed ONNX — BAAI/bge-small-en-v1.5 (~67MB), runs locally | text-embedding-3-small (OpenAI API), remote inference |
 | **Extraction model** | Opt-in: any OpenAI-compatible or local GGUF | gpt-5-mini (OpenAI), always-on for Pro tier |
 | **Vector search** | sqlite-vec (cosine distance) | Qdrant with filtered vector search |
-| **Knowledge graph** | TripleStore (subject-predicate-object, temporal) | Neo4j property graph (Pro tier only, $249/mo) |
+| **Knowledge graph** | TripleStore (subject-predicate-object, temporal) | Neo4j / FalkorDB property graph (Pro tier only, $249/mo) |
 | **Runtime memory** | ~10–20MB per session | Cloud-hosted (no local footprint) or ~500MB+ Docker |
 | **Cold start** | Instant (if models cached) | ~5–30s (API latency or container boot) |
 
@@ -94,7 +94,7 @@ This is where the two diverge most sharply.
 | **GitHub stars** | Newer project, growing | ~48K — largest memory layer community |
 | **License** | MIT | Apache 2.0 |
 | **Documentation** | Full docs (this site) + API reference | docs.mem0.ai, rich cookbook |
-| **Integrations** | Hermes Agent (native, 15 tools, 3 hooks), MCP (25 tools, stdio + SSE), OpenClaw (planned) | LangChain, LlamaIndex, CrewAI, AutoGen, OpenAI Agents SDK |
+| **Integrations** | Hermes Agent (native, 17 tools, 3 hooks), MCP (25 tools, stdio + SSE), OpenClaw (planned) | LangChain, LlamaIndex, CrewAI, AutoGen, OpenAI Agents SDK |
 | **SDK languages** | Python | Python, JavaScript/TypeScript, Go (beta) |
 | **Production users** | Early adopters, single-user agents | Public case studies, enterprise deployments |
 
@@ -113,8 +113,9 @@ Free. MIT license. No tiers, no usage caps, no API costs. Use it forever with ze
 | Tier | Price | What you get |
 |------|-------|-------------|
 | **Free** | $0/mo | 10,000 memory adds/month, 1 user, community support |
-| **Starter** | $19/mo | 50,000 adds/month, 10 users, 7-day history, email support |
-| **Pro** | $249/mo | Unlimited adds, knowledge graph, unlimited users, priority support |
+| **Starter** | $19/mo | 50,000 adds/month, 10 users, email support |
+| **Growth** | $79/mo | 100,000 adds/month, 25 users, knowledge graph, priority support |
+| **Pro** | $249/mo | 500,000 adds/month, knowledge graph, unlimited users, priority support |
 | **Enterprise** | Custom | SSO, SOC 2, HIPAA, audit logs, dedicated support |
 
 **Hidden costs:** Every memory add on Mem0 burns OpenAI tokens for extraction and embeddings (gpt-5-mini + text-embedding-3-small). At scale, your OpenAI bill may exceed your Mem0 subscription. Mnemosyne has zero per-operation cost: embeddings run locally, extraction is opt-in and configurable.
@@ -125,7 +126,7 @@ Free. MIT license. No tiers, no usage caps, no API costs. Use it forever with ze
 
 - You want **zero external API dependencies** — everything runs locally
 - You need **offline capability** — agents that work without internet
-- You're building for **Hermes Agent** and want deep, native integration (15 tools, hooks)
+- You're building for **Hermes Agent** and want deep, native integration (17 tools, hooks)
 - You want **predictable costs** — no per-operation token burn, no usage tiers
 - You're on a **single machine** and don't need cross-device sync
 - You want full control: your SQLite file, your models, your data

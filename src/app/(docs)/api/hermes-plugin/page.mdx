@@ -88,231 +88,30 @@ Mnemosyne registers the following Hermes hooks:
 
 ## Tool Schema
 
-Mnemosyne exposes these tools to agents:
+Mnemosyne exposes **25 tools** to agents through the Hermes plugin. See the complete [Tool Schema Reference](/api/tool-schema) for every tool, parameter, and default value.
 
-<CodeBlock code={`{
-  "name": "mnemosyne_remember",
-  "description": "Store information in long-term memory. Use for facts, preferences, decisions, and observations.",
-  "parameters": {
-    "type": "object",
-    "required": ["content"],
-    "properties": {
-      "content": { "type": "string", "description": "Information to store" },
-      "source": { "type": "string", "description": "Origin of the memory (e.g., 'conversation', 'tool')" },
-      "importance": { "type": "number", "minimum": 0, "maximum": 1, "description": "0.0 = transient, 1.0 = critical" },
-      "valid_until": { "type": "string", "description": "ISO 8601 timestamp for automatic expiry" },
-      "scope": { "type": "string", "enum": ["session", "global"], "description": "Visibility scope" },
-      "extract_entities": { "type": "boolean", "description": "Auto-extract named entities into triples" },
-      "extract": { "type": "boolean", "description": "Auto-extract factual statements into triples" },
-    }
-  }
-}
+Key tools:
 
-{
-  "name": "mnemosyne_recall",
-  "description": "Retrieve relevant memories from long-term storage.",
-  "parameters": {
-    "type": "object",
-    "required": ["query"],
-    "properties": {
-      "query": { "type": "string", "description": "Natural language search query" },
-      "limit": { "type": "integer", "default": 5, "description": "Max memories to return" },
-      "author_id": { "type": "string", "description": "Filter by author" },
-      "author_type": { "type": "string", "enum": ["human", "agent", "system"] },
-      "channel_id": { "type": "string", "description": "Filter by channel" },
-      "temporal_weight": { "type": "number", "description": "Weight for recency in scoring" },
-      "query_time": { "type": "string", "description": "Point-in-time query (ISO 8601)" },
-      "temporal_halflife": { "type": "number", "description": "Recency decay half-life in hours" },
-      "vec_weight": { "type": "number", "description": "Vector similarity weight" },
-      "fts_weight": { "type": "number", "description": "Full-text search weight" },
-      "importance_weight": { "type": "number", "description": "Importance score weight" }
-    }
-  }
-}
+| Tool | Purpose |
+|------|---------|
+| `mnemosyne_remember` | Store memories with entity/fact extraction |
+| `mnemosyne_recall` | Hybrid vector+FTS5 search with configurable weights |
+| `mnemosyne_sleep` | Run consolidation — compress working memory into episodic |
+| `mnemosyne_stats` | Memory system statistics (counts, BEAM tiers, DB size) |
+| `mnemosyne_forget` | Permanently delete a memory by ID |
+| `mnemosyne_update` | Update content or importance of an existing memory |
+| `mnemosyne_get` | Retrieve a single memory by ID |
+| `mnemosyne_validate` | Collaborative ownership (attest, update, invalidate) |
+| `mnemosyne_invalidate` | Mark a memory as expired/superseded |
+| `mnemosyne_export` / `mnemosyne_import` | Backup and migration |
+| `mnemosyne_diagnose` | PII-safe diagnostics (deps, DB state, vector readiness) |
+| `mnemosyne_triple_add` / `mnemosyne_triple_query` | Knowledge graph operations |
+| `mnemosyne_graph_link` / `mnemosyne_graph_query` | Semantic graph traversal |
+| `mnemosyne_scratchpad_*` | Temporary workspace (write, read, clear) |
+| `mnemosyne_shared_*` | Cross-agent surface memory (remember, recall, forget, stats) |
+| `mnemosyne_remember_canonical` / `mnemosyne_recall_canonical` | Owner-scoped canonical facts (v3.6.0) |
 
-{
-  "name": "mnemosyne_stats",
-  "description": "Get memory system statistics: entry counts, database size, consolidation status.",
-  "parameters": {
-    "type": "object",
-    "properties": {}
-  }
-}
-
-{
-  "name": "mnemosyne_triple_add",
-  "description": "Store a structured fact as a knowledge graph triple.",
-  "parameters": {
-    "type": "object",
-    "required": ["subject", "predicate", "object"],
-    "properties": {
-      "subject": { "type": "string", "description": "The entity the fact is about" },
-      "predicate": { "type": "string", "description": "The relationship or property" },
-      "object": { "type": "string", "description": "The value or target entity" },
-      "valid_from": { "type": "string", "description": "ISO 8601 timestamp when this fact became true" },
-      "source": { "type": "string", "description": "Origin of the triple (e.g., 'extraction', 'manual', 'inference')" },
-      "confidence": { "type": "number", "minimum": 0, "maximum": 1, "description": "Confidence score for this fact" }
-    }
-  }
-}
-
-{
-  "name": "mnemosyne_triple_query",
-  "description": "Query the knowledge graph for structured facts.",
-  "parameters": {
-    "type": "object",
-    "properties": {
-      "subject": { "type": "string", "description": "Filter by subject entity" },
-      "predicate": { "type": "string", "description": "Filter by relationship type" },
-      "object": { "type": "string", "description": "Filter by value or target" }
-    }
-  }
-}
-
-{
-  "name": "mnemosyne_sleep",
-  "description": "Run consolidation cycle: promote Working Memory entries to Episodic, run tiered degradation.",
-  "parameters": {
-    "type": "object",
-    "properties": {
-      "dry_run": { "type": "boolean", "description": "If true, preview what would happen without making changes" },
-      "all_sessions": { "type": "boolean", "default": false, "description": "If true, run consolidation across all sessions" }
-    }
-  }
-}
-
-{
-  "name": "mnemosyne_scratchpad_write",
-  "description": "Write to the temporary scratchpad workspace for chain-of-thought and planning.",
-  "parameters": {
-    "type": "object",
-    "required": ["content"],
-    "properties": {
-      "content": { "type": "string", "description": "Content to write to the scratchpad" }
-    }
-  }
-}
-
-{
-  "name": "mnemosyne_scratchpad_read",
-  "description": "Read all entries from the temporary scratchpad workspace.",
-  "parameters": {
-    "type": "object",
-    "properties": {}
-  }
-}
-
-{
-  "name": "mnemosyne_scratchpad_clear",
-  "description": "Clear all entries from the scratchpad workspace.",
-  "parameters": {
-    "type": "object",
-    "properties": {}
-  }
-}
-
-{
-  "name": "mnemosyne_invalidate",
-  "description": "Mark a memory as invalid (soft delete). Use when information is outdated or incorrect.",
-  "parameters": {
-    "type": "object",
-    "required": ["memory_id"],
-    "properties": {
-      "memory_id": { "type": "string", "description": "Memory ID to invalidate" },
-      "replacement_id": { "type": "string", "description": "Optional replacement memory ID" }
-    }
-  }
-}
-
-{
-  "name": "mnemosyne_export",
-  "description": "Export memories to a file for backup or migration.",
-  "parameters": {
-    "type": "object",
-    "required": ["output_path"],
-    "properties": {
-      "output_path": { "type": "string", "description": "File path for export (JSON format)" }
-    }
-  }
-}
-
-{
-  "name": "mnemosyne_import",
-  "description": "Import memories from a previously exported file.",
-  "parameters": {
-    "type": "object",
-    "required": ["input_path"],
-    "properties": {
-      "input_path": { "type": "string", "description": "File path to import from (JSON format)" }
-    }
-  }
-}
-
-{
-  "name": "mnemosyne_update",
-  "description": "Update an existing memory's content, importance, or metadata.",
-  "parameters": {
-    "type": "object",
-    "required": ["memory_id"],
-    "properties": {
-      "memory_id": { "type": "string", "description": "Memory ID to update" },
-      "content": { "type": "string", "description": "New content" },
-      "importance": { "type": "number", "minimum": 0, "maximum": 1, "description": "Updated importance score" }
-    }
-  }
-}
-
-{
-  "name": "mnemosyne_forget",
-  "description": "Permanently delete a memory by ID.",
-  "parameters": {
-    "type": "object",
-    "required": ["memory_id"],
-    "properties": {
-      "memory_id": { "type": "string", "description": "Memory ID to permanently delete" }
-    }
-  }
-}
-
-{
-  "name": "mnemosyne_diagnose",
-  "description": "Run diagnostic checks on the memory system: database integrity, index health, storage stats.",
-  "parameters": {
-    "type": "object",
-    "properties": {}
-  }
-}
-
-{
-  "name": "mnemosyne_graph_query",
-  "description": "Traverse the memory graph to find memories related to a seed memory. Uses multi-hop BFS through graph_edges with optional edge_type and min_weight filtering.",
-  "parameters": {
-    "type": "object",
-    "properties": {
-      "seed_memory_id": { "type": "string", "description": "Memory ID to start traversal from" },
-      "max_hops": { "type": "integer", "description": "Maximum traversal depth (default: 2)", "default": 2 },
-      "edge_type": { "type": "string", "description": "Filter by edge type (empty = all types, e.g. 'ctx', 'rel', 'syn', 'references', 'caused', 'supersedes')", "default": "" },
-      "min_weight": { "type": "number", "description": "Minimum edge weight threshold (0.0 to 1.0, default: 0.0 = no filter)", "default": 0.0 }
-    },
-    "required": ["seed_memory_id"]
-  }
-}
-
-{
-  "name": "mnemosyne_graph_link",
-  "description": "Declare a semantic edge between two memories in the graph. Use this to explicitly link related memories so graph traversal finds them.",
-  "parameters": {
-    "type": "object",
-    "required": ["source_id", "target_id", "relationship"],
-    "properties": {
-      "source_id": { "type": "string", "description": "Source memory ID" },
-      "target_id": { "type": "string", "description": "Target memory ID" },
-      "relationship": { "type": "string", "description": "Relationship label (e.g. 'references', 'caused', 'supersedes', 'related_to')" },
-      "weight": { "type": "number", "description": "Edge weight from 0.0 to 1.0 (default: 0.5)", "default": 0.5 }
-    }
-  }
-}
-`} language="json" />
+All tools are documented with full parameter schemas on the [Tool Schema](/api/tool-schema) page.
 
 ## Troubleshooting
 
