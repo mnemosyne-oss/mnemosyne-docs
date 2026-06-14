@@ -16,7 +16,7 @@ const searchIndex: SearchResult[] = [
   { title: "Installation", href: "/getting-started/installation", excerpt: "pip install mnemosyne-memory or use as Hermes plugin", section: "Getting Started" },
   { title: "Configuration", href: "/getting-started/configuration", excerpt: "All environment variables, YAML config, and provider setup", section: "Getting Started" },
   { title: "First Steps", href: "/getting-started/first-steps", excerpt: "Write, read, and search memories after installation", section: "Getting Started" },
-  { title: "Updating Mnemosyne", href: "/getting-started/updating", excerpt: "Upgrade from v2.7 through v3.6.0, schema migrations, and rollback", section: "Getting Started" },
+  { title: "Updating Mnemosyne", href: "/getting-started/updating", excerpt: "Upgrade from v2.7 through v3.7.0, schema migrations, and rollback", section: "Getting Started" },
   { title: "System Architecture", href: "/architecture/system-design", excerpt: "High-level system design and data flow", section: "Architecture" },
   { title: "Tiered Degradation", href: "/architecture/tiered-degradation", excerpt: "Three-tier memory lifecycle from hot to cold with automatic compression", section: "Architecture" },
   { title: "Veracity Signal", href: "/architecture/veracity-signal", excerpt: "Track memory trustworthiness with confidence levels and audit inferred content", section: "Architecture" },
