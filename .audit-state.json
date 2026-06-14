@@ -1,8 +1,8 @@
 {
   "_schema": "mnemosyne-docs-audit-checkpoint-v1",
   "_description": "Tracks per-page audit state. On re-audit, only check pages whose git hash changed since last_audit_hash. Pages not listed here have never been audited \u2014 audit them fully.",
-  "last_full_audit": "2026-06-13T04:00:00.000000+00:00",
-  "codebase_version": "3.6.0",
+  "last_full_audit": "2026-06-13T05:00:00.000000+00:00",
+  "codebase_version": "3.7.0",
   "audit_history": [
     {
       "date": "2026-05-11",
@@ -44,6 +44,14 @@
       "issues_fixed": 96,
       "commit": "d129421c7396",
       "summary": "Full pass: v3.4.0\u2192v3.6.0. Root hallucinations killed (CHANGELOG embeddings, memory_enabled key, plugin hooks). Generator 23\u219225 tools, 20\u2192100 config keys. Architecture 8 bugs fixed. Comparison 10 errors. Schema convergence. pipx-first install consolidated."
+    },
+    {
+      "date": "2026-06-13",
+      "codebase_version": "3.7.0",
+      "pages_audited": 74,
+      "issues_found": 64,
+      "issues_fixed": 64,
+      "summary": "v3.6.0\u2192v3.7.0 version rot pass. 31 files fixed (all v3.6.0\u2192v3.7.0). No hard errors \u2014 3.6.0 audit held. 0 build errors."
     }
   ],
   "files": {
@@ -1168,8 +1176,8 @@
   "pages": {
     "api/hermes-plugin": {
       "status": "clean",
-      "audit_hash": "fe25a2a747ffa5a870bcedeac92f7a1c87148840",
-      "current_hash": "fe25a2a747ffa5a870bcedeac92f7a1c87148840",
+      "audit_hash": "61b2f147955a51dac320ae8c1df4685bb3f3993f",
+      "current_hash": "61b2f147955a51dac320ae8c1df4685bb3f3993f",
       "last_audited": "2026-06-13"
     },
     "api/mcp-server": {
@@ -1198,8 +1206,8 @@
     },
     "api/tool-schema": {
       "status": "clean",
-      "audit_hash": "16d53653f643b8b3ddfb94fc3a0a398717d7ca71",
-      "current_hash": "16d53653f643b8b3ddfb94fc3a0a398717d7ca71",
+      "audit_hash": "8793b9cea2697f23656f40a4e98f5d0b2525ae3a",
+      "current_hash": "8793b9cea2697f23656f40a4e98f5d0b2525ae3a",
       "last_audited": "2026-06-13"
     },
     "architecture/aaak-compression": {
@@ -1282,44 +1290,44 @@
     },
     "comparisons/cognee": {
       "status": "clean",
-      "audit_hash": "764a71374baa01a778bb0881aff427e288423585",
-      "current_hash": "764a71374baa01a778bb0881aff427e288423585",
+      "audit_hash": "4a1025a95d0bc3db503e59efb160fe03d13be559",
+      "current_hash": "4a1025a95d0bc3db503e59efb160fe03d13be559",
       "last_audited": "2026-06-13"
     },
     "comparisons/hindsight": {
       "status": "clean",
-      "audit_hash": "410e1a83d244f8364508ccafe6cc41f2f29a5d7a",
-      "current_hash": "410e1a83d244f8364508ccafe6cc41f2f29a5d7a",
+      "audit_hash": "e53a9b68b37c73d93f892f59b17d5f2c6cf80a03",
+      "current_hash": "e53a9b68b37c73d93f892f59b17d5f2c6cf80a03",
       "last_audited": "2026-06-13"
     },
     "comparisons/honcho": {
       "status": "clean",
-      "audit_hash": "a77a6e1b5f9eb46b67466fdc33bd4eb1ef6ffa4e",
-      "current_hash": "a77a6e1b5f9eb46b67466fdc33bd4eb1ef6ffa4e",
+      "audit_hash": "d2d6a6f08d9a69af614b7be5043faaa4bdd3fb66",
+      "current_hash": "d2d6a6f08d9a69af614b7be5043faaa4bdd3fb66",
       "last_audited": "2026-06-13"
     },
     "comparisons/letta": {
       "status": "clean",
-      "audit_hash": "c9495eae576abac66d675fcf084c34c4c514eebd",
-      "current_hash": "c9495eae576abac66d675fcf084c34c4c514eebd",
+      "audit_hash": "3f538b6a5c5fcb5d93d6b53012a914ee9bca02d4",
+      "current_hash": "3f538b6a5c5fcb5d93d6b53012a914ee9bca02d4",
       "last_audited": "2026-06-13"
     },
     "comparisons/mem0": {
       "status": "clean",
-      "audit_hash": "6a67369bcbfc3f4fcee37b0e6aa1dc6733db85f1",
-      "current_hash": "6a67369bcbfc3f4fcee37b0e6aa1dc6733db85f1",
+      "audit_hash": "f47aed8e766ec417e95128e2163012e7bf2a6d97",
+      "current_hash": "f47aed8e766ec417e95128e2163012e7bf2a6d97",
       "last_audited": "2026-06-13"
     },
     "comparisons/supermemory": {
       "status": "clean",
-      "audit_hash": "2bad852949d630905ee2828c1a528bf6908ca5c7",
-      "current_hash": "2bad852949d630905ee2828c1a528bf6908ca5c7",
+      "audit_hash": "41c25e782c3f9c6a9eb0f83bc8dca86e309227dc",
+      "current_hash": "41c25e782c3f9c6a9eb0f83bc8dca86e309227dc",
       "last_audited": "2026-06-13"
     },
     "comparisons/zep": {
       "status": "clean",
-      "audit_hash": "9dbde41c4cb54ac1fe594f81235dca3eeae8495f",
-      "current_hash": "9dbde41c4cb54ac1fe594f81235dca3eeae8495f",
+      "audit_hash": "f6b35e28ee1abc8be2b22793474f1245176e6d57",
+      "current_hash": "f6b35e28ee1abc8be2b22793474f1245176e6d57",
       "last_audited": "2026-06-13"
     },
     "deployment/cron": {
@@ -1354,14 +1362,14 @@
     },
     "getting-started": {
       "status": "clean",
-      "audit_hash": "e7cc52b3a1bfe856b237ac532b302ee529a44fcf",
-      "current_hash": "e7cc52b3a1bfe856b237ac532b302ee529a44fcf",
+      "audit_hash": "e3f16204ccbc703d5fe2ba43b6daee7e0faa7c91",
+      "current_hash": "e3f16204ccbc703d5fe2ba43b6daee7e0faa7c91",
       "last_audited": "2026-06-13"
     },
     "getting-started/configuration": {
       "status": "clean",
-      "audit_hash": "ca7525a2b0ab9a2aad7c60763da3fbec925a3989",
-      "current_hash": "ca7525a2b0ab9a2aad7c60763da3fbec925a3989",
+      "audit_hash": "bbce3b90af64f126e9d320224efe75b09b7546f9",
+      "current_hash": "bbce3b90af64f126e9d320224efe75b09b7546f9",
       "last_audited": "2026-06-13"
     },
     "getting-started/first-steps": {
@@ -1372,14 +1380,14 @@
     },
     "getting-started/installation": {
       "status": "clean",
-      "audit_hash": "98507431b80b2235b4192056d4f399373b3156ee",
-      "current_hash": "98507431b80b2235b4192056d4f399373b3156ee",
+      "audit_hash": "5a9a932eb44ccb41507cd19eb7af0cffd7336991",
+      "current_hash": "5a9a932eb44ccb41507cd19eb7af0cffd7336991",
       "last_audited": "2026-06-13"
     },
     "getting-started/quick-start": {
       "status": "clean",
-      "audit_hash": "f173635f19603817719486a5498c63089d41d5ef",
-      "current_hash": "f173635f19603817719486a5498c63089d41d5ef",
+      "audit_hash": "d804c7f20ff5b072291592142b88ba090a91ee24",
+      "current_hash": "d804c7f20ff5b072291592142b88ba090a91ee24",
       "last_audited": "2026-06-13"
     },
     "getting-started/updating": {
@@ -1432,8 +1440,8 @@
     },
     "migration/from-hindsight": {
       "status": "clean",
-      "audit_hash": "5be4d8333f2884dbeebcb815176479d3214b7254",
-      "current_hash": "5be4d8333f2884dbeebcb815176479d3214b7254",
+      "audit_hash": "f2d18102a9b3ccc7fc05029bae3ddbd562573165",
+      "current_hash": "f2d18102a9b3ccc7fc05029bae3ddbd562573165",
       "last_audited": "2026-06-13"
     },
     "migration/from-holographic": {
@@ -1474,8 +1482,8 @@
     },
     "migration/overview": {
       "status": "clean",
-      "audit_hash": "095061ceb07691c6d7c38c9fea149796f709e9e9",
-      "current_hash": "095061ceb07691c6d7c38c9fea149796f709e9e9",
+      "audit_hash": "21aa0d8a1b102cd043d0695bfbfcdf57116b1a08",
+      "current_hash": "21aa0d8a1b102cd043d0695bfbfcdf57116b1a08",
       "last_audited": "2026-06-13"
     },
     "operations/backups": {
