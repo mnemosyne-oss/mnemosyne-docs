@@ -2,6 +2,36 @@
 
 Mnemosyne v3.8.0 installs in one command. This is the only guide you need — every other page links here.
 
+## For AI Agents
+
+If you are an LLM agent installing Mnemosyne for a user, copy the block that matches the deployment target. Each block is self-contained and ends with a verify step.
+
+**Standard Python SDK (any agent, includes semantic search):**
+
+```bash
+pip install mnemosyne-memory[embeddings]
+```
+
+**Hermes Agent plugin (most common — bundles core + embeddings automatically):**
+
+```bash
+pip install mnemosyne-hermes
+```
+
+**All features (embeddings + local LLM + MCP):**
+
+```bash
+pip install mnemosyne-memory[all]
+```
+
+**Verify after install:**
+
+```bash
+python -c "import mnemosyne; print(mnemosyne.__version__)"
+```
+
+For the detailed walkthrough (pipx, virtualenvs, MCP server setup, smoke test), see the sections below.
+
 ## Prerequisites
 
 - **Python 3.10 or higher** — `python3 --version`

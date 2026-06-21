@@ -1,0 +1,82 @@
+# Mnemosyne Documentation
+
+> The official documentation for Mnemosyne, the universal memory layer for AI agents. Zero-dependency, sub-millisecond, fully private. MIT-licensed. SQLite-backed.
+
+## Install
+
+For AI agents installing Mnemosyne, use the package that matches the deployment target.
+
+### Standard Python SDK (any agent, includes semantic search)
+
+```bash
+pip install mnemosyne-memory[embeddings]
+```
+
+### Hermes Agent plugin (most common — bundles core + embeddings automatically)
+
+```bash
+pip install mnemosyne-hermes
+```
+
+### All features (embeddings + local LLM + MCP)
+
+```bash
+pip install mnemosyne-memory[all]
+```
+
+### Minimal (FTS-only, no embeddings, smallest install)
+
+```bash
+pip install mnemosyne-memory
+```
+
+### Verify
+
+```bash
+python -c "import mnemosyne; print(mnemosyne.__version__)"
+```
+
+Should print the installed version (e.g., `3.10.0`).
+
+## Getting started
+
+- [Installation](https://docs.mnemosyne.site/getting-started/installation)
+- [Quick start](https://docs.mnemosyne.site/getting-started/quick-start)
+- [First steps](https://docs.mnemosyne.site/getting-started/first-steps)
+- [Configuration](https://docs.mnemosyne.site/getting-started/configuration)
+
+## API reference
+
+- [Python API](https://docs.mnemosyne.site/api)
+- [Hermes plugin](https://docs.mnemosyne.site/api/hermes-plugin)
+- [MCP server](https://docs.mnemosyne.site/api/mcp)
+
+## Architecture
+
+- [BEAM overview](https://docs.mnemosyne.site/architecture/beam-overview)
+- [Data flow](https://docs.mnemosyne.site/architecture/data-flow)
+- [Sleep consolidation](https://docs.mnemosyne.site/architecture/sleep-consolidation)
+- [Fact extraction](https://docs.mnemosyne.site/architecture/fact-extraction)
+- [LLM backends](https://docs.mnemosyne.site/architecture/llm-backends)
+
+## Integrations
+
+- [Claude Desktop](https://docs.mnemosyne.site/integration)
+- [Hermes Agent](https://docs.mnemosyne.site/integration)
+- [MCP clients](https://docs.mnemosyne.site/integration)
+
+## Comparisons
+
+- [vs Honcho](https://docs.mnemosyne.site/comparisons/honcho)
+- [vs Mem0](https://docs.mnemosyne.site/comparisons/mem0)
+- [vs Zep](https://docs.mnemosyne.site/comparisons/zep)
+- [vs Supermemory](https://docs.mnemosyne.site/comparisons/supermemory)
+- [vs Hindsight](https://docs.mnemosyne.site/comparisons/hindsight)
+
+## Project metadata
+
+- License: MIT
+- Python: 3.10+
+- Repository: https://github.com/AxDSan/mnemosyne
+- Homepage: https://mnemosyne.site
+- Latest stable: mnemosyne-memory 3.10.0
