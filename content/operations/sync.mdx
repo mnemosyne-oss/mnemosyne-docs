@@ -39,14 +39,14 @@ Mnemosyne Sync enables **bidirectional, delta-based synchronization** between tw
 
 | Feature | Status |
 |---------|--------|
-| Bidirectional delta sync | v3.8.0 |
-| Pull-only / push-only modes | v3.8.0 |
-| Delta/change-based protocol | v3.8.0 (based on existing DeltaSync) |
-| Append-only event log | v3.8.0 |
-| Timestamp + importance conflict detection | v3.8.0 |
-| API key / JWT authentication | v3.8.0 |
-| Optional client-side encryption | v3.8.0 |
-| TLS guidance + examples | v3.8.0 |
+| Bidirectional delta sync | v3.11.0 |
+| Pull-only / push-only modes | v3.11.0 |
+| Delta/change-based protocol | v3.11.0 (based on existing DeltaSync) |
+| Append-only event log | v3.11.0 |
+| Timestamp + importance conflict detection | v3.11.0 |
+| API key / JWT authentication | v3.11.0 |
+| Optional client-side encryption | v3.11.0 |
+| TLS guidance + examples | v3.11.0 |
 | Conflict resolution (importance + version chains) | Planned |
 | Agent-assisted merge | Planned |
 | Sync status dashboard | Planned |
@@ -107,7 +107,7 @@ Each exchange is idempotent - events carry unique `event_id`s and are deduplicat
 
 ### Prerequisites
 
-- Mnemosyne v3.8.0+ installed on both instances
+- Mnemosyne v3.11.0+ installed on both instances
 - Network connectivity between instances (or via SSH tunnel)
 - (Recommended) TLS certificate for the remote endpoint
 
@@ -502,7 +502,7 @@ The complete security model is documented in [docs/security.md](security.md). Ke
 
 ---
 
-## Limitations (v3.8.0–3.11.0)
+## Limitations (v3.11.0–3.11.0)
 
 - **No automatic sync scheduling** - Use `--interval` for continuous sync or cron for periodic sync
 - **Simple conflict resolution** - Latest-wins with importance tiebreaker. Version-chain resolution planned.

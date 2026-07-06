@@ -12,27 +12,71 @@ interface SearchResult {
 }
 
 const searchIndex: SearchResult[] = [
+  // Getting Started
   { title: "Quick Start", href: "/getting-started/quick-start", excerpt: "Get Mnemosyne running in 5 minutes", section: "Getting Started" },
   { title: "Installation", href: "/getting-started/installation", excerpt: "pip install mnemosyne-memory or use as Hermes plugin", section: "Getting Started" },
   { title: "Configuration", href: "/getting-started/configuration", excerpt: "All environment variables, YAML config, and provider setup", section: "Getting Started" },
   { title: "First Steps", href: "/getting-started/first-steps", excerpt: "Write, read, and search memories after installation", section: "Getting Started" },
-  { title: "Updating Mnemosyne", href: "/getting-started/updating", excerpt: "Upgrade from v2.7 through v3.8.0, schema migrations, and rollback", section: "Getting Started" },
+  { title: "Updating Mnemosyne", href: "/getting-started/updating", excerpt: "Upgrade from v2.7 through v3.11.0, schema migrations, and rollback", section: "Getting Started" },
+  // Architecture
+  { title: "BEAM Architecture Overview", href: "/architecture/beam-overview", excerpt: "Biological-inspired Episodic-Associative Memory core architecture", section: "Architecture" },
   { title: "System Architecture", href: "/architecture/system-design", excerpt: "High-level system design and data flow", section: "Architecture" },
+  { title: "Data Flow", href: "/architecture/data-flow", excerpt: "How information moves through Mnemosyne's memory tiers", section: "Architecture" },
+  { title: "Sleep Consolidation", href: "/architecture/sleep-consolidation", excerpt: "Automatic promotion of Working Memory to Episodic Memory", section: "Architecture" },
+  { title: "AAAK Compression", href: "/architecture/aaak-compression", excerpt: "Adaptive Associative Abstraction Kernel for text substitution", section: "Architecture" },
   { title: "Tiered Degradation", href: "/architecture/tiered-degradation", excerpt: "Three-tier memory lifecycle from hot to cold with automatic compression", section: "Architecture" },
   { title: "Veracity Signal", href: "/architecture/veracity-signal", excerpt: "Track memory trustworthiness with confidence levels and audit inferred content", section: "Architecture" },
+  { title: "Entity Extraction", href: "/architecture/entity-extraction", excerpt: "Lightweight entity extraction with regex patterns and Levenshtein fuzzy matching", section: "Architecture" },
+  { title: "Fact Extraction", href: "/architecture/fact-extraction", excerpt: "LLM-driven structured fact extraction with graceful fallback chain", section: "Architecture" },
+  { title: "LLM Backends", href: "/architecture/llm-backends", excerpt: "Route consolidation and fact extraction through host-provided LLM backends", section: "Architecture" },
+  { title: "Pattern Detection", href: "/architecture/pattern-detection", excerpt: "Detect temporal, content, and sequence patterns with dictionary-based compression", section: "Architecture" },
+  { title: "Plugin System", href: "/architecture/plugin-system", excerpt: "Extensible plugin architecture with lifecycle hooks and auto-discovery", section: "Architecture" },
+  { title: "Streaming & Delta Sync", href: "/architecture/streaming", excerpt: "Real-time event streaming and incremental synchronization", section: "Architecture" },
+  // Memory Systems
   { title: "Working Memory", href: "/memory-systems/working", excerpt: "Short-term agent context and conversation history", section: "Memory Systems" },
   { title: "Episodic Memory", href: "/memory-systems/episodic", excerpt: "Long-term experience storage and retrieval", section: "Memory Systems" },
   { title: "Semantic Memory", href: "/memory-systems/semantic", excerpt: "Structured knowledge and facts", section: "Memory Systems" },
   { title: "Scratchpad", href: "/memory-systems/scratchpad", excerpt: "Temporary workspace for reasoning", section: "Memory Systems" },
+  { title: "Temporal Knowledge Graph", href: "/memory-systems/temporal-graph", excerpt: "Graph structure for time-aware subject-predicate-object triple queries", section: "Memory Systems" },
+  { title: "Memory Banks", href: "/memory-systems/memory-banks", excerpt: "Named namespace isolation with per-bank SQLite databases", section: "Memory Systems" },
+  // Retrieval
   { title: "Hybrid Retrieval", href: "/retrieval/hybrid-search", excerpt: "Combining vector and full-text search", section: "Retrieval" },
   { title: "Vector Search", href: "/retrieval/vector-search", excerpt: "Dense embedding-based similarity search", section: "Retrieval" },
   { title: "FTS5 Search", href: "/retrieval/fts5-search", excerpt: "SQLite full-text search capabilities", section: "Retrieval" },
-  { title: "API Reference", href: "/api/overview", excerpt: "Complete Python API documentation", section: "API" },
+  { title: "Configurable Scoring", href: "/retrieval/configurable-scoring", excerpt: "Tune hybrid search scoring weights for vector, keyword, and importance", section: "Retrieval" },
+  { title: "Ranking & Scoring", href: "/retrieval/ranking", excerpt: "How Mnemosyne ranks and scores retrieval results across search modes", section: "Retrieval" },
+  { title: "Temporal Recall", href: "/retrieval/temporal-recall", excerpt: "Time-aware memory scoring with configurable exponential decay", section: "Retrieval" },
+  // API
+  { title: "API Overview", href: "/api/overview", excerpt: "Complete API documentation overview", section: "API" },
+  { title: "Python SDK", href: "/api/python-sdk", excerpt: "Complete reference for the Mnemosyne Python API", section: "API" },
   { title: "Hermes Plugin", href: "/api/hermes-plugin", excerpt: "Integration with Hermes agent framework", section: "API" },
-  { title: "Deployment", href: "/deployment/overview", excerpt: "Deploy Mnemosyne to production", section: "Deployment" },
-  { title: "Operations", href: "/operations/monitoring", excerpt: "Monitoring, backups, and maintenance", section: "Operations" },
-  { title: "Security", href: "/security/overview", excerpt: "Encryption, access control, and privacy", section: "Security" },
-  { title: "Use Cases", href: "/use-cases/overview", excerpt: "Real-world patterns and case studies", section: "Use Cases" },
+  { title: "REST API", href: "/api/rest", excerpt: "HTTP endpoints for memory CRUD, search, session context, and consolidation", section: "API" },
+  { title: "MCP Server", href: "/api/mcp-server", excerpt: "Model Context Protocol server with 25 tools and dual transports", section: "API" },
+  { title: "MCP Tool Schema", href: "/api/tool-schema", excerpt: "Full MCP tool schema reference with 28 tools", section: "API" },
+  // Deployment
+  { title: "Deployment Overview", href: "/deployment/overview", excerpt: "Deploy Mnemosyne to production", section: "Deployment" },
+  { title: "Fly.io Deployment", href: "/deployment/fly-io", excerpt: "Serverless deployment with persistent SQLite volumes", section: "Deployment" },
+  { title: "Docker Deployment", href: "/deployment/docker", excerpt: "Containerized deployment with bind mounts for persistence", section: "Deployment" },
+  { title: "Systemd Deployment", href: "/deployment/systemd", excerpt: "Run Mnemosyne as a systemd service on Linux", section: "Deployment" },
+  { title: "Cron Deployment", href: "/deployment/cron", excerpt: "Run consolidation and maintenance as scheduled batch processes", section: "Deployment" },
+  // Operations
+  { title: "Monitoring", href: "/operations/monitoring", excerpt: "Monitoring, health checks, and observability", section: "Operations" },
+  { title: "Backups", href: "/operations/backups", excerpt: "Backup and restore procedures for agent memory", section: "Operations" },
+  { title: "Performance", href: "/operations/performance", excerpt: "Optimize Mnemosyne for your workload", section: "Operations" },
+  { title: "Benchmarking", href: "/operations/benchmarking", excerpt: "Run the official BEAM benchmark on your hardware", section: "Operations" },
+  { title: "Mnemosyne Sync", href: "/operations/sync", excerpt: "Cross-device memory synchronization with encryption", section: "Operations" },
+  { title: "Troubleshooting", href: "/operations/troubleshooting", excerpt: "Common issues and their resolutions", section: "Operations" },
+  // Security
+  { title: "Security Overview", href: "/security/overview", excerpt: "Encryption, access control, and privacy", section: "Security" },
+  { title: "Encryption", href: "/security/encryption", excerpt: "Optional client-side encryption for sync payloads", section: "Security" },
+  { title: "Access Control", href: "/security/access-control", excerpt: "Memory isolation using session and scope model", section: "Security" },
+  { title: "Data Privacy", href: "/security/data-privacy", excerpt: "Privacy-first design keeping data under your control", section: "Security" },
+  // Use Cases
+  { title: "Use Case Overview", href: "/use-cases/overview", excerpt: "Real-world patterns and case studies", section: "Use Cases" },
+  { title: "Multi-Agent Systems", href: "/use-cases/multi-agent", excerpt: "Identity-aware shared memory for multi-agent systems", section: "Use Cases" },
+  { title: "Long-Running Tasks", href: "/use-cases/long-running", excerpt: "Maintain context across sessions for long projects", section: "Use Cases" },
+  { title: "Knowledge Base", href: "/use-cases/knowledge-base", excerpt: "Build a structured knowledge base from agent interactions", section: "Use Cases" },
+  // Comparisons
   { title: "vs Hindsight", href: "/comparisons/hindsight", excerpt: "Honest technical comparison with Hindsight self-hosted", section: "Comparisons" },
   { title: "vs Mem0", href: "/comparisons/mem0", excerpt: "Honest technical comparison with Mem0 cloud platform", section: "Comparisons" },
   { title: "vs Letta", href: "/comparisons/letta", excerpt: "Honest comparison with Letta's virtual context memory model", section: "Comparisons" },
@@ -40,10 +84,17 @@ const searchIndex: SearchResult[] = [
   { title: "vs Cognee", href: "/comparisons/cognee", excerpt: "Triple-store architecture comparison with Cognee's graph memory", section: "Comparisons" },
   { title: "vs Honcho", href: "/comparisons/honcho", excerpt: "Reasoning-based memory comparison with Honcho's Neuromancer", section: "Comparisons" },
   { title: "vs SuperMemory", href: "/comparisons/supermemory", excerpt: "Five-layer context stack comparison with SuperMemory platform", section: "Comparisons" },
+  // Migration
   { title: "Cross-Provider Migration", href: "/migration/overview", excerpt: "Import memories from Mem0, Letta, Zep, and more", section: "Migration" },
   { title: "From Mem0", href: "/migration/from-mem0", excerpt: "Migrate memories from Mem0 cloud or self-hosted", section: "Migration" },
   { title: "From Letta (MemGPT)", href: "/migration/from-letta", excerpt: "Import AgentFile (.af) or API memories from Letta", section: "Migration" },
   { title: "From Zep", href: "/migration/from-zep", excerpt: "Session-by-session extraction from Zep temporal graph", section: "Migration" },
+  { title: "From Cognee", href: "/migration/from-cognee", excerpt: "Convert Cognee graph nodes to episodic memories and edges to triples", section: "Migration" },
+  { title: "From Hindsight", href: "/migration/from-hindsight", excerpt: "Import Hindsight memories preserving timestamps, fact types, and session IDs", section: "Migration" },
+  { title: "From Holographic", href: "/migration/from-holographic", excerpt: "Import Hermes Holographic Memory facts with trust scores and entity links", section: "Migration" },
+  { title: "From Honcho", href: "/migration/from-honcho", excerpt: "Import Honcho memories iterating peers, sessions, and messages", section: "Migration" },
+  { title: "From SuperMemory", href: "/migration/from-supermemory", excerpt: "Import SuperMemory documents preserving container tags and metadata", section: "Migration" },
+  // Integration
   { title: "Hermes Integration", href: "/integration/hermes", excerpt: "Using Mnemosyne as your Hermes Agent memory provider", section: "Integration" },
 ];
 

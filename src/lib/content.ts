@@ -17,6 +17,7 @@ const CONTENT_DIR = join(process.cwd(), "content");
 export const pageOrder: string[] = [
   "getting-started/quick-start",
   "getting-started/installation",
+  "getting-started/updating",
   "getting-started/configuration",
   "getting-started/first-steps",
   "architecture/beam-overview",
@@ -26,19 +27,29 @@ export const pageOrder: string[] = [
   "architecture/aaak-compression",
   "architecture/tiered-degradation",
   "architecture/veracity-signal",
+  "architecture/entity-extraction",
+  "architecture/fact-extraction",
+  "architecture/llm-backends",
+  "architecture/pattern-detection",
+  "architecture/plugin-system",
+  "architecture/streaming",
   "memory-systems/working",
   "memory-systems/episodic",
   "memory-systems/semantic",
   "memory-systems/scratchpad",
   "memory-systems/temporal-graph",
+  "memory-systems/memory-banks",
   "retrieval/hybrid-search",
   "retrieval/vector-search",
   "retrieval/fts5-search",
+  "retrieval/configurable-scoring",
   "retrieval/ranking",
+  "retrieval/temporal-recall",
   "api/overview",
   "api/python-sdk",
   "api/hermes-plugin",
   "api/rest",
+  "api/mcp-server",
   "api/tool-schema",
   "integration/hermes",
   "deployment/overview",
@@ -49,7 +60,9 @@ export const pageOrder: string[] = [
   "operations/monitoring",
   "operations/backups",
   "operations/migration",
+  "operations/sync",
   "operations/performance",
+  "operations/benchmarking",
   "operations/troubleshooting",
   "security/overview",
   "security/encryption",
@@ -70,6 +83,11 @@ export const pageOrder: string[] = [
   "migration/from-mem0",
   "migration/from-letta",
   "migration/from-zep",
+  "migration/from-cognee",
+  "migration/from-hindsight",
+  "migration/from-holographic",
+  "migration/from-honcho",
+  "migration/from-supermemory",
 ];
 
 const sectionMap: Record<string, string> = {
@@ -124,7 +142,7 @@ export function getPageBySlug(slug: string[]): DocPage | null {
       section,
       content,
       readingTime,
-      lastUpdated: "2026-04-25",
+      lastUpdated: undefined, // let per-page metadata drive this
     };
   } catch {
     return null;

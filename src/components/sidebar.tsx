@@ -42,6 +42,12 @@ const navigation: NavSection[] = [
       { title: "AAAK Compression", href: "/architecture/aaak-compression" },
       { title: "Tiered Degradation", href: "/architecture/tiered-degradation", badge: "new" },
       { title: "Veracity Signal", href: "/architecture/veracity-signal", badge: "new" },
+      { title: "Entity Extraction", href: "/architecture/entity-extraction" },
+      { title: "Fact Extraction", href: "/architecture/fact-extraction" },
+      { title: "LLM Backends", href: "/architecture/llm-backends" },
+      { title: "Pattern Detection", href: "/architecture/pattern-detection" },
+      { title: "Plugin System", href: "/architecture/plugin-system" },
+      { title: "Streaming", href: "/architecture/streaming" },
     ],
   },
   {
@@ -53,6 +59,7 @@ const navigation: NavSection[] = [
       { title: "Semantic Memory", href: "/memory-systems/semantic" },
       { title: "Scratchpad", href: "/memory-systems/scratchpad" },
       { title: "Temporal Graph", href: "/memory-systems/temporal-graph" },
+      { title: "Memory Banks", href: "/memory-systems/memory-banks" },
     ],
   },
   {
@@ -63,6 +70,8 @@ const navigation: NavSection[] = [
       { title: "Vector Search", href: "/retrieval/vector-search" },
       { title: "FTS5 Search", href: "/retrieval/fts5-search" },
       { title: "Ranking & Scoring", href: "/retrieval/ranking" },
+      { title: "Configurable Scoring", href: "/retrieval/configurable-scoring" },
+      { title: "Temporal Recall", href: "/retrieval/temporal-recall" },
     ],
   },
   {
@@ -74,6 +83,7 @@ const navigation: NavSection[] = [
       { title: "Hermes Plugin", href: "/api/hermes-plugin" },
       { title: "REST API", href: "/api/rest" },
       { title: "Tool Schema", href: "/api/tool-schema" },
+      { title: "MCP Server", href: "/api/mcp-server" },
     ],
   },
   {
@@ -95,6 +105,7 @@ const navigation: NavSection[] = [
       { title: "Disaster Recovery", href: "/operations/backups" },
       { title: "Performance", href: "/operations/performance" },
       { title: "Benchmarking", href: "/operations/benchmarking", badge: "new" },
+      { title: "Mnemosyne Sync", href: "/operations/sync" },
       { title: "Troubleshooting", href: "/operations/troubleshooting" },
     ],
   },
@@ -139,7 +150,11 @@ const navigation: NavSection[] = [
       { title: "From Mem0", href: "/migration/from-mem0" },
       { title: "From Letta", href: "/migration/from-letta" },
       { title: "From Zep", href: "/migration/from-zep" },
+      { title: "From Cognee", href: "/migration/from-cognee" },
+      { title: "From Hindsight", href: "/migration/from-hindsight" },
       { title: "From Holographic", href: "/migration/from-holographic", badge: "new" },
+      { title: "From Honcho", href: "/migration/from-honcho" },
+      { title: "From SuperMemory", href: "/migration/from-supermemory" },
     ],
   },
   {
