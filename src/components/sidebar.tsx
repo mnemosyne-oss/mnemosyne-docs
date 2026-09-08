@@ -169,7 +169,6 @@ const navigation: NavSection[] = [
     icon: <Handshake size={16} />,
     items: [
       { title: "Sponsors & Partners", href: "/partners/overview", badge: "new" },
-      { title: "Atlas Cloud", href: "/partners/atlas-cloud", badge: "new" },
     ],
   },
 ];

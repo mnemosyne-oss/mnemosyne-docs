@@ -89,7 +89,6 @@ export const pageOrder: string[] = [
   "migration/from-honcho",
   "migration/from-supermemory",
   "partners/overview",
-  "partners/atlas-cloud",
 ];
 
 const sectionMap: Record<string, string> = {
