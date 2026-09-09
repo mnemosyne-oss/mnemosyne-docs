@@ -20,11 +20,13 @@ If you're on a Debian/Ubuntu system with PEP 668 (externally-managed environment
 
 ```bash
 pip install mnemosyne-memory[all] --break-system-packages
-# or use a fresh venv:
-python3 -m venv mnemosyne-env
+# or use a fresh venv, created with Hermes's own interpreter:
+/usr/local/lib/hermes-agent/venv/bin/python -m venv mnemosyne-env
 source mnemosyne-env/bin/activate
 pip install mnemosyne-memory[all]
 ```
+
+**Match the Python version.** Any venv Hermes loads Mnemosyne from must use the same Python major.minor as Hermes itself. A venv built with a newer interpreter, which is what a bare `python3` or `uv venv` often gives you, loads the pure-Python parts fine and fails silently on the compiled ones, so recall works but every vector score is zero. Create the venv from the Hermes interpreter, or pass its major.minor explicitly.
 
 **Where should Mnemosyne live?** Inside the same venv as Hermes, or a venv Hermes can access. The MemoryProvider import path must resolve. If you use Hermes's built-in venv (at `/usr/local/lib/hermes-agent/venv/`), install there.
 

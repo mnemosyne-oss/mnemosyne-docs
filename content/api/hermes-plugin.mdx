@@ -35,7 +35,11 @@ hermes gateway restart
 
 ### Fallback: standalone venv
 
-<CodeBlock code={`python3 -m venv ~/.hermes/mnemosyne-venv
+The side venv must be created with the **same Python major.minor that Hermes runs**, or vector recall silently returns zero scores: the provider imports inside the Hermes process, and compiled dependencies such as numpy and onnxruntime cannot load across interpreter versions. Do not use a bare `python3`, `uv venv`, or any tool that picks the newest Python it can find. Use the Hermes interpreter itself:
+
+<CodeBlock code={`# Hermes's own interpreter. Adjust the path for your install.
+HERMES_PYTHON=/usr/local/lib/hermes-agent/venv/bin/python
+"$HERMES_PYTHON" -m venv ~/.hermes/mnemosyne-venv
 ~/.hermes/mnemosyne-venv/bin/pip install mnemosyne-hermes
 ~/.hermes/mnemosyne-venv/bin/mnemosyne-hermes install --force
 hermes config set memory.provider mnemosyne
