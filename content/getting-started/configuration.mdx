@@ -258,6 +258,7 @@ hand; run `python3 scripts/generate-docs.py` in the Mnemosyne repo.
 | `default_owner` | `MNEMOSYNE_DEFAULT_OWNER` | *(unset)* | **yes** | Default owner ID for canonical facts and shared memory. |
 | `default_scope` | `MNEMOSYNE_DEFAULT_SCOPE` | `session` | no | Default scope for new memories: `session` or `global`. |
 | `degrade_batch` | `MNEMOSYNE_DEGRADE_BATCH` | `100` | no | Rows degraded per maintenance pass. |
+| `dream_active` | `MNEMOSYNE_DREAM_ACTIVE` | `false` | no | Whether Dream mode is active, disabling automated model-refresh mutations. |
 | `embedding_api_key` | `MNEMOSYNE_EMBEDDING_API_KEY` | *(unset)* | no | API key for a remote embedding provider. Falls back to `OPENAI_API_KEY`. |
 | `embedding_api_url` | `MNEMOSYNE_EMBEDDING_API_URL` | *(unset)* | **yes** | Base URL of an OpenAI-compatible embedding endpoint. |
 | `embedding_dim` | `MNEMOSYNE_EMBEDDING_DIM` | `384` | **yes** | Override the embedding dimension. Must match the dimension stored in the existing vec tables. |
@@ -292,6 +293,16 @@ hand; run `python3 scripts/generate-docs.py` in the Mnemosyne repo.
 | `llm_n_threads` | `MNEMOSYNE_LLM_N_THREADS` | `4` | no | CPU threads for local GGUF inference. |
 | `llm_repo` | `MNEMOSYNE_LLM_REPO` | *(unset)* | **yes** | Hugging Face repo holding the local GGUF model. |
 | `llm_timeout` | `MNEMOSYNE_LLM_TIMEOUT` | `60` | no | Per-request timeout in seconds for LLM calls. |
+| `media_allow_private_urls` | `MNEMOSYNE_MEDIA_ALLOW_PRIVATE_URLS` | `false` | no | Let the mnemosyne_remember_media tool fetch URLs that resolve to loopback, private or link-local addresses. |
+| `media_allowed_paths` | `MNEMOSYNE_MEDIA_ALLOWED_PATHS` | *(unset)* | no | Directories the mnemosyne_remember_media tool may read local files from (os.pathsep or comma separated). Empty: tool calls cannot name local files. |
+| `modality_api_key` | `MNEMOSYNE_MODALITY_API_KEY` | *(unset)* | no | API key for the modality endpoint. |
+| `modality_audio_model` | `MNEMOSYNE_MODALITY_AUDIO_MODEL` | *(unset)* | **yes** | Model used to transcribe or describe audio. |
+| `modality_base_url` | `MNEMOSYNE_MODALITY_BASE_URL` | *(unset)* | **yes** | Base URL of an OpenAI-compatible vision endpoint. Any provider that speaks the protocol works. |
+| `modality_enabled` | `MNEMOSYNE_MODALITY_ENABLED` | `false` | no | Allow outbound calls to describe non-text media. Off by default; nothing is sent until this is set. |
+| `modality_max_moments` | `MNEMOSYNE_MODALITY_MAX_MOMENTS` | `12` | no | Maximum moments retained per media asset. |
+| `modality_timeout` | `MNEMOSYNE_MODALITY_TIMEOUT` | `60` | no | Timeout in seconds for a modality describe call. |
+| `modality_video_model` | `MNEMOSYNE_MODALITY_VIDEO_MODEL` | *(unset)* | **yes** | Model used to describe video. |
+| `modality_vision_model` | `MNEMOSYNE_MODALITY_VISION_MODEL` | *(unset)* | **yes** | Model used to describe images and documents. |
 | `no_embeddings` | `MNEMOSYNE_NO_EMBEDDINGS` | `false` | no | Disable dense retrieval entirely. Recall degrades to lexical FTS5. |
 | `persona_daily_sync_hour` | `MNEMOSYNE_PERSONA_DAILY_SYNC_HOUR` | `3` | no | Local hour at which the daily persona sync runs. |
 | `persona_enabled` | `MNEMOSYNE_PERSONA_ENABLED` | `true` | no | Inject L3 persona facts into the system prompt. |
@@ -335,8 +346,8 @@ hand; run `python3 scripts/generate-docs.py` in the Mnemosyne repo.
 | `sync_port` | `MNEMOSYNE_SYNC_PORT` | `8765` | **yes** | Bind port for `mnemosyne sync-serve`. |
 | `sync_remote` | `MNEMOSYNE_SYNC_REMOTE` | *(unset)* | **yes** | Remote sync server URL. |
 | `sync_roles` | `MNEMOSYNE_SYNC_ROLES` | `user` | no | Conversation roles synced into memory. Defaults to user turns only. |
-| `sync_turn_assistant_limit` | `MNEMOSYNE_SYNC_TURN_ASSISTANT_LIMIT` | `10` | no | Maximum assistant turns captured per sync pass. |
-| `sync_turn_user_limit` | `MNEMOSYNE_SYNC_TURN_USER_LIMIT` | `10` | no | Maximum user turns captured per sync pass. |
+| `sync_turn_assistant_limit` | `MNEMOSYNE_SYNC_TURN_ASSISTANT_LIMIT` | `10` | no | Maximum assistant message characters captured per sync turn. `0` disables truncation. |
+| `sync_turn_user_limit` | `MNEMOSYNE_SYNC_TURN_USER_LIMIT` | `10` | no | Maximum user message characters captured per sync turn. `0` disables truncation. |
 | `temporal_halflife_hours` | `MNEMOSYNE_TEMPORAL_HALFLIFE_HOURS` | `168` | no | Hours until the temporal recall boost decays by half. |
 | `tier1_weight` | `MNEMOSYNE_TIER1_WEIGHT` | `1.0` | no | Recall score multiplier for tier 1 (fresh) episodic memories. |
 | `tier2_days` | `MNEMOSYNE_TIER2_DAYS` | `30` | no | Age in days at which an episodic memory degrades to tier 2. |
